@@ -1,5 +1,5 @@
 import { Request, Response } from 'express' 
-import { findAll, createUser, findUserById } from '../models/user'
+import { findAll, createUser, findUserById, findUserWithPosts } from '../models/User'
 
 
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -8,7 +8,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 }
 
 export const getUserById = async (req: Request, res: Response) => {
-    const user = await findUserById(parseInt(req.params.id))
+    const user = await findUserWithPosts(parseInt(req.params.id))
     console.log(user)
     res.json({user})
 }
