@@ -28,8 +28,7 @@ Post.init(
     },
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      unique: true,
+      allowNull: false
     },
     body: {
       type: DataTypes.STRING,

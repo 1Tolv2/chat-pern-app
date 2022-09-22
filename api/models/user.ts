@@ -1,5 +1,6 @@
 import { DataTypes, Model, CreationOptional, Optional } from "sequelize";
 import { sequelize } from "../config/env/test";
+import { Post } from "./Post";
 
 interface UserAttributes {
   id: CreationOptional<number>;
@@ -42,6 +43,11 @@ User.init(
   }
 );
 
+Post.belongsTo(User, {
+  foreignKey: "userId",
+});
+User.hasMany(Post);
+
 export const createUser = async (name: string, nickname: string) => {
   const newUser = await User.create({
     name,
@@ -57,5 +63,11 @@ export const findAll = async (): Promise<UserOutput[]> => {
 export const findUserById = async (id: number) => {
   return User.findOne({ raw: true, where: { id } });
 };
+
+export const findUserWithPosts = async (id: number) => {
+  return User.findOne({ raw: true, where: { id }, include: Post})
+}
+
+
 
 export { User };
