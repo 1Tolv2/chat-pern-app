@@ -1,5 +1,5 @@
 import { DataTypes, Model, CreationOptional, Optional } from "sequelize";
-import { sequelize } from "./index";
+import { sequelize } from "../config/env/test";
 
 interface UserAttributes {
   id: CreationOptional<number>;
@@ -38,11 +38,11 @@ User.init(
   {
     timestamps: true,
     tableName: "users",
-    sequelize, // passing the `sequelize` instance is required
+    sequelize,
   }
 );
 
-const createUser = async (name: string, nickname: string) => {
+export const createUser = async (name: string, nickname: string) => {
   const newUser = await User.create({
     name,
     nickname,
@@ -50,12 +50,12 @@ const createUser = async (name: string, nickname: string) => {
   return newUser;
 };
 
-const findAll = async (): Promise<UserOutput[]> => {
+export const findAll = async (): Promise<UserOutput[]> => {
   return User.findAll({ raw: true });
 };
 
-const findUserById = async (id: number) => {
-  return User.findOne({ where: { id } });
+export const findUserById = async (id: number) => {
+  return User.findOne({ raw: true, where: { id } });
 };
 
-export {User, findAll, createUser, findUserById };
+export { User };
