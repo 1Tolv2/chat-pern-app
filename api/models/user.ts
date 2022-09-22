@@ -53,16 +53,22 @@ User.init(
   }
 );
 
-const getAll = async (): Promise<UserOutput[]> => {
-  return User.findAll()
-}
-
 const createUser = async (name: string, nickname: string) => {
   const newUser = await User.create({
     name,
-    nickname
+    nickname,
   })
-  console.log(newUser.id, newUser.name, newUser.nickname);
+  return newUser
 }
 
-export { sequelize, User, getAll, createUser };
+const findAll = async (): Promise<UserOutput[]> => {
+  return User.findAll({raw: true})
+}
+
+const findUserById = async (id: number) => {
+  return User.findOne({where: {id}})
+}
+
+
+
+export { sequelize, User, findAll, createUser, findUserById };
