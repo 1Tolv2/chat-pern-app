@@ -8,9 +8,9 @@ export const getAllUsers = async (req: Request, res: Response) => {
 }
 
 export const handleNewUser = async (req: Request, res: Response) => {
-    console.log("REQUEST", req.body)
-    const name: string = "Sofia"
-    const nickname: string = "Tolv"
-    // await createUser(name, nickname)
+    // console.log("REQUEST", req.body)
+    const name: string = req.body.name
+    const nickname: string = req.body.nickname
+    await createUser(name, nickname)
     res.json({message: `${nickname} created`})
 }

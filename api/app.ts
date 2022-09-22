@@ -1,4 +1,4 @@
-import express, { Express} from "express";
+import express, { Express, json } from "express";
 import cors from 'cors'
 import { PORT } from "./settings";
 import apiRouter from "./routes/index";
@@ -6,7 +6,7 @@ import { sequelize } from "./models/user";
 
 const app: Express = express();
 app.use(cors())
-app.use(express.json())
+app.use(json())
 
 app.use("/", apiRouter);
 
