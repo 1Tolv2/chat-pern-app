@@ -1,21 +1,10 @@
-import {
-  Sequelize,
-  DataTypes,
-  Model,
-  CreationOptional,
-  Optional,
-} from "sequelize";
-import dotenv from "dotenv";
-dotenv.config();
-
-const sequelize = new Sequelize(
-  `postgres://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@localhost:${process.env.DATABASE_PORT}/chatdatabase`
-);
+import { DataTypes, Model, CreationOptional, Optional } from "sequelize";
+import { sequelize } from "./index";
 
 interface UserAttributes {
   id: CreationOptional<number>;
   name: string;
-  nickname: string | null
+  nickname: string | null;
 }
 
 export interface UserInput extends Optional<UserAttributes, "id"> {}
@@ -44,7 +33,7 @@ User.init(
     nickname: {
       type: DataTypes.STRING(128),
       allowNull: true,
-    }
+    },
   },
   {
     timestamps: true,
@@ -57,18 +46,16 @@ const createUser = async (name: string, nickname: string) => {
   const newUser = await User.create({
     name,
     nickname,
-  })
-  return newUser
-}
+  });
+  return newUser;
+};
 
 const findAll = async (): Promise<UserOutput[]> => {
-  return User.findAll({raw: true})
-}
+  return User.findAll({ raw: true });
+};
 
 const findUserById = async (id: number) => {
-  return User.findOne({where: {id}})
-}
+  return User.findOne({ where: { id } });
+};
 
-
-
-export { sequelize, User, findAll, createUser, findUserById };
+export {User, findAll, createUser, findUserById };

@@ -2,7 +2,7 @@ import express, { Express, json } from "express";
 import cors from 'cors'
 import { PORT } from "./settings";
 import apiRouter from "./routes/index";
-import { sequelize } from "./models/user";
+import { sequelize } from "./models/index";
 
 const app: Express = express();
 app.use(cors())
