@@ -1,0 +1,21 @@
+{
+  "name": "chat-app-typescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1Tolv2/chat-app-typescript.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "workspaces": ["./api/*", "./client/*"],
+  "bugs": {
+    "url": "https://github.com/1Tolv2/chat-app-typescript/issues"
+  },
+  "homepage": "https://github.com/1Tolv2/chat-app-typescript#readme"
+}

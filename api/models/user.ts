@@ -60,14 +60,12 @@ export const findAll = async (): Promise<UserOutput[]> => {
   return User.findAll({ raw: true });
 };
 
-export const findUserById = async (id: number) => {
-  return User.findOne({ raw: true, where: { id } });
-};
+// export const findUserById = async (id: number) => {
+//   return User.findOne({ raw: true, where: { id } });
+// };
 
 export const findUserWithPosts = async (id: number) => {
-  return User.findOne({ raw: true, where: { id }, include: Post})
-}
-
-
+  return User.findOne({ raw: true, where: { id }, include: {model: Post, as: 'posts'} });
+};
 
 export { User };
