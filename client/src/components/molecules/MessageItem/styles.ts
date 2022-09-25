@@ -31,6 +31,11 @@ font-size: 1rem;
 font-weight: 500;
 line-height: 1.375rem;
 display: inline;
+cursor: pointer;
+&:hover{
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
 `
 
 export {Container, ProfileImage, MessageWrapper, Heading}

@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   justify-content: flex-end;
   height: 100%;
   overflow-y: scroll;
-  margin: 5px;
+  margin: 5px 5px 30px 5px;
   &::-webkit-scrollbar {
     width: 15px;
   }
