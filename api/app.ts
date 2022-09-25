@@ -12,7 +12,5 @@ app.use("/", apiRouter);
 
 sequelize.sync({ alter: true }).then(() => {
   console.log("Finished synchronizing models");
-  app.listen(PORT, () => {
-    console.log(`Express server running on port: ${PORT}`);
-  });
+  app.listen(PORT, () => {console.log(`Express server running on port: ${PORT}`);});
 });
