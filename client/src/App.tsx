@@ -1,7 +1,7 @@
 import './index.css'
 import Layout from './components/Layout/index'
-import MessageBoard from './components/organisms/MessageBoard';
 import Header from './components/Layout/Header';
+import ChannelContent from './components/organisms/ChannelContent';
 
 function App() {
   return (
@@ -9,7 +9,7 @@ function App() {
       <div style={{backgroundColor: "#2f3136"}}>hej</div>
       <div>
         <Header/>
-      <MessageBoard/>
+        <ChannelContent/>
       </div>
     </Layout>
   );
