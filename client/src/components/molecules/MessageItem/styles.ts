@@ -18,7 +18,7 @@ const MessageWrapper = styled.div`
 position: relative;
 display: flex;
 flex-direction: row;
-align-items: center;
+align-items: flex-start;
 margin-top: 1.0625rem;
 min-height: 2.75rem;
 padding: 0.125rem 48px 0.125rem 72px;

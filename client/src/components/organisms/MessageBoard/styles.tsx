@@ -20,7 +20,6 @@ const MessageBoardWrapper = styled.div`
   justify-content: space-between;
   flex-grow: 1;
   height: 100%;
-  padding: 0 8px;
 `;
 
 export { Container, ChannelContainer, MessageBoardWrapper };
