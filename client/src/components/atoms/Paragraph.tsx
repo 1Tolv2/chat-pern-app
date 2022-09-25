@@ -10,7 +10,7 @@ type Props = {
     fontSize?: string,
     color?: string,
 }
-const StyledParagraph = styled(t.Paragraph)`
+const StyledParagraph = styled.div`
 white-space: break-spaces;
 word-wrap: break-word;
 color: ${colors.lightestGrey};

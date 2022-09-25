@@ -13,8 +13,8 @@ const activityData: ActivityData[] = [
 const MemberSidebar = (props: Props) => {
   return (
     <s.MembersContainer>
-      {activityData.map((list) => {
-        return <MemberList data={list}/> 
+      {activityData.map((list, index) => {
+        return <MemberList key={index} data={list}/> 
       })}
     </s.MembersContainer>
   );

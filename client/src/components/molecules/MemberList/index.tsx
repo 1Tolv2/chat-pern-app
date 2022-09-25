@@ -18,9 +18,9 @@ const MemberList = ({ data }: Props) => {
         <t.H3 color="lightGrey">{`${data.title.toUpperCase()} - ${data.members.length}`}</t.H3>
       </s.SectionTitle>
       <s.MemberList>
-        {data.members.map((user: Member) => {
+        {data.members.map((user: Member, index) => {
           return (
-            <s.MemberItem className={data.title}>
+            <s.MemberItem key={index} className={data.title}>
               <img src={logo} alt="avatar" />
               <t.H4 color="blue">{firstLetterToUppercase(user.username)}</t.H4>
             </s.MemberItem>
