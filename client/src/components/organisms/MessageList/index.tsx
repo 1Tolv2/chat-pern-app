@@ -13,9 +13,9 @@ const messageList: Message[] = [
 const MessageList = (props: Props) => {
   return (
     <s.MessageList>
-      {messageList.map((message: Message) => {
+      {messageList.map((message: Message, index) => {
         return (
-          <MessageItem data={message}/>
+          <MessageItem key={index} data={message}/>
         );
       })}
     </s.MessageList>

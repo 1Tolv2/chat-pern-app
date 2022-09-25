@@ -7,7 +7,6 @@ type Props = {};
 
 const Header = (props: Props) => {
 
-
   const handleOnClick = () => {
 console.log("clicked");
   }
