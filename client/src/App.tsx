@@ -7,7 +7,7 @@ function App() {
   return (
     <Layout>
       <div style={{backgroundColor: "#2f3136"}}>hej</div>
-      <div>
+      <div style={{height: "100%"}}>
         <Header/>
         <ChannelContent/>
       </div>

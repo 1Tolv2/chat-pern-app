@@ -17,7 +17,7 @@ const Wrapper = styled.main`
 display: grid;
 grid-template-columns: auto 1fr;
 border-top-left-radius: 5px;
-
+height: 100%;
 `;
 
 const Layout = ({ children }: Props) => {

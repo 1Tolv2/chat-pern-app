@@ -12,4 +12,20 @@ const Container = styled.div`
   background-color: ${colors.darkGrey};
 `;
 
-export { Container };
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  overflow-y: scroll;
+  margin: 5px;
+  &::-webkit-scrollbar {
+    width: 15px;
+    /* border: 1px solid black; */
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: ${colors.darkerGrey};
+  }
+`;
+
+export { Container, Wrapper };

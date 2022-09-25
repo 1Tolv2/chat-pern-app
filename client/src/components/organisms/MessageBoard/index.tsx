@@ -9,9 +9,11 @@ type Props = {};
 const MessageBoard = (props: Props) => {
   return (
     <s.Container>
-          <MessageStart />
-          <MessageList />
-          <MessageCreator />
+      <s.Wrapper>
+        <MessageStart />
+        <MessageList />
+      </s.Wrapper>
+      <MessageCreator />
     </s.Container>
   );
 };
