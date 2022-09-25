@@ -1,3 +1,5 @@
+import * as typography from './typography'
+
 type Colors = {
     black: string,
     darkestGrey: string,
@@ -23,5 +25,6 @@ const colors: Colors = {
 }
 
 export const theme = {
-    colors
+    colors,
+    typography,
 }
