@@ -1,8 +1,8 @@
 import React from "react";
-import Textarea from "../../atoms/Textarea";
 import MessageList from "../MessageList";
-import * as s from "./styles";
 import MessageStart from "../../molecules/MessageStart";
+import MessageCreator from "../../molecules/MessageCreator";
+import * as s from "./styles";
 
 type Props = {};
 
@@ -11,7 +11,7 @@ const MessageBoard = (props: Props) => {
     <s.Container>
           <MessageStart />
           <MessageList />
-          <Textarea />
+          <MessageCreator />
     </s.Container>
   );
 };
