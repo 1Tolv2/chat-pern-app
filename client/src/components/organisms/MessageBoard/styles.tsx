@@ -1,16 +1,15 @@
 import styled from "styled-components";
-import {theme} from '../../theme/index'
+import { theme } from "../../theme/index";
 
-const {colors} = theme;
+const { colors } = theme;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  flex-grow: 1;
+  flex: 1;
   height: 100%;
   background-color: ${colors.darkGrey};
 `;
 
-
-export {Container};
+export { Container };

@@ -1,13 +1,33 @@
-import React from 'react'
-import Textarea from '../../atoms/Textarea'
-import * as s from './styles'
+import React, { useState } from "react";
+import Textarea from "../../atoms/Textarea";
+import * as s from "./styles";
 
-type Props = {}
+type Props = {};
 
 const MessageCreator = (props: Props) => {
-  return (
-    <s.Container><Textarea /></s.Container>
-  )
-}
+  const [message, setMessage] = useState<string>("");
 
-export default MessageCreator
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // post message
+    console.log(message);
+    setMessage("");
+  };
+
+  return (
+    <s.Container>
+      <form onSubmit={handleSubmit} style={{width: "100%"}}>
+        <Textarea
+          id="Message"
+          type="text"
+          setValue={setMessage}
+          value={message}
+          placeholder="Message..."
+        />
+        <input type="submit" hidden />
+      </form>
+    </s.Container>
+  );
+};
+
+export default MessageCreator;
