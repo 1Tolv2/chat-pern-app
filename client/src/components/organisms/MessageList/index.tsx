@@ -1,5 +1,4 @@
 import React from "react";
-import Paragraph from "../../atoms/Paragraph";
 import MessageItem from "../../molecules/MessageItem";
 import { Message } from "../../../global/types";
 import * as s from "./styles";
