@@ -61,9 +61,11 @@ const H3 = styled.h3`
 font-size: 1rem;
 font-weight: 500;
 line-height: 1.375rem;
+margin: 0;
 ${baseStyle}
 `
-const H4 = styled.h4`
+const H4 = styled(H3)`
+line-height: 20px;
 ${baseStyle}`
 
 const Paragraph = styled.p`

@@ -8,7 +8,7 @@ const MessageStart = (props: Props) => {
   return (
     <s.Container>
       <s.Header>Welcome to #general</s.Header>
-      <Paragraph color="lightGrey">This is the start of the #general channel.</Paragraph>
+      <Paragraph color="lighterGrey">This is the start of the #general channel.</Paragraph>
     </s.Container>
   );
 };

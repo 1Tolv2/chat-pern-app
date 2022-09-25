@@ -16,12 +16,11 @@ const colors: ThemeColors = {
     darkerGrey: "#2f3136",
     darkGrey: "#36393f",
     grey: "#42464d",
-    lightGrey: "#8e9297",
+    lightGrey: "#96989d",
     lighterGrey: "#b9bbbe",
-    lightestGrey: "#d7d9da",
+    lightestGrey: "#dcddde",
     white: "#fff",
 }
-
 const theme = {colors}
 
 export { theme, type ThemeColors}

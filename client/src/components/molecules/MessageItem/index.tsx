@@ -4,7 +4,6 @@ import logo from "../../../logo.svg";
 import Paragraph from '../../atoms/Paragraph';
 import * as s from './styles'
 
-
 type Props = {
     data: Message,
 }
@@ -31,7 +30,7 @@ const MessageItem = ({data}: Props) => {
                   <s.Heading>
                     {firstLetterToUppercase(data.username)}
                   </s.Heading>
-                  <Paragraph fontSize="0.75rem" color="lightGrey">
+                  <Paragraph fontSize="0.75rem" color="lighterGrey">
                     {renderDateString(data.timeStamp)}
                   </Paragraph>
                 </div>

@@ -21,10 +21,9 @@ const Wrapper = styled.div`
   margin: 5px;
   &::-webkit-scrollbar {
     width: 15px;
-    /* border: 1px solid black; */
   }
   &::-webkit-scrollbar-thumb {
-    background-color: ${colors.darkerGrey};
+    background-color: ${colors.darkestGrey};
   }
 `;
 
