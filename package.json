@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install",
+    "pretty-quick": "pretty-quick"
   },
   "repository": {
     "type": "git",
@@ -13,9 +15,17 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "workspaces": ["./api/*", "./client/*"],
+  "workspaces": [
+    "./api/*",
+    "./client/*"
+  ],
   "bugs": {
     "url": "https://github.com/1Tolv2/chat-app-typescript/issues"
   },
-  "homepage": "https://github.com/1Tolv2/chat-app-typescript#readme"
+  "homepage": "https://github.com/1Tolv2/chat-app-typescript#readme",
+  "devDependencies": {
+    "husky": "^8.0.1",
+    "prettier": "^2.7.1",
+    "pretty-quick": "^3.1.3"
+  }
 }
