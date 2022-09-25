@@ -1,10 +1,16 @@
 import React from "react";
+import Paragraph from "../../atoms/Paragraph";
 import * as s from "./styles";
 
 type Props = {};
 
 const MessageStart = (props: Props) => {
-  return <s.Header>{"Welcome to #General"}</s.Header>;
+  return (
+    <s.Container>
+      <s.Header>Welcome to #general</s.Header>
+      <Paragraph color="lightGrey">This is the start of the #general channel.</Paragraph>
+    </s.Container>
+  );
 };
 
 export default MessageStart;

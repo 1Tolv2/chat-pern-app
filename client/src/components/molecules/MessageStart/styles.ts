@@ -4,8 +4,12 @@ import * as t from "../../theme/typography";
 
 const { colors } = theme;
 
+const Container = styled.div`
+margin: 16px;`
+
+
 const Header = styled(t.H2)`
   color: ${colors.white};
 `;
 
-export { Header };
+export { Container, Header };
