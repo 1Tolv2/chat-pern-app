@@ -3,6 +3,7 @@ import MemberSidebar from "../MemberSidebar";
 import Textarea from "../../atoms/Textarea";
 import MessageList from "../MessageList";
 import * as s from "./styles";
+import MessageStart from "../../molecules/MessageStart";
 
 type Props = {};
 
@@ -11,7 +12,8 @@ const MessageBoard = (props: Props) => {
     <s.Container>
       <s.ChannelContainer>
         <s.MessageBoardWrapper>
-          <MessageList/>
+          <MessageStart />
+          <MessageList />
           <Textarea />
         </s.MessageBoardWrapper>
         <MemberSidebar />

@@ -18,7 +18,7 @@ color: ${colors.lightestGrey};
 
 const Paragraph = ({children, fontSize, color}: Props) => {
   return (
-    <StyledParagraph fontSize={fontSize} color={color}>{children}</StyledParagraph>
+    <StyledParagraph><t.Paragraph fontSize={fontSize} color={color}>{children}</t.Paragraph></StyledParagraph>
   )
 }
 
