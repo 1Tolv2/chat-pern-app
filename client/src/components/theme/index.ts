@@ -8,6 +8,7 @@ type ThemeColors = {
     lighterGrey: string,
     lightestGrey: string,
     white: string,
+    blue: string,
 }
 
 const colors: ThemeColors = {
@@ -20,6 +21,7 @@ const colors: ThemeColors = {
     lighterGrey: "#b9bbbe",
     lightestGrey: "#dcddde",
     white: "#fff",
+    blue: "#3498db",
 }
 const theme = {colors}
 

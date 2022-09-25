@@ -24,7 +24,7 @@ const MessageItem = ({data}: Props) => {
   return (
     <s.Container>
             <s.MessageWrapper>
-              <s.ProfileImage src={logo} />
+              <s.ProfileImage src={logo} alt="avatar" />
               <div>
                 <div>
                   <s.Heading>

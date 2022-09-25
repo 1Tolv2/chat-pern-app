@@ -4,3 +4,12 @@ export type Message = {
     text: string;
     timeStamp: Date;
   };
+
+  export type Member = {
+    username: string;
+  };
+
+  export type ActivityData = {
+    title: string;
+    members: Member[];
+  };

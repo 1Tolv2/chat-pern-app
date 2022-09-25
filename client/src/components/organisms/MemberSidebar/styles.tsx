@@ -9,32 +9,13 @@ const MembersContainer = styled.aside`
 min-width: 240px;
 height: 100%;
 background-color: ${colors.darkerGrey};
+overflow-y: scroll;
+&::-webkit-scrollbar {
+    width: 15px;
+  }
+&::-webkit-scrollbar-thumb {
+    background-color: ${colors.darkestGrey};
+  }
 `
 
-const SectionTitle = styled.div`
-width: 100%;
-padding: 24px 8px 0 16px;
-
-`
-
-const MemberList = styled.ul`
-margin-left: 8px;
-padding: 0 8px;
-`
-
-const MemberItem = styled.li`
-display: flex;
-align-items: center;
-height: 42px;
-border-radius: 5px;
-img {
-    width: 32px;
-    height: 32px;
-    margin-right: 12px;
-}
-&:hover{
-    background-color: ${colors.darkGrey};
-}
-`
-
-export { Container, MembersContainer, SectionTitle, MemberList, MemberItem };
+export { Container, MembersContainer};
