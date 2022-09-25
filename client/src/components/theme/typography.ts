@@ -47,6 +47,7 @@ const H1 = styled.h1`
 font-size: 15px;
 line-height: 20px;
 font-weight: 500;
+margin: 0;
 ${baseStyle}`
 
 const H2 = styled.h2`
@@ -66,12 +67,14 @@ ${baseStyle}
 `
 const H4 = styled(H3)`
 line-height: 20px;
+margin: 0;
 ${baseStyle}`
 
 const Paragraph = styled.p`
 margin: 0;
 font-size: 1rem;
 line-height: 1.375rem;
+margin: 0;
 ${baseStyle}
 `
 
