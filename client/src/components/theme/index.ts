@@ -1,6 +1,4 @@
-import * as typography from './typography'
-
-type Colors = {
+type ThemeColors = {
     black: string,
     darkestGrey: string,
     darkerGrey: string,
@@ -12,7 +10,7 @@ type Colors = {
     white: string,
 }
 
-const colors: Colors = {
+const colors: ThemeColors = {
     black: "#000",
     darkestGrey: "#202225",
     darkerGrey: "#2f3136",
@@ -24,7 +22,6 @@ const colors: Colors = {
     white: "#fff",
 }
 
-export const theme = {
-    colors,
-    typography,
-}
+const theme = {colors}
+
+export { theme, type ThemeColors}

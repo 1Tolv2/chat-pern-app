@@ -1,5 +1,5 @@
 import styled, {css} from "styled-components";
-import {theme} from "./index";
+import {theme,ThemeColors} from "./index";
 
  const {colors} = theme
 
@@ -14,7 +14,7 @@ type Props = {
 }
 
 const baseStyle = css`
-  color: ${(props: Props) => (props ? props.color : colors.white)};
+  color: ${(props: Props) => (props ? colors[(props.color as string) as keyof ThemeColors] : colors.white)};
   ${(props: Props) =>
     props.fontWeight &&
     css`
@@ -65,6 +65,7 @@ ${baseStyle}
 `
 const H4 = styled.h4`
 ${baseStyle}`
+
 const Paragraph = styled.p`
 margin: 0;
 font-size: 1rem;
