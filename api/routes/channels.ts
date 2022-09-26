@@ -1,10 +1,10 @@
 import express, { Router } from 'express'
-import { getAllChannels, handleNewChannel, getAllChannelPosts } from '../controllers/channels'
+import { getAllChannels, handleNewChannel, getChannel} from '../controllers/channels'
 
 const router: Router = express.Router()
 
 router.get("/", getAllChannels)
 router.post("/", handleNewChannel)
-router.get("/posts", getAllChannelPosts)
+router.get("/:id/posts", getChannel)
 
 export default router

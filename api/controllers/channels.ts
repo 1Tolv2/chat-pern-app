@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createChannel,findAllChannels } from "../models/Channel";
+import { createChannel, findAllChannels, findChannelWithPosts } from "../models/Channel";
 
 
 export const handleNewChannel = async (req: Request, res: Response ) => {
@@ -15,7 +15,8 @@ export const getAllChannels = async (req: Request, res: Response) => {
     res.json({channels})
 }
 
-export const getAllChannelPosts = async (req: Request, res: Response) => {
-    const channels = await findAllChannels()
-    res.json({channels})
+export const getChannel = async (req: Request, res: Response) => {
+    const channelId: string = req.params.id
+    const channel = await findChannelWithPosts(channelId)
+    res.json({channel})
 }

@@ -1,27 +1,14 @@
-import { DataTypes, Model, CreationOptional, Optional } from "sequelize";
+import { DataTypes, Model, InferAttributes, InferCreationAttributes, ForeignKey, CreationOptional } from "sequelize";
 import { sequelize } from "../config/env/test";
 import crypto from "crypto";
 import { Channel } from "./Channel";
+import { User } from "./User";
 
-interface PostAttributes {
-  id: string;
-  user_id: string;
-  channel_id: string;
-  body: string;
-  created_at?: Date;
-  updated_at?: Date;
-}
-
-export interface PostInput extends Optional<PostAttributes, "id"> {}
-export interface PostOutput extends Required<PostAttributes> {}
-
-class Post extends Model<PostAttributes, PostInput> implements PostAttributes {
-  public id = crypto.randomUUID(); //special type that marks field as optional
-  public readonly user_id!: string;
-  public readonly channel_id!: string;
-  public body!: string;
-  public readonly created_at!: CreationOptional<Date>;
-  public readonly updated_at!: CreationOptional<Date>;
+class Post extends Model<InferAttributes<Post>, InferCreationAttributes<Post>> {
+  declare id: string;
+  declare user_id: ForeignKey<User['id']>;
+  declare channel_id: ForeignKey<Channel['id']>;
+  declare body: string;
 }
 
 Post.init(
@@ -41,20 +28,15 @@ Post.init(
     body: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    created_at: DataTypes.DATE,
-    updated_at: DataTypes.DATE,
+    }
   },
   {
+    timestamps: true,
+    underscored: true,
     tableName: "posts",
     sequelize,
   }
 );
-
-Channel.hasMany(Post, {
-  foreignKey: "channel_id",
-});
-Post.belongsTo(Channel);
 
 export const createPost = async (
   userId: string,
@@ -62,9 +44,10 @@ export const createPost = async (
   body: string
 ) => {
   const newPost = await Post.create({
+    id: crypto.randomUUID(),
     user_id: userId,
     channel_id: channelId,
-    body,
+    body
   });
   return newPost;
 };
