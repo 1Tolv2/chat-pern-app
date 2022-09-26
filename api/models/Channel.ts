@@ -78,11 +78,17 @@ export const findChannelWithPosts = async (channelId: string) => {
       WHERE p.channel_id = '${channelId}';`
     )
   )[0] as Post[];
-  return channel;
+  return {channel};
 };
 
 export const findChannelUsers = async (channelId: string) => {
-  // const channel = 
+  const channel = await sequelize.query(
+  `SELECT u.* FROM users AS u 
+  JOIN posts AS p ON u.id = p.user_id
+  JOIN channels AS c ON p.channel_id = c.id;`)
+  
+return {users: channel[0]}
 }
+
 
 export { Channel };

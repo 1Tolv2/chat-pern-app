@@ -64,7 +64,7 @@ export const findPostsByChannelId = async (id: string) => {
      attributes: ['name', 'id']},
     raw: true,
   });
-  return posts;
+  return {posts};
 };
 
 export const findById = async (id: string) => {
