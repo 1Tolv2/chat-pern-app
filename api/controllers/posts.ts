@@ -21,7 +21,7 @@ export const getPostById = async (req: Request, res: Response) => {
 }
 
 export const handleNewPost = async (req: Request, res: Response) => {
-    console.log("HERE",req.body)
+    console.log("HERE", req.body)
     const userId: string = req.body.userId
     const channelId: string = req.body.channelId
     const body: string = req.body.body

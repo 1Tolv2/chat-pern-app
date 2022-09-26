@@ -1,11 +1,11 @@
 import React from 'react'
-import { Message } from '../../../global/types'
+import { Post } from '../../../global/types'
 import logo from "../../../logo.svg";
 import Paragraph from '../../atoms/Paragraph';
 import * as s from './styles'
 
 type Props = {
-    data: Message,
+    data: Post,
 }
 
 const MessageItem = ({data}: Props) => {
@@ -28,13 +28,13 @@ const MessageItem = ({data}: Props) => {
               <div>
                 <div>
                   <s.Heading>
-                    {firstLetterToUppercase(data.username)}
+                    {firstLetterToUppercase(data.user)}
                   </s.Heading>
                   <Paragraph fontSize="0.75rem" color="lighterGrey">
-                    {renderDateString(data.timeStamp)}
+                    {renderDateString(new Date(data.created_at))}
                   </Paragraph>
                 </div>
-                <Paragraph>{data.text}</Paragraph>
+                <Paragraph>{data.body}</Paragraph>
               </div>
             </s.MessageWrapper>
 

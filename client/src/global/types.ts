@@ -1,8 +1,9 @@
-export type Message = {
+export type Post = {
     id: number;
-    username: string;
-    text: string;
-    timeStamp: Date;
+    user: string;
+    body: string;
+    created_at: Date;
+    updated_at: Date;
   };
 
   export type Member = {
