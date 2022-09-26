@@ -15,14 +15,14 @@ const MemberList = ({ data }: Props) => {
   return (
     <s.Container>
       <s.SectionTitle>
-        <t.H3 color="lightGrey">{`${data.title.toUpperCase()} - ${data.members.length}`}</t.H3>
+        <t.H3 color="lightGrey">{`${data.title.toUpperCase()} - ${data.users.length}`}</t.H3>
       </s.SectionTitle>
       <s.MemberList>
-        {data.members.map((user: Member, index) => {
+        {data.users.map((user: Member, index) => {
           return (
             <s.MemberItem key={index} className={data.title}>
               <img src={logo} alt="avatar" />
-              <t.H4 color="blue">{firstLetterToUppercase(user.username)}</t.H4>
+              <t.H4 color="blue">{firstLetterToUppercase(user.user)}</t.H4>
             </s.MemberItem>
           );
         })}

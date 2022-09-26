@@ -1,11 +1,19 @@
-import { DataTypes, Model, InferAttributes, InferCreationAttributes } from "sequelize";
+import {
+  DataTypes,
+  Model,
+  InferAttributes,
+  InferCreationAttributes,
+} from "sequelize";
 import { sequelize } from "../config/env/test";
 import crypto from "crypto";
 
-class Channel extends Model<InferAttributes<Channel>, InferCreationAttributes<Channel>> {
-  declare id: string
-  declare name: string
-  declare description?: string
+class Channel extends Model<
+  InferAttributes<Channel>,
+  InferCreationAttributes<Channel>
+> {
+  declare id: string;
+  declare name: string;
+  declare description?: string;
 }
 
 Channel.init(
@@ -22,7 +30,7 @@ Channel.init(
     description: {
       type: DataTypes.STRING,
       allowNull: true,
-    }
+    },
   },
   {
     timestamps: true,
@@ -38,7 +46,7 @@ export const createChannel = async (name: string, description: string) => {
     : await Channel.create({
         id: crypto.randomUUID(),
         name,
-        description
+        description,
       });
   return newChannel;
 };
@@ -73,22 +81,23 @@ export const findChannelWithPosts = async (channelId: string) => {
   } as unknown as ChannelObject;
   channel.posts = (
     await sequelize.query(
-      `SELECT p.id, u.username AS user, p.body, p.created_at, p.updated_at FROM posts AS p
+      `SELECT p.id, u.username AS user, p.body, p.created_at, p.updated_at, c.id AS channel_id, c.name FROM posts AS p
       RIGHT JOIN users as u ON p.user_id = u.id
       WHERE p.channel_id = '${channelId}';`
     )
   )[0] as Post[];
-  return {channel};
+  return { channel };
 };
 
 export const findChannelUsers = async (channelId: string) => {
   const channel = await sequelize.query(
-  `SELECT u.* FROM users AS u 
+    `SELECT DISTINCT u.id, u.username AS user, u.email, u.role FROM users AS u 
   JOIN posts AS p ON u.id = p.user_id
-  JOIN channels AS c ON p.channel_id = c.id;`)
-  
-return {users: channel[0]}
-}
+  JOIN channels AS c ON p.channel_id = c.id
+  WHERE p.channel_id = '${channelId}';`
+  );
 
+  return { users: channel[0] };
+};
 
 export { Channel };

@@ -7,10 +7,16 @@ export type Post = {
   };
 
   export type Member = {
-    username: string;
+    id: string;
+    channel_id: string;
+    body: string;
+    created_at: Date;
+    updated_at: Date;
+    channel_name: string;
+    user: string;
   };
 
   export type ActivityData = {
     title: string;
-    members: Member[];
+    users: Member[];
   };
