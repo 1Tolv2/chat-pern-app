@@ -20,3 +20,9 @@ export const getChannel = async (req: Request, res: Response) => {
     const channel = await findChannelWithPosts(channelId)
     res.json(channel)
 }
+
+export const getChannelUsers = async (req: Request, res: Response) => {
+    const channelId: string = req.params.id
+    // const channel = await findChannelUsers(channelId)
+    // res.json(channel)
+}

@@ -81,4 +81,8 @@ export const findChannelWithPosts = async (channelId: string) => {
   return channel;
 };
 
+export const findChannelUsers = async (channelId: string) => {
+  // const channel = 
+}
+
 export { Channel };

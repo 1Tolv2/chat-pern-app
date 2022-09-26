@@ -1,10 +1,17 @@
 import express, { Router } from 'express'
-import { getAllChannels, handleNewChannel, getChannel} from '../controllers/channels'
+import { getAllChannels, handleNewChannel, getChannel, getChannelUsers} from '../controllers/channels'
 
 const router: Router = express.Router()
 
-router.get("/", getAllChannels)
-router.post("/", handleNewChannel)
-router.get("/:id/posts", getChannel)
+router.get("/", getAllChannels) // Get all channels
+
+router.post("/", handleNewChannel)  // Create a new channel
+
+router.get("/:id", getChannel)  // Get channel by id with all info
+router.put("/:id")  // Update channel by id
+router.delete("/:id")  // Delete channel
+
+router.get("/:id/posts") // Get all posts in a channel
+router.get("/:id/users", getChannelUsers)  // Get all users in a channel
 
 export default router
