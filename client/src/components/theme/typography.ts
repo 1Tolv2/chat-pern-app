@@ -52,7 +52,7 @@ ${baseStyle}`
 
 const H2 = styled.h2`
 line-height: 40px;
-font-size: 34px;
+font-size: 40px;
 color: ${colors.white};
 font-weight: 700;
 margin: 8px 0;
