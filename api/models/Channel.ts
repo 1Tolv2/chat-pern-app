@@ -60,3 +60,5 @@ export const findAllChannels = async () => {
   const channelList = await Channel.findAll({ raw: true });
     return channelList;
 };
+
+export {Channel}

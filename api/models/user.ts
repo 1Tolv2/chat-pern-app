@@ -5,8 +5,9 @@ import crypto from "crypto";
 
 interface UserAttributes {
   id: string;
-  name: string;
-  nickname: string | null;
+  username: string;
+  email: string | null;
+  password: string;
 }
 
 export interface UserInput extends Optional<UserAttributes, "id"> {}
@@ -14,8 +15,9 @@ export interface UserOutput extends Required<UserAttributes> {}
 
 class User extends Model<UserAttributes, UserInput> implements UserAttributes {
   public readonly id = crypto.randomUUID(); //special type that marks field as optional
-  public readonly name!: string;
-  public nickname!: string | null;
+  public readonly username!: string;
+  public email!: string | null;
+  public password!: string;
   public readonly createdAt!: CreationOptional<Date>;
   public readonly updatedAt!: CreationOptional<Date>;
 }
@@ -27,15 +29,19 @@ User.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    name: {
+    username: {
       type: DataTypes.STRING(128),
       allowNull: false,
       unique: true,
     },
-    nickname: {
+    email: {
       type: DataTypes.STRING(128),
       allowNull: true,
     },
+    password: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+    }
   },
   {
     timestamps: true,
@@ -44,15 +50,11 @@ User.init(
   }
 );
 
-Post.belongsTo(User, {
-  foreignKey: "userId",
-});
-User.hasMany(Post);
-
-export const createUser = async (name: string, nickname: string) => {
+export const createUser = async (username: string, email: string, password: string) => {
   const newUser = await User.create({
-    name,
-    nickname,
+    username,
+    email,
+    password
   });
   return newUser;
 };

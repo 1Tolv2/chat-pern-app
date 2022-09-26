@@ -1,7 +1,13 @@
 import { User } from "./User";
 import { Post } from "./Post";
+import {Channel} from "./Channel";
 
-Post.belongsTo(User, {
+Channel.hasMany(Post, {
+  foreignKey: "channelId",
+});
+User.hasMany(Post, {
   foreignKey: "userId",
 });
-User.hasMany(Post);
+
+Post.belongsTo(User);
+Post.belongsTo(Channel);

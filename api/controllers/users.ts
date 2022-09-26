@@ -14,9 +14,10 @@ export const getUserById = async (req: Request, res: Response) => {
 }
 
 export const handleNewUser = async (req: Request, res: Response) => {
-    const name: string = req.body.name
-    const nickname: string = req.body.nickname
-    const newUser = await createUser(name, nickname)
+    const username: string = req.body.username
+    const email: string = req.body.email
+    const password: string = ""
+    const newUser = await createUser(username, email, password)
     console.log(newUser)
-    newUser ? res.status(201).json({message: `User ${name} created`}) : res.status(400).json({message: `Could not create user`})
+    newUser ? res.status(201).json({message: `User ${username} created`}) : res.status(400).json({message: `Could not create user`})
 }

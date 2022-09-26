@@ -1,6 +1,5 @@
 import { DataTypes, Model, CreationOptional, Optional } from "sequelize";
 import { sequelize } from "../config/env/test";
-import { User } from "./User";
 import crypto from "crypto";
 
 interface PostAttributes {
@@ -48,11 +47,6 @@ Post.init(
     sequelize,
   }
 );
-
-// Post.belongsTo(User, {
-//   foreignKey: "userId",
-// });
-// User.hasMany(Post);
 
 export const createPost = async (
   userId: number,
