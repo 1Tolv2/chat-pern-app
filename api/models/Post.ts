@@ -58,13 +58,13 @@ export const findAll = async () => {
 };
 
 export const findPostsByChannelId = async (id: string) => {
-  const posts = await Post.findAll({
-    where: { channel_id: id },
-    include: { model: Channel,
-     attributes: ['name', 'id']},
-    raw: true,
-  });
-  return {posts};
+  const posts = await sequelize.query(
+    `SELECT p.*, c.name AS channel_name, u.username AS user FROM posts AS p 
+    JOIN channels AS c ON c.id = p.channel_id 
+    JOIN users AS u ON u.id = p.user_id
+    WHERE c.id = '${id}';`)
+    
+  return {posts: posts[0]};
 };
 
 export const findById = async (id: string) => {
