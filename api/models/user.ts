@@ -9,6 +9,8 @@ interface UserAttributes {
   email: string | null;
   password: string;
   role: string;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 export interface UserInput extends Optional<UserAttributes, "id"> {}
@@ -20,8 +22,8 @@ class User extends Model<UserAttributes, UserInput> implements UserAttributes {
   public email!: string | null;
   public password!: string;
   public role!: string
-  public readonly createdAt!: CreationOptional<Date>;
-  public readonly updatedAt!: CreationOptional<Date>;
+  public readonly created_at!: CreationOptional<Date>;
+  public readonly updated_at!: CreationOptional<Date>;
 }
 
 User.init(
@@ -46,10 +48,11 @@ User.init(
     role: {
       type: DataTypes.STRING(128),
       allowNull: true,
-    }
+    },
+    created_at: DataTypes.DATE,
+    updated_at: DataTypes.DATE,
   },
   {
-    timestamps: true,
     tableName: "users",
     sequelize,
   }

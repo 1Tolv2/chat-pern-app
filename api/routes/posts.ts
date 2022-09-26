@@ -1,11 +1,10 @@
 import express, { Router } from 'express'
-import { handleNewPost } from '../controllers/posts'
+import { handleNewPost, getAllPostsByChannelId, getAllPosts} from '../controllers/posts'
 
 const router: Router = express.Router()
 
-router.get("/", (req, res) => {
-    res.json({message: "hello"})
-})
+router.get("/", getAllPosts)
 router.post("/", handleNewPost)
+router.get("/:id", getAllPostsByChannelId)
 
 export default router

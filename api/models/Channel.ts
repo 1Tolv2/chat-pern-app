@@ -6,8 +6,8 @@ interface ChannelAttributes {
   id: string;
   name: string;
   description?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 export interface ChannelInput extends Optional<ChannelAttributes, "id"> {}
@@ -20,8 +20,8 @@ class Channel
   public readonly id: string = crypto.randomUUID();
   public name!: string;
   public description: string = "";
-  public readonly createdAt!: CreationOptional<Date>;
-  public updatedAt!: CreationOptional<Date>;
+  public readonly created_at!: CreationOptional<Date>;
+  public updated_at!: CreationOptional<Date>;
 }
 
 Channel.init(
@@ -39,9 +39,10 @@ Channel.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    created_at: DataTypes.DATE,
+    updated_at: DataTypes.DATE,
   },
   {
-    timestamps: true,
     tableName: "channels",
     sequelize,
   }

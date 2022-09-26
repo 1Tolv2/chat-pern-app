@@ -14,3 +14,8 @@ export const getAllChannels = async (req: Request, res: Response) => {
     const channels = await findAllChannels()
     res.json({channels})
 }
+
+export const getAllChannelPosts = async (req: Request, res: Response) => {
+    const channels = await findAllChannels()
+    res.json({channels})
+}

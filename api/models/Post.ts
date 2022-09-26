@@ -1,12 +1,15 @@
 import { DataTypes, Model, CreationOptional, Optional } from "sequelize";
 import { sequelize } from "../config/env/test";
 import crypto from "crypto";
+import { Channel } from "./Channel";
 
 interface PostAttributes {
   id: string;
-  userId: string;
-  channelId: string;
+  user_id: string;
+  channel_id: string;
   body: string;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 export interface PostInput extends Optional<PostAttributes, "id"> {}
@@ -14,11 +17,11 @@ export interface PostOutput extends Required<PostAttributes> {}
 
 class Post extends Model<PostAttributes, PostInput> implements PostAttributes {
   public id = crypto.randomUUID(); //special type that marks field as optional
-  public readonly userId!: string;
-  public readonly channelId!: string;
+  public readonly user_id!: string;
+  public readonly channel_id!: string;
   public body!: string;
-  public readonly createdAt!: CreationOptional<Date>;
-  public readonly updatedAt!: CreationOptional<Date>;
+  public readonly created_at!: CreationOptional<Date>;
+  public readonly updated_at!: CreationOptional<Date>;
 }
 
 Post.init(
@@ -27,34 +30,40 @@ Post.init(
       type: DataTypes.STRING,
       primaryKey: true,
     },
-    userId: {
+    user_id: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    channelId: {
+    channel_id: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     body: {
       type: DataTypes.STRING,
       allowNull: false,
-    }
+    },
+    created_at: DataTypes.DATE,
+    updated_at: DataTypes.DATE,
   },
   {
-    timestamps: true,
     tableName: "posts",
     sequelize,
   }
 );
 
+Channel.hasMany(Post, {
+  foreignKey: "channel_id",
+});
+Post.belongsTo(Channel);
+
 export const createPost = async (
   userId: string,
   channelId: string,
-  body: string,
+  body: string
 ) => {
   const newPost = await Post.create({
-    userId,
-    channelId,
+    user_id: userId,
+    channel_id: channelId,
     body,
   });
   return newPost;
@@ -65,7 +74,17 @@ export const findAll = async () => {
   return posts;
 };
 
-export const findById = async (id: number) => {
+export const findPostsByChannelId = async (id: string) => {
+  const posts = await Post.findAll({
+    where: { channel_id: id },
+    include: { model: Channel,
+     attributes: ['name', 'id']},
+    raw: true,
+  });
+  return posts;
+};
+
+export const findById = async (id: string) => {
   const posts = await Post.findAll({ raw: true, where: { id } });
   return posts;
 };
