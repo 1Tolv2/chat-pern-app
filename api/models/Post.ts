@@ -4,9 +4,9 @@ import crypto from "crypto";
 
 interface PostAttributes {
   id: string;
-  userId: number;
+  userId: string;
+  channelId: string;
   body: string;
-  channel: string;
 }
 
 export interface PostInput extends Optional<PostAttributes, "id"> {}
@@ -14,9 +14,9 @@ export interface PostOutput extends Required<PostAttributes> {}
 
 class Post extends Model<PostAttributes, PostInput> implements PostAttributes {
   public id = crypto.randomUUID(); //special type that marks field as optional
-  public readonly userId!: number;
+  public readonly userId!: string;
+  public readonly channelId!: string;
   public body!: string;
-  public readonly channel!: string;
   public readonly createdAt!: CreationOptional<Date>;
   public readonly updatedAt!: CreationOptional<Date>;
 }
@@ -24,22 +24,21 @@ class Post extends Model<PostAttributes, PostInput> implements PostAttributes {
 Post.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.STRING,
       primaryKey: true,
     },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    channelId: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     body: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    channel: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    }
   },
   {
     timestamps: true,
@@ -49,14 +48,14 @@ Post.init(
 );
 
 export const createPost = async (
-  userId: number,
+  userId: string,
+  channelId: string,
   body: string,
-  channel: string
 ) => {
   const newPost = await Post.create({
     userId,
+    channelId,
     body,
-    channel,
   });
   return newPost;
 };

@@ -27,8 +27,7 @@ class Channel
 Channel.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.STRING,
       primaryKey: true,
     },
     name: {
@@ -43,22 +42,29 @@ Channel.init(
   },
   {
     timestamps: true,
-    tableName: "channel",
+    tableName: "channels",
     sequelize,
   }
 );
 
 export const createChannel = async (name: string, description: string) => {
-  const newChannel = await Channel.create({
-    name,
-    description,
-  });
+  const newChannel = (await findChannelByName(name))
+    ? null
+    : await Channel.create({
+        name,
+        description,
+      });
   return newChannel;
+};
+
+export const findChannelByName = async (name: string) => {
+  const channel = await Channel.findOne({ raw: true, where: { name } });
+  return channel;
 };
 
 export const findAllChannels = async () => {
   const channelList = await Channel.findAll({ raw: true });
-    return channelList;
+  return channelList;
 };
 
-export {Channel}
+export { Channel };

@@ -14,9 +14,10 @@ export const getPostById = async (req: Request, res: Response) => {
 }
 
 export const handleNewPost = async (req: Request, res: Response) => {
-    const userId: number = req.body.userId
+    const userId: string = req.body.userId
+    const channelId: string = ""
     const body: string = req.body.body
-    const newPost = await createPost(userId, body)
+    const newPost = await createPost(userId, channelId, body)
     console.log(newPost)
     newPost ? res.status(201).json({message: `New post published`}) : res.status(400).json({message: `Could not create user`})
 }

@@ -8,6 +8,7 @@ interface UserAttributes {
   username: string;
   email: string | null;
   password: string;
+  role: string;
 }
 
 export interface UserInput extends Optional<UserAttributes, "id"> {}
@@ -18,6 +19,7 @@ class User extends Model<UserAttributes, UserInput> implements UserAttributes {
   public readonly username!: string;
   public email!: string | null;
   public password!: string;
+  public role!: string
   public readonly createdAt!: CreationOptional<Date>;
   public readonly updatedAt!: CreationOptional<Date>;
 }
@@ -25,8 +27,7 @@ class User extends Model<UserAttributes, UserInput> implements UserAttributes {
 User.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.STRING,
       primaryKey: true,
     },
     username: {
@@ -41,6 +42,10 @@ User.init(
     password: {
       type: DataTypes.STRING(128),
       allowNull: false,
+    },
+    role: {
+      type: DataTypes.STRING(128),
+      allowNull: true,
     }
   },
   {
@@ -50,11 +55,12 @@ User.init(
   }
 );
 
-export const createUser = async (username: string, email: string, password: string) => {
+export const createUser = async (username: string, email: string, password: string, role: string) => {
   const newUser = await User.create({
     username,
     email,
-    password
+    password,
+    role
   });
   return newUser;
 };
@@ -67,7 +73,7 @@ export const findAll = async (): Promise<UserOutput[]> => {
 //   return User.findOne({ raw: true, where: { id } });
 // };
 
-export const findUserWithPosts = async (id: number) => {
+export const findUserWithPosts = async (id: string) => {
   return User.findOne({
     raw: true,
     where: { id },

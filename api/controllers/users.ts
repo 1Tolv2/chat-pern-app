@@ -8,7 +8,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 }
 
 export const getUserById = async (req: Request, res: Response) => {
-    const user = await findUserWithPosts(parseInt(req.params.id))
+    const user = await findUserWithPosts(req.params.id)
     console.log(user)
     res.json({user})
 }
@@ -16,8 +16,9 @@ export const getUserById = async (req: Request, res: Response) => {
 export const handleNewUser = async (req: Request, res: Response) => {
     const username: string = req.body.username
     const email: string = req.body.email
-    const password: string = ""
-    const newUser = await createUser(username, email, password)
-    console.log(newUser)
+    const password: string = req.body.password
+    const role: string = req.body.role
+    console.log(username, email, password, role)
+    const newUser = await createUser(username, email, password, role)
     newUser ? res.status(201).json({message: `User ${username} created`}) : res.status(400).json({message: `Could not create user`})
 }
