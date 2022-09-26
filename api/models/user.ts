@@ -1,9 +1,10 @@
 import { DataTypes, Model, CreationOptional, Optional } from "sequelize";
 import { sequelize } from "../config/env/test";
 import { Post } from "./Post";
+import crypto from "crypto";
 
 interface UserAttributes {
-  id: CreationOptional<number>;
+  id: string;
   name: string;
   nickname: string | null;
 }
@@ -12,7 +13,7 @@ export interface UserInput extends Optional<UserAttributes, "id"> {}
 export interface UserOutput extends Required<UserAttributes> {}
 
 class User extends Model<UserAttributes, UserInput> implements UserAttributes {
-  public id!: CreationOptional<number>; //special type that marks field as optional
+  public readonly id = crypto.randomUUID(); //special type that marks field as optional
   public readonly name!: string;
   public nickname!: string | null;
   public readonly createdAt!: CreationOptional<Date>;
@@ -65,7 +66,11 @@ export const findAll = async (): Promise<UserOutput[]> => {
 // };
 
 export const findUserWithPosts = async (id: number) => {
-  return User.findOne({ raw: true, where: { id }, include: {model: Post, as: 'posts'} });
+  return User.findOne({
+    raw: true,
+    where: { id },
+    include: { model: Post, as: "posts" },
+  });
 };
 
 export { User };

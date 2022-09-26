@@ -1,20 +1,23 @@
 import { DataTypes, Model, CreationOptional, Optional } from "sequelize";
 import { sequelize } from "../config/env/test";
 import { User } from "./User";
+import crypto from "crypto";
 
 interface PostAttributes {
-  id: CreationOptional<number>;
+  id: string;
   userId: number;
   body: string;
+  channel: string;
 }
 
 export interface PostInput extends Optional<PostAttributes, "id"> {}
 export interface PostOutput extends Required<PostAttributes> {}
 
 class Post extends Model<PostAttributes, PostInput> implements PostAttributes {
-  public id!: CreationOptional<number>; //special type that marks field as optional
+  public id = crypto.randomUUID(); //special type that marks field as optional
   public readonly userId!: number;
   public body!: string;
+  public readonly channel!: string;
   public readonly createdAt!: CreationOptional<Date>;
   public readonly updatedAt!: CreationOptional<Date>;
 }
@@ -28,9 +31,13 @@ Post.init(
     },
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     body: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    channel: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -47,11 +54,15 @@ Post.init(
 // });
 // User.hasMany(Post);
 
-
-export const createPost = async (userId: number, body: string) => {
+export const createPost = async (
+  userId: number,
+  body: string,
+  channel: string
+) => {
   const newPost = await Post.create({
     userId,
     body,
+    channel,
   });
   return newPost;
 };
@@ -63,7 +74,7 @@ export const findAll = async () => {
 
 export const findById = async (id: number) => {
   const posts = await Post.findAll({ raw: true, where: { id } });
-  return posts
+  return posts;
 };
 
 export { Post };
