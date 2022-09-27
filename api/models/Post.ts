@@ -1,75 +1,50 @@
-import { DataTypes, Model, InferAttributes, InferCreationAttributes, ForeignKey, CreationOptional } from "sequelize";
-import { sequelize } from "../config/env/test";
 import crypto from "crypto";
-import { Channel } from "./Channel";
-import { User } from "./User";
+import { TimeStamps } from "../global/types";
 
-class Post extends Model<InferAttributes<Post>, InferCreationAttributes<Post>> {
-  declare id: string;
-  declare user_id: ForeignKey<User['id']>;
-  declare channel_id: ForeignKey<Channel['id']>;
-  declare body: string;
+/* post TABLE
+ * id INT SERIAL PRIMARY KEY,
+ * text VARCHAR NOT NULL,
+ * channel_id SERIAL NOT NULL
+ * FOREGIN KEY (channel_id) REFERENCES channel (id)
+ * user_id SERIAL NOT NULL
+ * FOREGIN KEY (user_id) REFERENCES user (id)
+ * created_at TIMESTAMP NOT NULL 
+ * updated_at TIMESTAMP
+ */
+
+interface PostAttributes {
+  id: string;
+  text: string;
+  user_id: string;
+  channel_id: string;
 }
 
-Post.init(
-  {
-    id: {
-      type: DataTypes.STRING,
-      primaryKey: true,
-    },
-    user_id: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    channel_id: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    body: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    }
-  },
-  {
-    timestamps: true,
-    underscored: true,
-    tableName: "posts",
-    sequelize,
+class Post implements PostAttributes, TimeStamps {
+  id: string;
+  text: string;
+  user_id: string;
+  channel_id: string;
+  created_at: Date;
+  updated_at: Date | null;
+
+  constructor(
+    _text: string,
+    _user_id: string,
+    _channel_id: string,
+  ) {
+    this.id = crypto.randomUUID();
+    this.text = _text;
+    this.user_id = _user_id;
+    this.channel_id = _channel_id;
+    this.created_at = new Date();
+    this.updated_at = null;
   }
-);
+}
 
-export const createPost = async (
-  userId: string,
-  channelId: string,
-  body: string
-) => {
-  const newPost = await Post.create({
-    id: crypto.randomUUID(),
-    user_id: userId,
-    channel_id: channelId,
-    body
-  });
-  return newPost;
-};
+export const createPost = async () => {}
+export const findAllPosts = async () => {}
+export const findPostById = async () => {} // with user and channel
+export const updatePost = async () => {}
+export const deletePost = async () => {}
 
-export const findAll = async () => {
-  const posts = await Post.findAll({ raw: true });
-  return posts;
-};
-
-export const findPostsByChannelId = async (id: string) => {
-  const posts = await sequelize.query(
-    `SELECT p.*, c.name AS channel_name, u.username AS user FROM posts AS p 
-    JOIN channels AS c ON c.id = p.channel_id 
-    JOIN users AS u ON u.id = p.user_id
-    WHERE c.id = '${id}';`)
-    
-  return {posts: posts[0]};
-};
-
-export const findById = async (id: string) => {
-  const posts = await Post.findAll({ raw: true, where: { id } });
-  return posts;
-};
-
-export { Post };
+export default Post;

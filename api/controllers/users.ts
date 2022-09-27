@@ -1,24 +1,23 @@
-import { Request, Response } from 'express' 
-import { findAll, createUser, findUserWithPosts } from '../models/User'
+import { Request, Response } from 'express'
+import { createUser, UserAttributes, findAllUsers } from '../models/User';
 
-
-export const getAllUsers = async (req: Request, res: Response) => {
-    const users = await findAll()
-    res.json({users})
-}
-
-export const getUserById = async (req: Request, res: Response) => {
-    const user = await findUserWithPosts(req.params.id)
-    console.log(user)
-    res.json({user})
-}
-
-export const handleNewUser = async (req: Request, res: Response) => {
-    const username: string = req.body.username
-    const email: string = req.body.email
-    const password: string = req.body.password
-    const role: string = req.body.role
-    console.log(username, email, password, role)
-    const newUser = await createUser(username, email, password, role)
-    newUser ? res.status(201).json({message: `User ${username} created`}) : res.status(400).json({message: `Could not create user`})
-}
+export const handleNewUser = async (req: Request<UserAttributes>, res: Response<UserAttributes>): Promise<void> => {
+  const user: UserAttributes= await createUser(req.body)
+    res.json( user );
+  };
+  export const getAllUsers = async (req: Request, res: Response) => {
+    const users = await findAllUsers();
+    res.json(users);
+  };
+  
+  export const getUserById = async (req: Request, res: Response) => {
+    res.json({ user: [{ message: "User with posts and servers" }] });
+  }; // get /:id with posts
+  
+  export const editUser = async (req: Request, res: Response) => {
+    res.json({ user: { message: "User updated" } });
+  };
+  
+  export const deleteUser = async (req: Request, res: Response) => {
+    res.json({ message: "User deleted" });
+  };

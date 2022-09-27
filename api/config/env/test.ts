@@ -1,5 +1,5 @@
-import { Sequelize } from "sequelize";
+import { createPool } from 'slonik';
 
-export const sequelize = new Sequelize(
-    `postgres://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@localhost:${process.env.DATABASE_PORT}/chatdatabase`
-  );
+export const pool = createPool(
+  `postgres://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@localhost:${process.env.DB_PORT}/${process.env.DB}`
+);

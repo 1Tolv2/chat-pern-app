@@ -9,4 +9,4 @@ router.use("/users", usersRouter)
 router.use("/posts", postsRouter)
 router.use("/channels", channelsRouter)
 
-export default router
+export default router 

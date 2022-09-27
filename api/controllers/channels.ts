@@ -1,34 +1,20 @@
 import { Request, Response } from "express";
-import { createChannel, findAllChannels, findChannelWithPosts, findChannelUsers } from "../models/Channel";
-import { findPostsByChannelId } from "../models/Post";
-
-export const handleNewChannel = async (req: Request, res: Response ) => {
-    const name: string = req.body.name
-    const description: string = typeof req.body.description !== "undefined" ? req.body.description : ""
-    console.log(name, description)
-    const newChannel = await createChannel(name, description)
-    newChannel ? res.status(201).json({message: `New channel setup`}) : res.status(400).json({message: `Could not create channel`})
-}
+export const handleNewChannel = async (req: Request, res: Response) => {
+  res.json({ channel: { message: "New channel created" } });
+}; 
 
 export const getAllChannels = async (req: Request, res: Response) => {
-    const channels = await findAllChannels()
-    res.json({channels})
-}
+  res.json({ channels: [{ message: "All channels" }] });
+}; 
 
-export const getChannel = async (req: Request, res: Response) => {
-    const channelId: string = req.params.id
-    const channel = await findChannelWithPosts(channelId)
-    res.json(channel)
-}
+export const getChannelById = async (req: Request, res: Response) => {
+  res.json({ channel: [{ message: "Channel with posts, with users" }] });
+}; // get /:id with posts
 
-export const getChannelUsers = async (req: Request, res: Response) => {
-    const channelId: string = req.params.id
-    const channel = await findChannelUsers(channelId)
-    res.json(channel)
-}
+export const editChannel = async (req: Request, res: Response) => {
+  res.json({ channel: { message: "Channel updated" } });
+}; 
 
-export const getChannelPosts = async (req: Request, res: Response) => {
-    const channelId: string = req.params.id
-    const channel = await findPostsByChannelId(channelId)
-    res.json(channel)
-}
+export const deleteChannel = async (req: Request, res: Response) => {
+  res.json({ message: "Channel deleted" });
+};
