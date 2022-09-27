@@ -73,9 +73,18 @@ export const createUser = async (
 export const findAllUsers = async () => {
   return await (await pool).any(sql`SELECT * FROM users`);
 };
-export const findUserById = async () => {
 
-}; // with posts and servers
+ // with posts and servers
+export const findUserById = async (id: number) => {
+  console.log(id)
+  const user = (await (await pool).any(sql`SELECT * FROM users WHERE id = ${id}`))[0];
+  const posts = await (await pool).any(sql`SELECT p.id, p.text, channels.name as channel, p.created_at, p.updated_at FROM posts AS p 
+  JOIN channels ON channels.id = p.channel_id
+  WHERE p.user_id = ${id}
+  ORDER BY p.created_at DESC;`);
+  return {...user, posts};
+};
+
 export const updateUser = async () => {};
 export const deleteUser = async () => {};
 
