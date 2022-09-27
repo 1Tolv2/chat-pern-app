@@ -22,6 +22,17 @@ export interface UserAttributes {
   servers?: ServerTrait[];
 }
 
+export interface UserDBAttributes {
+  id: number;
+  username: string;
+  email: string;
+  password: string;
+  server_id: number;
+  created_at: Date;
+  updated_at: Date;
+  role_id: number;
+}
+
 class User implements UserAttributes, TimeStamps {
   id: number;
   username: string;
@@ -49,32 +60,22 @@ class User implements UserAttributes, TimeStamps {
 
 export const createUser = async (
   user: UserAttributes
-): Promise<UserAttributes> => {
+): Promise<UserDBAttributes> => {
   const { username, email, password } = user;
-
-  await (
+  return await (
     await pool
   )
     .any(sql`INSERT INTO users (username, email, password, server_id, role_id, created_at)
-  VALUES (${username}, ${email}, ${password}, 1, 1, current_timestamp);`);
-
-  const data = (
-    await (
-      await pool
-    ).any(sql`SELECT * FROM users WHERE username = ${username}`)
-  )[0] as unknown as UserAttributes;
-  return {
-    id: data.id,
-    username: data.username,
-    email: data.email,
-    password: data.password,
-  };
+  VALUES (${username}, ${email}, ${password}, 1, 1, current_timestamp)
+  RETURNING * ;`) as unknown as UserDBAttributes;
 };
 
 export const findAllUsers = async () => {
   return await (await pool).any(sql`SELECT * FROM users`);
 };
-export const findUserById = async () => {}; // with posts and servers
+export const findUserById = async () => {
+
+}; // with posts and servers
 export const updateUser = async () => {};
 export const deleteUser = async () => {};
 
