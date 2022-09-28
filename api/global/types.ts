@@ -4,6 +4,6 @@ export type ServerTrait = {
 };
 
 export interface TimeStamps {
-  created_at: Date;
+  created_at: Date | null;
   updated_at: Date | null;
 }

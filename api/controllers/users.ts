@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { createUser, UserDBAttributes, findAllUsers,findUserById } from "../models/User";
+import { createUser, UserAttributes, findAllUsers,findUserById } from "../models/User";
 
 export const handleNewUser = async (
-  req: Request<UserDBAttributes>,
-  res: Response<UserDBAttributes>
+  req: Request<UserAttributes>,
+  res: Response<UserAttributes>
 ): Promise<void> => {
   try {
-    const user: UserDBAttributes = await createUser(req.body);
+    const user = await createUser(req.body);
     res.json(user);
   } catch (err) {
     res.sendStatus(400);
