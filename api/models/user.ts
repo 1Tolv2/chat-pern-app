@@ -59,7 +59,28 @@ class User implements UserAttributes, TimeStamps {
     this.updated_at = null;
     this.#addToDatabase(); // private, not reachable outside the class
   }
+  #setupTable = async () => {
+    await (await pool).query(sql`
+      CREATE TABLE IF NOT EXISTS user (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(60) NOT NULL UNIQUE,
+        email VARCHAR NOT NULL,
+        password VARCHAR NOT NULL,
+        created_at TIMESTAMP NOT NULL SET DEFAULT current_timestamp,
+        updated_at TIMESTAMP
+        )
+    `)
+    await (await pool).query(sql`
+      CREATE FUNCTION IF NOT EXISTS addusertoserver(int) RETURNS void
+      AS $$
+      INSERT INTO serverusers (server_id, user_id)
+      VALUES (1, $1)
+      $$
+      LANGUAGE SQL;
+    `)
+  }
   #addToDatabase = async (): Promise<UserAttributes> => {
+    this.#setupTable()
     const { username, email, password } = this;
     const hashedPassword = crypto
       .createHash("sha256")
