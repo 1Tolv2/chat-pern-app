@@ -2,6 +2,7 @@ import crypto from "crypto";
 import { sql } from "slonik";
 import { pool } from "../config/env/test";
 import { ServerTrait, TimeStamps } from "../global/types";
+import bcrypt from 'bcryptjs';
 
 /* user TABLE
  * id INT SERIAL PRIMARY KEY,
@@ -61,17 +62,17 @@ class User implements UserAttributes, TimeStamps {
   }
   #setupTable = async () => {
     await (await pool).query(sql`
-      CREATE TABLE IF NOT EXISTS user (
+      CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
         username VARCHAR(60) NOT NULL UNIQUE,
-        email VARCHAR NOT NULL,
-        password VARCHAR NOT NULL,
-        created_at TIMESTAMP NOT NULL SET DEFAULT current_timestamp,
+        email VARCHAR(60) NOT NULL,
+        password VARCHAR(100) NOT NULL,
+        created_at TIMESTAMP DEFAULT current_timestamp,
         updated_at TIMESTAMP
-        )
+        );
     `)
     await (await pool).query(sql`
-      CREATE FUNCTION IF NOT EXISTS addusertoserver(int) RETURNS void
+      CREATE OR REPLACE FUNCTION addusertoserver(int) RETURNS void
       AS $$
       INSERT INTO serverusers (server_id, user_id)
       VALUES (1, $1)
@@ -81,17 +82,16 @@ class User implements UserAttributes, TimeStamps {
   }
   #addToDatabase = async (): Promise<UserAttributes> => {
     this.#setupTable()
-    const { username, email, password } = this;
-    const hashedPassword = crypto
-      .createHash("sha256")
-      .update(password)
-      .digest("hex");
+    // const { username, email, password } = this;
+    const hashedPassword = await bcrypt.hash(this.password, 10);
+    this.password = hashedPassword;
+
 
     const newUser = (await (
       await pool
     ).one(sql`
         INSERT INTO users (username, email, password)
-        VALUES (${username}, ${email}, ${hashedPassword})
+        VALUES (${this.username}, ${this.email}, ${hashedPassword})
         RETURNING *;
         `)) 
 
@@ -110,18 +110,19 @@ export const createUser = async (user: UserAttributes) => {
 };
 
 export const findAllUsers = async () => {
-  return await (await pool).any(sql`SELECT * FROM users`);
+  return await (await pool).any(sql`SELECT * FROM users;`);
 };
 
 // with posts and servers
 export const findUserById = async (id: number) => {
   console.log(id);
   const user = (
-    await (await pool).any(sql`SELECT * FROM users WHERE id = ${id}`)
+    await (await pool).any(sql`SELECT * FROM users WHERE id = ${id};`)
   )[0];
   const posts = await (
     await pool
   )
+
     .any(sql`SELECT p.id, p.text, channels.name as channel, p.created_at, p.updated_at FROM posts AS p 
   JOIN channels ON channels.id = p.channel_id
   WHERE p.user_id = ${id}
