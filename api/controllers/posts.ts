@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 
 export const handleNewPost = async (req: Request, res: Response) => {
+  const {channelId, body} = req.body; 
+  console.log(req.user);
+  console.log(channelId, body);
+  
   res.json({ post: { message: "New post created" } });
 };
 
