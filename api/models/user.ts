@@ -49,6 +49,7 @@ class User implements UserAttributes, TimeStamps {
     this.#addToDatabase(); // private, not reachable outside the class
   }
   #setupTable = async () => {
+    console.log("Setting up users table");
     await (
       await pool
     ).query(sql`
@@ -61,10 +62,29 @@ class User implements UserAttributes, TimeStamps {
         updated_at TIMESTAMP
         );
     `);
+
+    console.log("Checking for Servers table");
     // checks if a server exists otherwise creates one
-    if (!(await (await pool).exists(sql`SELECT * FROM servers`))) {
-      createServer({ name: "First server", description: "Hello World!" });
+    if (!(await (await pool).exists(sql`SELECT FROM information_schema.tables
+    WHERE table_name = 'servers'`))) {
+      console.log("No servers table found")
+      await createServer({ name: "First server", description: "Hello World!" });
     }
+
+    if (!(await (await pool).exists(sql`SELECT FROM information_schema.tables
+    WHERE table_name = 'serverusers'`))) {
+    console.log("Creating serverUsers table")
+    await (await pool).query(sql`
+    CREATE TABLE IF NOT EXISTS serverusers (
+      id SERIAL PRIMARY KEY,
+      user_id INT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+      server_id INT NOT NULL,
+      FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE
+    )
+    `)
+
+    console.log("Creating addusertoserver function");
     await (
       await pool
     ).query(sql`
@@ -76,11 +96,13 @@ class User implements UserAttributes, TimeStamps {
       LANGUAGE SQL;
     `);
   };
+}
+
   #addToDatabase = async (): Promise<UserAttributes> => {
-    this.#setupTable();
+    await this.#setupTable();
     const hashedPassword = await bcrypt.hash(this.password, 10);
     this.password = hashedPassword;
-
+    console.log("Adding user to database");
     const newUser = await (
       await pool
     ).one(sql`
@@ -112,7 +134,7 @@ class User implements UserAttributes, TimeStamps {
 }
 
 export const createUser = async (user: UserAttributes) => {
-  return new User(user.username, user.email, user.password);
+  return new User(user.username.toLowerCase(), user.email, user.password);
 };
 
 export const findAllUsers = async () => {

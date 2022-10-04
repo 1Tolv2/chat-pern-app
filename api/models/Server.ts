@@ -32,6 +32,7 @@ class Server implements ServerAttributes, TimeStamps {
     this.#addToDatabase();
   }
   #setupTable = async () => {
+    console.log("Setting up servers table");
     await (
       await pool
     ).query(sql`
@@ -44,16 +45,18 @@ class Server implements ServerAttributes, TimeStamps {
           );
       `);
   };
+  
   #addToDatabase = async () => {
-    this.#setupTable();
+    await this.#setupTable();
+    console.log("Adding server to database");
     const newServer = await (
       await pool
     ).one(sql`
-          INSERT INTO users (name, description)
+          INSERT INTO servers (name, description)
           VALUES (${this.name}, ${this.description})
           RETURNING *;
           `);
-    // Add default channel
+    // Call on to create default channel general
     return newServer;
   };
 }
