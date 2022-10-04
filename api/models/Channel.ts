@@ -1,51 +1,69 @@
 import crypto from "crypto";
+import { sql } from "slonik";
+import { pool } from "../config/env/test";
 import { TimeStamps } from "../global/types";
-
-/* channel TABLE
- * id INT SERIAL PRIMARY KEY,
- * name VARCHAR(60) NOT NULL UNIQUE,
- * description VARCHAR 
- * server_id SERIAL NOT NULL
- * FOREIGN KEY (server_id) REFERENCES server(id) ON DELETE CASCADE,
- * created_at TIMESTAMP NOT NULL 
- * updated_at TIMESTAMP
- */
+import { PostAttributes } from "./Post";
 
 interface ChannelAttributes {
-  id: string;
+  id?: number;
   name: string;
   description: string;
-  posts: string[]; // post_ids
+  posts?: PostAttributes[]; // post_ids
+  server_id: number;
 }
 
 class Channel implements ChannelAttributes, TimeStamps {
-  id: string;
   name: string;
   description: string;
-  posts: string[];
+  server_id: number;
   created_at: Date;
   updated_at: Date | null;
 
-  constructor(
-    _name: string,
-    _description: string,
-    _password: string,
-    _posts?: string[]
-  ) {
-    this.id = crypto.randomUUID();
+  constructor(_name: string, _description: string, _server_id: number) {
     this.name = _name;
     this.description = _description;
-    this.posts = _posts || [];
+    this.server_id = _server_id;
     this.created_at = new Date();
     this.updated_at = null;
+    this.#addToDatabase();
+  }
+  #setupTable = async () => {
+    console.log("Setting up channels table");
+    await (
+      await pool
+    ).query(sql`
+        CREATE TABLE IF NOT EXISTS channels (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(60) NOT NULL UNIQUE,
+          description VARCHAR,
+          created_at TIMESTAMP DEFAULT current_timestamp,
+          updated_at TIMESTAMP
+          );
+      `);
+  }
+
+  #addToDatabase = async () => {
+    await this.#setupTable();
+    console.log("Adding channel to database");
+    const newChannel = await (
+      await pool
+    ).one(sql`
+          INSERT INTO channels (name, description)
+          VALUES (${this.name}, ${this.description})
+          RETURNING *;
+          `);
+    // Call on to create default channel general
+    return newChannel;
   }
 }
 
-export const createChannel = async () => {}
-export const findAllChannels = async () => {}
-export const findChannelById = async () => {} // with posts with users
-export const updateChannel = async () => {}
-export const deleteChannel = async () => {}
+export const createChannel = async (channel: ChannelAttributes) => {
+  return new Channel(channel.name, channel.description, channel.server_id);
+};
 
+export const findAllChannels = async () => {};
+export const findChannelById = async () => {}; // with posts with users
+export const updateChannel = async () => {};
+export const deleteChannel = async () => {};
 
 export default Channel;
