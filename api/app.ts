@@ -3,23 +3,16 @@ import cors from "cors";
 import { PORT, ALTER_DATABASE } from "./config/config";
 import routes from "./routes/index";
 import jwt, {JwtPayload} from "jsonwebtoken";
-
+import cookieParser from "cookie-parser";
 
 const app: Express = express();
 app.use(cors());
 app.use(json());
-
+app.use(cookieParser())
 
 app.use( async (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.header("Authorization");
-  // kolla att authHeader är Bearer
-  if (authHeader && authHeader.split(" ")[0] === "Bearer") {
-    const token = authHeader.split(" ")[1]; // splitta så vi får ut tokenen
-    // const tokenLoggedOut = await ExpToken.findOne({ token });
-    // if (tokenLoggedOut) {
-    //   res.status(401).json({ error: "Invalid token" });
-    // } else {
-
+  const token = req.cookies.access_token
+  if (token) {
       try {
         req.user = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
       } catch (error: any) {
@@ -29,9 +22,7 @@ app.use( async (req: Request, res: Response, next: NextFunction) => {
           ? res.status(401).json({ error: "Invalid token" })
           : res.status(400).json({ error: "Token error" });
       }
-    // }
   }
-
   next();
 })
 
