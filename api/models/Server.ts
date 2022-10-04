@@ -1,14 +1,7 @@
 import { sql } from "slonik";
 import { pool } from "../config/env/test";
 import { ServerTrait, TimeStamps } from "../global/types";
-
-/* server TABLE
- * id INT SERIAL PRIMARY KEY,
- * name VARCHAR(60) NOT NULL UNIQUE,
- * description VARCHAR,
- * created_at TIMESTAMP,
- * updated_at TIMESTAMP
- */
+import { createChannel } from "./Channel";
 
 interface ServerAttributes {
   id?: number;
@@ -45,18 +38,27 @@ class Server implements ServerAttributes, TimeStamps {
           );
       `);
   };
-  
+
   #addToDatabase = async () => {
     await this.#setupTable();
     console.log("Adding server to database");
-    const newServer = await (
+    const newServer = (await (
       await pool
     ).one(sql`
           INSERT INTO servers (name, description)
           VALUES (${this.name}, ${this.description})
           RETURNING *;
-          `);
-    // Call on to create default channel general
+          `)) as unknown as ServerAttributes;
+    console.log("SERVER", newServer);
+
+    if (newServer) {
+      createChannel({
+        name: "general",
+        description: "General chat",
+        server_id: newServer.id || 1,
+      });
+    }
+
     return newServer;
   };
 }

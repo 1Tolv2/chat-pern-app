@@ -6,24 +6,6 @@ import bcrypt from "bcryptjs";
 import { PostAttributes } from "./Post";
 import { createServer } from "./Server";
 
-/* user TABLE
- * id INT SERIAL PRIMARY KEY,
- * username VARCHAR(60) NOT NULL UNIQUE,
- * email VARCHAR NOT NULL,
- * password VARCHAR NOT NULL,
- * created_at TIMESTAMP NOT NULL
- * updated_at TIMESTAMP
- */
-
-/**
- * serverUsers TABLE
- * id INT SERIAL PRIMARY KEY,
- * user_id INT NOT NULL,
- * FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
- * server_id INT NOT NULL
- * FOREIGN KEY (server_id) REFERENCES server(id) ON DELETE CASCADE
- */
-
 export interface UserAttributes {
   id?: number;
   username: string;
@@ -65,38 +47,49 @@ class User implements UserAttributes, TimeStamps {
 
     console.log("Checking for Servers table");
     // checks if a server exists otherwise creates one
-    if (!(await (await pool).exists(sql`SELECT FROM information_schema.tables
-    WHERE table_name = 'servers'`))) {
-      console.log("No servers table found")
+    if (
+      !(await (
+        await pool
+      ).exists(sql`SELECT FROM information_schema.tables
+    WHERE table_name = 'servers'`))
+    ) {
+      console.log("No servers table found");
       await createServer({ name: "First server", description: "Hello World!" });
     }
 
-    if (!(await (await pool).exists(sql`SELECT FROM information_schema.tables
-    WHERE table_name = 'serverusers'`))) {
-    console.log("Creating serverUsers table")
-    await (await pool).query(sql`
+    if (
+      !(await (
+        await pool
+      ).exists(sql`SELECT FROM information_schema.tables
+    WHERE table_name = 'serverusers'`))
+    ) {
+      console.log("Creating serverUsers table");
+      await (
+        await pool
+      ).query(sql`
     CREATE TABLE IF NOT EXISTS serverusers (
       id SERIAL PRIMARY KEY,
       user_id INT NOT NULL,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
       server_id INT NOT NULL,
-      FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE
+      FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE,
+      role VARCHAR(60) NOT NULL CHECK (role = 'admin' OR role = 'member')
     )
-    `)
+    `);
 
-    console.log("Creating addusertoserver function");
-    await (
-      await pool
-    ).query(sql`
-      CREATE OR REPLACE FUNCTION addusertoserver(int) RETURNS void
+      console.log("Creating addusertoserver function");
+      await (
+        await pool
+      ).query(sql`
+      CREATE OR REPLACE FUNCTION addusertoserver(str varchar, num int) RETURNS void
       AS $$
-      INSERT INTO serverusers (server_id, user_id)
-      VALUES (1, $1)
+      INSERT INTO serverusers (role, server_id, user_id)
+      VALUES (str, 1, num)
       $$
       LANGUAGE SQL;
     `);
+    }
   };
-}
 
   #addToDatabase = async (): Promise<UserAttributes> => {
     await this.#setupTable();
@@ -115,7 +108,7 @@ class User implements UserAttributes, TimeStamps {
     await (
       await pool
     ).one(sql`
-        SELECT addusertoserver(${newUser.id});
+        SELECT addusertoserver('member', ${newUser.id});
         `);
     return newUser as unknown as UserAttributes;
   };
