@@ -6,7 +6,7 @@ import { TimeStamps } from "../global/types";
  * name VARCHAR(60) NOT NULL UNIQUE,
  * description VARCHAR 
  * server_id SERIAL NOT NULL
- * FOREGIN KEY (server_id) REFERENCES server(id)
+ * FOREIGN KEY (server_id) REFERENCES server(id) ON DELETE CASCADE,
  * created_at TIMESTAMP NOT NULL 
  * updated_at TIMESTAMP
  */

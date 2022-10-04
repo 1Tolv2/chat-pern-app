@@ -7,9 +7,9 @@ import { TimeStamps } from "../global/types";
  * id INT SERIAL PRIMARY KEY,
  * text VARCHAR NOT NULL,
  * channel_id SERIAL NOT NULL
- * FOREGIN KEY (channel_id) REFERENCES channel (id)
+ * FOREIGN KEY (channel_id) REFERENCES channel (id)
  * user_id SERIAL NOT NULL
- * FOREGIN KEY (user_id) REFERENCES user (id)
+ * FOREIGN KEY (user_id) REFERENCES user (id)
  * created_at TIMESTAMP NOT NULL
  * updated_at TIMESTAMP
  */
@@ -45,9 +45,9 @@ class Post implements PostAttributes, TimeStamps {
         id SERIAL PRIMARY KEY,
         text VARCHAR NOT NULL,
         channel_id SERIAL NOT NULL,
-        FOREGIN KEY (channel_id) REFERENCES channel (id),
+        FOREIGN KEY (channel_id) REFERENCES channel (id) ON DELETE CASCADE,
         user_id SERIAL NOT NULL,
-        FOREGIN KEY (user_id) REFERENCES users (id),
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
         created_at TIMESTAMP DEFAULT current_timestamp,
         updated_at TIMESTAMP
         );

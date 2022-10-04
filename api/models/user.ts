@@ -10,9 +10,7 @@ import { createServer } from "./Server";
  * id INT SERIAL PRIMARY KEY,
  * username VARCHAR(60) NOT NULL UNIQUE,
  * email VARCHAR NOT NULL,
- * password VARCHAR NOT NULL
- * server_id SERIAL NOT NULL
- * FOREGIN KEY (server_id) REFERENCES server(id)
+ * password VARCHAR NOT NULL,
  * created_at TIMESTAMP NOT NULL
  * updated_at TIMESTAMP
  */
@@ -20,10 +18,10 @@ import { createServer } from "./Server";
 /**
  * serverUsers TABLE
  * id INT SERIAL PRIMARY KEY,
- * user_id INT NOT NULL
- * FOREGIN KEY (user_id) REFERENCES user(id)
+ * user_id INT NOT NULL,
+ * FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
  * server_id INT NOT NULL
- * FOREGIN KEY (server_id) REFERENCES server(id)
+ * FOREIGN KEY (server_id) REFERENCES server(id) ON DELETE CASCADE
  */
 
 export interface UserAttributes {
@@ -63,6 +61,7 @@ class User implements UserAttributes, TimeStamps {
         updated_at TIMESTAMP
         );
     `);
+    // checks if a server exists otherwise creates one
     if (!(await (await pool).exists(sql`SELECT * FROM servers`))) {
       createServer({ name: "First server", description: "Hello World!" });
     }
