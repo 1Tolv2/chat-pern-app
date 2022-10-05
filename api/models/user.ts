@@ -88,16 +88,14 @@ class User implements UserAttributes, TimeStamps {
 
   static addToDatabase = async ({username, password, email}: UserAttributes): Promise<UserAttributes | void> => {
     await this.setupTable();
-    const hashedPassword = await bcrypt.hash(password || "", 10);
-
-    password = hashedPassword;
+    password = await bcrypt.hash(password || "", 10);
 
     try {
       const newUser = (await (
         await pool
       ).one(sql`
         INSERT INTO users (username, email, password)
-        VALUES (${username}, ${email}, ${hashedPassword})
+        VALUES (${username}, ${email}, ${password})
         RETURNING id, username, email, created_at, updated_at;
         `)) as unknown as UserAttributes;
 
