@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createPost } from "../models/Post";
+import { createPost, findPostById } from "../models/Post";
 
 export const handleNewPost = async (
   req: Request,
@@ -26,8 +26,9 @@ export const getPostById = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  res.json({ post: [{ message: "Post with user and channel" }] });
-}; // get /:id with posts
+  const post = await findPostById(parseInt(req.params.id));
+  res.json(post);
+};
 
 export const editPost = async (req: Request, res: Response): Promise<void> => {
   res.json({ post: { message: "Post updated" } });

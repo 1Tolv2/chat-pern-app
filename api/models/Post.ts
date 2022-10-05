@@ -1,18 +1,6 @@
-import crypto from "crypto";
 import { sql } from "slonik";
 import { pool } from "../config/env/test";
 import { TimeStamps } from "../global/types";
-
-/* post TABLE
- * id INT SERIAL PRIMARY KEY,
- * text VARCHAR NOT NULL,
- * channel_id SERIAL NOT NULL
- * FOREIGN KEY (channel_id) REFERENCES channel (id)
- * user_id SERIAL NOT NULL
- * FOREIGN KEY (user_id) REFERENCES user (id)
- * created_at TIMESTAMP NOT NULL
- * updated_at TIMESTAMP
- */
 
 export interface PostAttributes {
   id?: number | null;
@@ -37,6 +25,7 @@ class Post implements PostAttributes, TimeStamps {
     this.updated_at = null;
     this.#addToDatabase();
   }
+
   #setupTable = async () => {
     await (
       await pool
@@ -45,7 +34,7 @@ class Post implements PostAttributes, TimeStamps {
         id SERIAL PRIMARY KEY,
         text VARCHAR NOT NULL,
         channel_id SERIAL NOT NULL,
-        FOREIGN KEY (channel_id) REFERENCES channel (id) ON DELETE CASCADE,
+        FOREIGN KEY (channel_id) REFERENCES channels (id) ON DELETE CASCADE,
         user_id SERIAL NOT NULL,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
         created_at TIMESTAMP DEFAULT current_timestamp,
@@ -53,6 +42,7 @@ class Post implements PostAttributes, TimeStamps {
         );
     `);
   };
+
   #addToDatabase = async (): Promise<PostAttributes> => {
     this.#setupTable();
 
@@ -84,15 +74,13 @@ export const findAllPostsByUser = async (user_id: number) => {
   WHERE user_id = ${user_id};`)) as unknown as PostAttributes[];
 };
 
-export const findPostById = async (id: number) => {
+export const findPostById = async (id: number): Promise<PostAttributes> => {
   // with user and channel
-  return await (
-    await pool
-  )
-    .any(sql`SELECT p.id, p.text, channels.name as channel, p.created_at, p.updated_at FROM posts AS p 
-  JOIN channels ON channels.id = p.channel_id
-  WHERE p.user_id = ${id}
-  ORDER BY p.created_at DESC;`);
+  return await (await pool).one(sql`
+  SELECT p.id, text, u.username AS user, user_id, c.name AS channel_name, channel_id, p.created_at, p.updated_at FROM posts AS p
+  JOIN channels AS c ON channel_id = c.id
+  JOIN users AS u ON user_id = u.id;
+  `) as unknown as PostAttributes;
 };
 
 export const updatePost = async () => {};
