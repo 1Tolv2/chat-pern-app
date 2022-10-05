@@ -1,6 +1,6 @@
-import { sql } from "slonik";
+import { sql, UniqueIntegrityConstraintViolationError } from "slonik";
 import { pool } from "../config/env/test";
-import { ServerTrait, TimeStamps } from "../global/types";
+import { TimeStamps } from "../global/types";
 import { createChannel } from "./Channel";
 
 export interface ServerAttributes {
@@ -22,16 +22,15 @@ class Server implements ServerAttributes, TimeStamps {
     this.description = _description;
     this.created_at = new Date();
     this.updated_at = null;
-    this.#addToDatabase();
   }
 
-  #setupTable = async () => {
+  static setupTable = async () => {
     console.log("Setting up servers table");
     await (
       await pool
     ).query(sql`
         CREATE TABLE IF NOT EXISTS servers (
-          id INTEGER PRIMARY KEY,
+          id SERIAL PRIMARY KEY,
           name VARCHAR(60) NOT NULL UNIQUE,
           description VARCHAR,
           created_at TIMESTAMP DEFAULT current_timestamp,
@@ -40,32 +39,47 @@ class Server implements ServerAttributes, TimeStamps {
       `);
   };
 
-  #addToDatabase = async () => {
-    await this.#setupTable();
-    console.log("Adding server to database");
-    const newServer = (await (
-      await pool
-    ).one(sql`
+  static addToDatabase = async ({
+    name,
+    description,
+  }: ServerAttributes): Promise<ServerAttributes> => {
+    await this.setupTable();
+    try {
+      const newServer = (await (
+        await pool
+      ).one(sql`
           INSERT INTO servers (name, description)
-          VALUES (${this.name}, ${this.description})
+          VALUES (${name}, ${description})
           RETURNING *;
           `)) as unknown as ServerAttributes;
-    console.log("SERVER", newServer);
 
-    if (newServer) {
-      createChannel({
-        name: "general",
-        description: "General chat",
-        server_id: newServer.id || 1,
-      });
+      if (newServer) {
+        createChannel({
+          name: "general",
+          description: "General chat",
+          server_id: newServer.id || 1,
+        });
+      }
+    } catch (err) {
+      if (err instanceof UniqueIntegrityConstraintViolationError) {
+        throw new Error("A server with that name already exists");
+      }
     }
-
-    return newServer;
+    return new Server(name, description);
   };
 }
 
-export const createServer = async (server: ServerAttributes) => {
-  return new Server(server.name, server.description);
+export const createServer = async (
+  server: ServerAttributes
+): Promise<ServerAttributes | void> => {
+  try {
+    const newServer = Server.addToDatabase(server);
+    return newServer;
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error(err.message);
+    }
+  }
 };
 
 export const findAllServers = async (): Promise<ServerAttributes[]> => {
@@ -79,7 +93,7 @@ export const findServerById = async (id: number): Promise<ServerAttributes> => {
     await pool
   ).any(sql`SELECT * FROM servers
   WEHERE id = ${id};`)) as unknown as ServerAttributes;
-}; // with channels and users
+};
 
 export const updateServer = async () => {};
 export const deleteServer = async () => {};
