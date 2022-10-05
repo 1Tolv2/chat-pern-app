@@ -6,31 +6,32 @@ import {
   findUserById,
   UserAttributes,
 } from "../models/User";
+import { requiredFieldsCheck } from ".";
 
 export const handleNewUser = async (
   req: Request<UserAttributes>,
   res: Response
 ): Promise<void> => {
-  const { username, email, password } = req.body;
 
-  if (!username || !email || !password) {
-    const requiredFields = ["username", "email", "password"];
-    res.status(400).json({
-      error: "Missing required fields",
-      missingFields: requiredFields.filter(
-        (key) => !req.body.hasOwnProperty(key)
-      ),
-    });
-    return;
-  } else {
+  const missingFields = requiredFieldsCheck(req.body, [
+    "username",
+    "email",
+    "password",
+  ]);
+  if (missingFields.length === 0) {
     try {
       const user = await createUser(req.body);
       res.status(201).json(user);
     } catch (err) {
       if (err instanceof Error) {
-        res.status(400).json({ error: err.message });
+        res.status(409).json({ error: err.message });
       }
     }
+  } else {
+    res.status(400).json({
+      error: "Missing required fields",
+      missingFields,
+    });
   }
 };
 
