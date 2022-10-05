@@ -10,7 +10,6 @@ export const handleNewPost = async (
      req.user?.userId}, ["channel_id", "text", "user_id"]);
   if (missingFields.length === 0) {
     try {
-      console.log({...req.body, user_id: req.user?.userId});
       const post = await createPost({ ...req.body, user_id: parseInt(req.user?.userId) });
       res.status(201).json(post);
 

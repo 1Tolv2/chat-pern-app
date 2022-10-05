@@ -25,7 +25,6 @@ class Server implements ServerAttributes, TimeStamps {
   }
 
   static setupTable = async () => {
-    console.log("Setting up servers table");
     await (
       await pool
     ).query(sql`

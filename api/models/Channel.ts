@@ -29,7 +29,6 @@ class Channel implements ChannelAttributes, TimeStamps {
   }
 
   #setupTable = async () => {
-    console.log("Setting up channels table");
     await (
       await pool
     ).query(sql`
@@ -45,7 +44,6 @@ class Channel implements ChannelAttributes, TimeStamps {
 
   #addToDatabase = async () => {
     await this.#setupTable();
-    console.log("Adding channel to database");
     const newChannel = await (
       await pool
     ).one(sql`

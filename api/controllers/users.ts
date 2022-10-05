@@ -43,7 +43,6 @@ export const getAllUsers = async (
     const users = await findAllUsers();
     res.json(users);
   } catch (err) {
-    console.log(err);
     res.sendStatus(400);
   }
 };
