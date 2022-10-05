@@ -23,15 +23,14 @@ class Post implements PostAttributes, TimeStamps {
     this.channel_id = _channel_id;
     this.created_at = new Date();
     this.updated_at = null;
-    this.#addToDatabase();
   }
 
-  #setupTable = async () => {
+  static setupTable = async () => {
     await (
       await pool
     ).query(sql`
       CREATE TABLE IF NOT EXISTS posts (
-        id INTEGER PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         text VARCHAR NOT NULL,
         channel_id INTEGER NOT NULL,
         FOREIGN KEY (channel_id) REFERENCES channels (id) ON DELETE CASCADE,
@@ -43,22 +42,28 @@ class Post implements PostAttributes, TimeStamps {
     `);
   };
 
-  #addToDatabase = async (): Promise<PostAttributes> => {
-    this.#setupTable();
-
-    const newPost = await (
+  static addToDatabase = async ({
+    text,
+    user_id,
+    channel_id,
+  }: PostAttributes): Promise<PostAttributes> => {
+    this.setupTable();
+    (await (
       await pool
     ).one(sql`
     INSERT INTO posts (text, user_id, channel_id)
-    VALUES (${this.text}, ${this.user_id}, ${this.channel_id})
+    VALUES (${text}, ${user_id}, ${channel_id})
     RETURNING *;
-        `);
-    return newPost as unknown as PostAttributes;
+        `))
+    return new Post(text, user_id, channel_id);
   };
 }
 
-export const createPost = async (post: PostAttributes) => {
-  return new Post(post.text, post.user_id, post.channel_id);
+export const createPost = async (
+  post: PostAttributes
+): Promise<PostAttributes | void> => {
+  const newPost = (await Post.addToDatabase(post)) as PostAttributes;
+  return newPost;
 };
 
 export const findAllPosts = async () => {
@@ -76,18 +81,25 @@ export const findAllPostsByUser = async (user_id: number) => {
 
 export const findPostById = async (id: number): Promise<PostAttributes> => {
   // with user and channel
-  return await (await pool).one(sql`
+  return (await (
+    await pool
+  ).one(sql`
   SELECT p.id, text, u.username AS user, user_id, c.name AS channel_name, channel_id, p.created_at, p.updated_at FROM posts AS p
   JOIN channels AS c ON channel_id = c.id
   JOIN users AS u ON user_id = u.id;
-  `) as unknown as PostAttributes;
+  `)) as unknown as PostAttributes;
 };
 
-export const findAllPostsByChannel = async (channel_id: number): Promise<PostAttributes[]> => {
-  return await (await pool).any(sql`SELECT p.id, text, u.username AS user, user_id, p.created_at, p.updated_at FROM posts AS p
+export const findAllPostsByChannel = async (
+  channel_id: number
+): Promise<PostAttributes[]> => {
+  return (await (
+    await pool
+  )
+    .any(sql`SELECT p.id, text, u.username AS user, user_id, p.created_at, p.updated_at FROM posts AS p
   JOIN users AS u ON user_id = u.id
-  WHERE channel_id = ${channel_id};`) as unknown as PostAttributes[]
-}
+  WHERE channel_id = ${channel_id};`)) as unknown as PostAttributes[];
+};
 
 export const updatePost = async () => {};
 export const deletePost = async () => {};
