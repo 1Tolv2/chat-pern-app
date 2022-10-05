@@ -36,7 +36,7 @@ class User implements UserAttributes, TimeStamps {
       await pool
     ).query(sql`
       CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY,
         username VARCHAR(60) NOT NULL UNIQUE,
         email VARCHAR(60) NOT NULL,
         password VARCHAR(100) NOT NULL,
@@ -68,7 +68,7 @@ class User implements UserAttributes, TimeStamps {
         await pool
       ).query(sql`
     CREATE TABLE IF NOT EXISTS serverusers (
-      id SERIAL PRIMARY KEY,
+      id INTEGER PRIMARY KEY,
       user_id INT NOT NULL,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
       server_id INT NOT NULL,

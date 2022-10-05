@@ -31,11 +31,11 @@ class Post implements PostAttributes, TimeStamps {
       await pool
     ).query(sql`
       CREATE TABLE IF NOT EXISTS posts (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY,
         text VARCHAR NOT NULL,
-        channel_id SERIAL NOT NULL,
+        channel_id INTEGER NOT NULL,
         FOREIGN KEY (channel_id) REFERENCES channels (id) ON DELETE CASCADE,
-        user_id SERIAL NOT NULL,
+        user_id INTEGER NOT NULL,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
         created_at TIMESTAMP DEFAULT current_timestamp,
         updated_at TIMESTAMP

@@ -34,7 +34,7 @@ class Channel implements ChannelAttributes, TimeStamps {
       await pool
     ).query(sql`
         CREATE TABLE IF NOT EXISTS channels (
-          id SERIAL PRIMARY KEY,
+          id INTEGER PRIMARY KEY,
           name VARCHAR(60) NOT NULL UNIQUE,
           description VARCHAR,
           created_at TIMESTAMP DEFAULT current_timestamp,
