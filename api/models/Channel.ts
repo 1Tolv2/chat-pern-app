@@ -27,6 +27,7 @@ class Channel implements ChannelAttributes, TimeStamps {
     this.updated_at = null;
     this.#addToDatabase();
   }
+
   #setupTable = async () => {
     console.log("Setting up channels table");
     await (
@@ -40,7 +41,7 @@ class Channel implements ChannelAttributes, TimeStamps {
           updated_at TIMESTAMP
           );
       `);
-  }
+  };
 
   #addToDatabase = async () => {
     await this.#setupTable();
@@ -54,15 +55,31 @@ class Channel implements ChannelAttributes, TimeStamps {
           `);
     // Call on to create default channel general
     return newChannel;
-  }
+  };
 }
 
 export const createChannel = async (channel: ChannelAttributes) => {
   return new Channel(channel.name, channel.description, channel.server_id);
 };
 
-export const findAllChannels = async () => {};
-export const findChannelById = async () => {}; // with posts with users
+export const findAllChannels = async (): Promise<ChannelAttributes[]> => {
+  const channels = (await (
+    await pool
+  ).any(sql`
+  SELECT * from channels;`)) as unknown as ChannelAttributes[];
+  return channels;
+};
+
+export const findChannelById = async (
+  id: number
+): Promise<ChannelAttributes> => {
+  const channel = (await (
+    await pool
+  ).one(sql`
+  SELECT * from channels WHERE id = ${id}`)) as unknown as ChannelAttributes;
+  return channel;
+}; // with posts with users'
+
 export const updateChannel = async () => {};
 export const deleteChannel = async () => {};
 
