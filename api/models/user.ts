@@ -22,21 +22,19 @@ class User implements UserAttributes, TimeStamps {
   created_at: Date | null;
   updated_at: Date | null;
 
-  constructor(_username: string, _email: string, _password: string) {
+  private constructor(_username: string, _email: string, _password: string) {
     this.username = _username;
     this.email = _email;
     this.password = _password;
     this.created_at = new Date();
     this.updated_at = null;
-    this.#setupTable();
   }
-  #setupTable = async () => {
-    console.log("Setting up users table");
+  static setupTable = async () => {
     await (
       await pool
     ).query(sql`
       CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         username VARCHAR(60) NOT NULL UNIQUE,
         email VARCHAR(60) NOT NULL,
         password VARCHAR(100) NOT NULL,
@@ -45,7 +43,6 @@ class User implements UserAttributes, TimeStamps {
         );
     `);
 
-    console.log("Checking for Servers table");
     // checks if a server exists otherwise creates one
     if (
       !(await (
@@ -53,7 +50,6 @@ class User implements UserAttributes, TimeStamps {
       ).exists(sql`SELECT FROM information_schema.tables
     WHERE table_name = 'servers'`))
     ) {
-      console.log("No servers table found");
       await createServer({ name: "First server", description: "Hello World!" });
     }
 
@@ -63,61 +59,61 @@ class User implements UserAttributes, TimeStamps {
       ).exists(sql`SELECT FROM information_schema.tables
     WHERE table_name = 'serverusers'`))
     ) {
-      console.log("Creating serverUsers table");
       await (
         await pool
       ).query(sql`
     CREATE TABLE IF NOT EXISTS serverusers (
-      id INTEGER PRIMARY KEY,
+      id SERIAL PRIMARY KEY,
       user_id INT NOT NULL,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
       server_id INT NOT NULL,
       FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE,
-      role VARCHAR(60) NOT NULL CHECK (role = 'admin' OR role = 'member')
+      role VARCHAR(60) NOT NULL CHECK (role = 'admin' OR role = 'member'),
+      UNIQUE (user_id, server_id)
     )
     `);
 
-      console.log("Creating addusertoserver function");
       await (
         await pool
       ).query(sql`
-      CREATE OR REPLACE FUNCTION addusertoserver(str varchar, num int) RETURNS void
+      CREATE OR REPLACE FUNCTION addusertoserver(text, numeric, numeric) RETURNS void
       AS $$
       INSERT INTO serverusers (role, server_id, user_id)
-      VALUES (str, 1, num)
+      VALUES ($1, $2, $3)
       $$
       LANGUAGE SQL;
     `);
     }
   };
 
-  async addToDatabase(): Promise<UserAttributes | void> {
+  static addToDatabase = async ({username, password, email}: UserAttributes): Promise<UserAttributes | void> => {
+    await this.setupTable();
+    const hashedPassword = await bcrypt.hash(password || "", 10);
 
-    const hashedPassword = await bcrypt.hash(this.password || "", 10);
-    this.password = hashedPassword;
+    password = hashedPassword;
 
-    console.log("Adding user to database");
     try {
-     const newUser = (await (
+      const newUser = (await (
         await pool
       ).one(sql`
         INSERT INTO users (username, email, password)
-        VALUES (${this.username}, ${this.email}, ${hashedPassword})
+        VALUES (${username}, ${email}, ${hashedPassword})
         RETURNING id, username, email, created_at, updated_at;
         `)) as unknown as UserAttributes;
+
       await (
         await pool
       ).one(sql`
-        SELECT addusertoserver('member', ${newUser.id as unknown as string});
+        SELECT addusertoserver('member', 1, ${newUser.id as unknown as string});
         `);
-    return newUser
     } catch (err) {
       if (err instanceof UniqueIntegrityConstraintViolationError) {
         throw new Error("Username or email already exists");
       }
     }
+    return new User(username, email, password);
     // TODO: add a trigger function for the above insert so this is not needed.
-  }
+  };
 
   static authorizeUser = async (username: string, password: string) => {
     const user = (await (
@@ -126,49 +122,45 @@ class User implements UserAttributes, TimeStamps {
       sql`SELECT * FROM users WHERE username = ${username}`
     )) as unknown as UserAttributes;
 
-    return user && password && (await bcrypt.compare(password, user.password || ""))
+    return user &&
+      password &&
+      (await bcrypt.compare(password, user.password || ""))
       ? user
       : null;
   };
 }
 
-export const createUser = async (user: UserAttributes): Promise<ErrorMessage | UserAttributes> => {
-  const newUser = new User(
-    user.username.toLowerCase(),
-    user.email,
-    user.password || ""
-  );
+export const createUser = async (
+  user: UserAttributes
+): Promise<UserAttributes | void> => {
   try {
-    await newUser.addToDatabase();
+    const newUser = await User.addToDatabase(user) as UserAttributes;
+    delete newUser.password;
   } catch (err) {
     if (err instanceof Error) {
-      const error: ErrorMessage = {
-        error: err.message ? err.message : "Something went wrong",
-      };
-      return error;
+      throw new Error(err.message);
     }
   }
-  return newUser;
 };
 
-export const findAllUsers = async () => {
+export const findAllUsers = async (): Promise<PostAttributes[]> => {
   return await (
     await pool
-  ).any(sql`SELECT id, username, email, created_at FROM users;`);
+  ).any(sql`SELECT id, username, email, created_at FROM users;`) as unknown as PostAttributes[];
 };
 
-export const findUserById = async (id: number) => {
+export const findUserById = async (id: number): Promise<PostAttributes> => {
   return await (
     await pool
   ).one(sql`SELECT id, username, email, created_at FROM users
-  WHERE id = ${id};`);
+  WHERE id = ${id};`) as unknown as PostAttributes;
 };
 
-export const findUserByUsername = async (username: string) => {
+export const findUserByUsername = async (username: string): Promise<PostAttributes> => {
   return await (
     await pool
   ).one(sql`SELECT id, username FROM users
-  WHERE username = ${username};`);
+  WHERE username = ${username};`) as unknown as PostAttributes;
 };
 
 export const updateUser = async () => {};

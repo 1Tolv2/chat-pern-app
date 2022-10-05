@@ -1,6 +1,4 @@
 import { Request, Response } from "express";
-import { SlonikError } from "slonik";
-import { ErrorMessage } from "../global/types";
 import { findAllPostsByUser } from "../models/Post";
 import {
   createUser,
@@ -9,22 +7,30 @@ import {
   UserAttributes,
 } from "../models/User";
 
-export const handleNewUser = async ( req: Request<UserAttributes>, res: Response ): Promise<void> => {
+export const handleNewUser = async (
+  req: Request<UserAttributes>,
+  res: Response
+): Promise<void> => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
     const requiredFields = ["username", "email", "password"];
     res.status(400).json({
       error: "Missing required fields",
-      missingFields: requiredFields.filter((key) => !(req.body.hasOwnProperty(key))
-      )
+      missingFields: requiredFields.filter(
+        (key) => !req.body.hasOwnProperty(key)
+      ),
     });
     return;
   } else {
-    const user: UserAttributes | ErrorMessage = await createUser(req.body);
-
-    user.hasOwnProperty("error") ? res.status(409).json({ error: (user as ErrorMessage).error })
-    : res.status(201).json(user);
+    try {
+      const user = await createUser(req.body);
+      res.status(201).json(user);
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(400).json({ error: err.message });
+      }
+    }
   }
 };
 
