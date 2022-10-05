@@ -3,12 +3,12 @@ import { pool } from "../config/env/test";
 import { ServerTrait, TimeStamps } from "../global/types";
 import { createChannel } from "./Channel";
 
-interface ServerAttributes {
+export interface ServerAttributes {
   id?: number;
   name: string;
   description: string;
-  channels?: ServerTrait[]; // channel_ids
-  users?: string[]; // user_ids
+  channels?: number[]; // channel_ids
+  users?: number[]; // user_ids
 }
 
 class Server implements ServerAttributes, TimeStamps {
@@ -24,6 +24,7 @@ class Server implements ServerAttributes, TimeStamps {
     this.updated_at = null;
     this.#addToDatabase();
   }
+
   #setupTable = async () => {
     console.log("Setting up servers table");
     await (
@@ -66,10 +67,20 @@ class Server implements ServerAttributes, TimeStamps {
 export const createServer = async (server: ServerAttributes) => {
   return new Server(server.name, server.description);
 };
-export const findAllServers = async () => {
-  return await (await pool).any(sql`SELECT * FROM servers;`);
+
+export const findAllServers = async (): Promise<ServerAttributes[]> => {
+  return (await (
+    await pool
+  ).any(sql`SELECT * FROM servers;`)) as unknown as ServerAttributes[];
 };
-export const findServerById = async () => {}; // with channels and users
+
+export const findServerById = async (id: number): Promise<ServerAttributes> => {
+  return (await (
+    await pool
+  ).any(sql`SELECT * FROM servers
+  WEHERE id = ${id};`)) as unknown as ServerAttributes;
+}; // with channels and users
+
 export const updateServer = async () => {};
 export const deleteServer = async () => {};
 
