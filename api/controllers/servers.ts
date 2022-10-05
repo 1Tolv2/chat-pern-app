@@ -19,11 +19,12 @@ export const getAllServers = async (req: Request, res: Response) => {
   const servers = await findAllServers();
   res.json(servers);
 };
+
 export const getServerById = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   const server = await findServerById(id);
   res.json(server);
-}; // get /:id with Servers
+};
 
 export const editServer = async (req: Request, res: Response) => {
   res.json({ Server: { message: "Server updated" } });

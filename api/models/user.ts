@@ -1,7 +1,7 @@
 import crypto from "crypto";
-import { sql } from "slonik";
+import { sql, UniqueIntegrityConstraintViolationError } from "slonik";
 import { pool } from "../config/env/test";
-import { ServerTrait, TimeStamps } from "../global/types";
+import { ErrorMessage, ServerTrait, TimeStamps } from "../global/types";
 import bcrypt from "bcryptjs";
 import { PostAttributes } from "./Post";
 import { createServer } from "./Server";
@@ -10,7 +10,7 @@ export interface UserAttributes {
   id?: number;
   username: string;
   email: string;
-  password: string;
+  password?: string;
   posts?: PostAttributes[];
   servers?: ServerTrait[];
 }
@@ -18,7 +18,7 @@ export interface UserAttributes {
 class User implements UserAttributes, TimeStamps {
   username: string;
   email: string;
-  password: string;
+  password?: string;
   created_at: Date | null;
   updated_at: Date | null;
 
@@ -28,7 +28,7 @@ class User implements UserAttributes, TimeStamps {
     this.password = _password;
     this.created_at = new Date();
     this.updated_at = null;
-    this.#addToDatabase(); // private, not reachable outside the class
+    this.#setupTable();
   }
   #setupTable = async () => {
     console.log("Setting up users table");
@@ -91,27 +91,33 @@ class User implements UserAttributes, TimeStamps {
     }
   };
 
-  #addToDatabase = async (): Promise<UserAttributes> => {
-    await this.#setupTable();
-    const hashedPassword = await bcrypt.hash(this.password, 10);
+  async addToDatabase(): Promise<UserAttributes | void> {
+
+    const hashedPassword = await bcrypt.hash(this.password || "", 10);
     this.password = hashedPassword;
+
     console.log("Adding user to database");
-    const newUser = await (
-      await pool
-    ).one(sql`
+    try {
+     const newUser = (await (
+        await pool
+      ).one(sql`
         INSERT INTO users (username, email, password)
         VALUES (${this.username}, ${this.email}, ${hashedPassword})
-        RETURNING *;
+        RETURNING id, username, email, created_at, updated_at;
+        `)) as unknown as UserAttributes;
+      await (
+        await pool
+      ).one(sql`
+        SELECT addusertoserver('member', ${newUser.id as unknown as string});
         `);
-
+    return newUser
+    } catch (err) {
+      if (err instanceof UniqueIntegrityConstraintViolationError) {
+        throw new Error("Username or email already exists");
+      }
+    }
     // TODO: add a trigger function for the above insert so this is not needed.
-    await (
-      await pool
-    ).one(sql`
-        SELECT addusertoserver('member', ${newUser.id});
-        `);
-    return newUser as unknown as UserAttributes;
-  };
+  }
 
   static authorizeUser = async (username: string, password: string) => {
     const user = (await (
@@ -120,14 +126,29 @@ class User implements UserAttributes, TimeStamps {
       sql`SELECT * FROM users WHERE username = ${username}`
     )) as unknown as UserAttributes;
 
-    return user && password && (await bcrypt.compare(password, user.password))
+    return user && password && (await bcrypt.compare(password, user.password || ""))
       ? user
       : null;
   };
 }
 
-export const createUser = async (user: UserAttributes) => {
-  return new User(user.username.toLowerCase(), user.email, user.password);
+export const createUser = async (user: UserAttributes): Promise<ErrorMessage | UserAttributes> => {
+  const newUser = new User(
+    user.username.toLowerCase(),
+    user.email,
+    user.password || ""
+  );
+  try {
+    await newUser.addToDatabase();
+  } catch (err) {
+    if (err instanceof Error) {
+      const error: ErrorMessage = {
+        error: err.message ? err.message : "Something went wrong",
+      };
+      return error;
+    }
+  }
+  return newUser;
 };
 
 export const findAllUsers = async () => {
@@ -139,8 +160,15 @@ export const findAllUsers = async () => {
 export const findUserById = async (id: number) => {
   return await (
     await pool
-  ).any(sql`SELECT id, username, email, created_at FROM users
+  ).one(sql`SELECT id, username, email, created_at FROM users
   WHERE id = ${id};`);
+};
+
+export const findUserByUsername = async (username: string) => {
+  return await (
+    await pool
+  ).one(sql`SELECT id, username FROM users
+  WHERE username = ${username};`);
 };
 
 export const updateUser = async () => {};
