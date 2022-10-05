@@ -1,4 +1,5 @@
 import express, { Router } from 'express'
+import { requireLogin } from '../controllers/auth'
 import { getAllChannels, getChannelById, handleNewChannel, editChannel, deleteChannel } from '../controllers/channels'
 
 const router: Router = express.Router()

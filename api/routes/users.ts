@@ -10,7 +10,7 @@ import {
 
 const router: Router = express.Router();
 
-router.get("/", getAllUsers); // Get all users
+router.get("/", requireLogin, getAllUsers); // Get all users
 router.post("/", handleNewUser); // Create a new user
 router.post("/auth", logInUser); // Login a user
 router.get("/:id", requireLogin, getUserById); // Get user by id with posts and servers

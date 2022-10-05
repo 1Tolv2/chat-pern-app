@@ -4,12 +4,12 @@ import { handleNewPost, getAllPosts, getPostById, editPost, deletePost} from '..
 
 const router: Router = express.Router()
 
-router.get("/", getAllPosts)    // Get all posts
+router.get("/", requireLogin, getAllPosts)    // Get all posts
 router.post("/", requireLogin, handleNewPost)     // Create a new post
 
-router.get("/:id", getPostById)  // Get post by id with user and channel
-router.put("/:id", editPost)  // Update post by id
-router.delete("/:id", deletePost)   // Delete post
+router.get("/:id", requireLogin, getPostById)  // Get post by id with user and channel
+router.put("/:id", requireLogin, editPost)  // Update post by id
+router.delete("/:id", requireLogin, deletePost)   // Delete post
 
 
 
