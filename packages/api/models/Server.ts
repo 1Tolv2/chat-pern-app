@@ -2,16 +2,9 @@ import { sql, UniqueIntegrityConstraintViolationError } from "slonik";
 import { pool } from "../config/env/test";
 import { TimeStamps } from "../global/types";
 import { createChannel } from "./Channel";
+import { ServerItem } from "@chat-app-typescript/shared";
 
-export interface ServerAttributes {
-  id?: number;
-  name: string;
-  description: string;
-  channels?: number[]; // channel_ids
-  users?: number[]; // user_ids
-}
-
-class Server implements ServerAttributes, TimeStamps {
+class Server implements ServerItem, TimeStamps {
   name: string;
   description: string;
   created_at: Date;
@@ -41,7 +34,7 @@ class Server implements ServerAttributes, TimeStamps {
   static addToDatabase = async ({
     name,
     description,
-  }: ServerAttributes): Promise<ServerAttributes> => {
+  }: ServerItem): Promise<ServerItem> => {
     await this.setupTable();
     try {
       const newServer = (await (
@@ -50,7 +43,7 @@ class Server implements ServerAttributes, TimeStamps {
           INSERT INTO servers (name, description)
           VALUES (${name}, ${description})
           RETURNING *;
-          `)) as unknown as ServerAttributes;
+          `)) as unknown as ServerItem;
 
       if (newServer) {
         createChannel({
@@ -69,8 +62,8 @@ class Server implements ServerAttributes, TimeStamps {
 }
 
 export const createServer = async (
-  server: ServerAttributes
-): Promise<ServerAttributes | void> => {
+  server: ServerItem
+): Promise<ServerItem | void> => {
   try {
     const newServer = Server.addToDatabase(server);
     return newServer;
@@ -81,17 +74,17 @@ export const createServer = async (
   }
 };
 
-export const findAllServers = async (): Promise<ServerAttributes[]> => {
+export const findAllServers = async (): Promise<ServerItem[]> => {
   return (await (
     await pool
-  ).any(sql`SELECT * FROM servers;`)) as unknown as ServerAttributes[];
+  ).any(sql`SELECT * FROM servers;`)) as unknown as ServerItem[];
 };
 
-export const findServerById = async (id: number): Promise<ServerAttributes> => {
+export const findServerById = async (id: number): Promise<ServerItem> => {
   return (await (
     await pool
   ).any(sql`SELECT * FROM servers
-  WEHERE id = ${id};`)) as unknown as ServerAttributes;
+  WEHERE id = ${id};`)) as unknown as ServerItem;
 };
 
 export const updateServer = async () => {};

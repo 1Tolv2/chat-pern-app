@@ -1,21 +1,11 @@
-import crypto from "crypto";
 import { sql, UniqueIntegrityConstraintViolationError } from "slonik";
 import { pool } from "../config/env/test";
-import { ErrorMessage, ServerTrait, TimeStamps } from "../global/types";
+import { TimeStamps } from "../global/types";
 import bcrypt from "bcryptjs";
-import { PostAttributes } from "./Post";
+import { UserItem } from "@chat-app-typescript/shared";
 import { createServer } from "./Server";
 
-export interface UserAttributes {
-  id?: number;
-  username: string;
-  email: string;
-  password?: string;
-  posts?: PostAttributes[];
-  servers?: ServerTrait[];
-}
-
-class User implements UserAttributes, TimeStamps {
+class User implements UserItem, TimeStamps {
   username: string;
   email: string;
   password?: string;
@@ -86,7 +76,7 @@ class User implements UserAttributes, TimeStamps {
     }
   };
 
-  static addToDatabase = async ({username, password, email}: UserAttributes): Promise<UserAttributes | void> => {
+  static addToDatabase = async ({username, password, email}: UserItem): Promise<UserItem | void> => {
     await this.setupTable();
     password = await bcrypt.hash(password || "", 10);
 
@@ -97,7 +87,7 @@ class User implements UserAttributes, TimeStamps {
         INSERT INTO users (username, email, password)
         VALUES (${username}, ${email}, ${password})
         RETURNING id, username, email, created_at, updated_at;
-        `)) as unknown as UserAttributes;
+        `)) as unknown as UserItem;
 
       await (
         await pool
@@ -118,7 +108,7 @@ class User implements UserAttributes, TimeStamps {
       await pool
     ).one(
       sql`SELECT * FROM users WHERE username = ${username}`
-    )) as unknown as UserAttributes;
+    )) as unknown as UserItem;
 
     return user &&
       password &&
@@ -129,10 +119,10 @@ class User implements UserAttributes, TimeStamps {
 }
 
 export const createUser = async (
-  user: UserAttributes
-): Promise<UserAttributes | void> => {
+  user: UserItem
+): Promise<UserItem | void> => {
   try {
-    const newUser = await User.addToDatabase(user) as UserAttributes;
+    const newUser = await User.addToDatabase(user) as UserItem;
     delete newUser.password;
   } catch (err) {
     if (err instanceof Error) {
@@ -141,24 +131,24 @@ export const createUser = async (
   }
 };
 
-export const findAllUsers = async (): Promise<PostAttributes[]> => {
+export const findAllUsers = async (): Promise<UserItem[]> => {
   return await (
     await pool
-  ).any(sql`SELECT id, username, email, created_at FROM users;`) as unknown as PostAttributes[];
+  ).any(sql`SELECT id, username, email, created_at FROM users;`) as unknown as UserItem[];
 };
 
-export const findUserById = async (id: number): Promise<PostAttributes> => {
+export const findUserById = async (id: number): Promise<UserItem> => {
   return await (
     await pool
   ).one(sql`SELECT id, username, email, created_at FROM users
-  WHERE id = ${id};`) as unknown as PostAttributes;
+  WHERE id = ${id};`) as unknown as UserItem;
 };
 
-export const findUserByUsername = async (username: string): Promise<PostAttributes> => {
+export const findUserByUsername = async (username: string): Promise<UserItem> => {
   return await (
     await pool
   ).one(sql`SELECT id, username FROM users
-  WHERE username = ${username};`) as unknown as PostAttributes;
+  WHERE username = ${username};`) as unknown as UserItem;
 };
 
 export const updateUser = async () => {};

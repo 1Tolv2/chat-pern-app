@@ -1,18 +1,9 @@
-import crypto from "crypto";
 import { sql } from "slonik";
 import { pool } from "../config/env/test";
 import { TimeStamps } from "../global/types";
-import { PostAttributes } from "./Post";
+import { ChannelItem } from "@chat-app-typescript/shared";
 
-interface ChannelAttributes {
-  id?: number;
-  name: string;
-  description: string;
-  posts?: PostAttributes[]; // post_ids
-  server_id: number;
-}
-
-class Channel implements ChannelAttributes, TimeStamps {
+class Channel implements ChannelItem, TimeStamps {
   name: string;
   description: string;
   server_id: number;
@@ -56,25 +47,25 @@ class Channel implements ChannelAttributes, TimeStamps {
   };
 }
 
-export const createChannel = async (channel: ChannelAttributes) => {
+export const createChannel = async (channel: ChannelItem) => {
   return new Channel(channel.name, channel.description, channel.server_id);
 };
 
-export const findAllChannels = async (): Promise<ChannelAttributes[]> => {
+export const findAllChannels = async (): Promise<ChannelItem[]> => {
   const channels = (await (
     await pool
   ).any(sql`
-  SELECT * from channels;`)) as unknown as ChannelAttributes[];
+  SELECT * from channels;`)) as unknown as ChannelItem[];
   return channels;
 };
 
 export const findChannelById = async (
   id: number
-): Promise<ChannelAttributes> => {
+): Promise<ChannelItem> => {
   const channel = (await (
     await pool
   ).one(sql`
-  SELECT * from channels WHERE id = ${id}`)) as unknown as ChannelAttributes;
+  SELECT * from channels WHERE id = ${id}`)) as unknown as ChannelItem;
   return channel;
 }; // with posts with users'
 

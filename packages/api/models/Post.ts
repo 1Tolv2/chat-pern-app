@@ -1,15 +1,9 @@
 import { sql } from "slonik";
 import { pool } from "../config/env/test";
 import { TimeStamps } from "../global/types";
+import { PostItem } from '@chat-app-typescript/shared'
 
-export interface PostAttributes {
-  id?: number | null;
-  text: string;
-  user_id: number;
-  channel_id: number;
-}
-
-class Post implements PostAttributes, TimeStamps {
+class Post implements PostItem, TimeStamps {
   id?: number | null;
   text: string;
   user_id: number;
@@ -46,7 +40,7 @@ class Post implements PostAttributes, TimeStamps {
     text,
     user_id,
     channel_id,
-  }: PostAttributes): Promise<PostAttributes> => {
+  }: PostItem): Promise<PostItem> => {
     this.setupTable();
     (await (
       await pool
@@ -60,26 +54,26 @@ class Post implements PostAttributes, TimeStamps {
 }
 
 export const createPost = async (
-  post: PostAttributes
-): Promise<PostAttributes | void> => {
-  const newPost = (await Post.addToDatabase(post)) as PostAttributes;
+  post: PostItem
+): Promise<PostItem | void> => {
+  const newPost = (await Post.addToDatabase(post)) as PostItem;
   return newPost;
 };
 
 export const findAllPosts = async () => {
   return (await (
     await pool
-  ).any(sql`SELECT * FROM posts;`)) as unknown as PostAttributes[];
+  ).any(sql`SELECT * FROM posts;`)) as unknown as PostItem[];
 };
 
 export const findAllPostsByUser = async (user_id: number) => {
   return (await (
     await pool
   ).any(sql`SELECT * FROM posts
-  WHERE user_id = ${user_id};`)) as unknown as PostAttributes[];
+  WHERE user_id = ${user_id};`)) as unknown as PostItem[];
 };
 
-export const findPostById = async (id: number): Promise<PostAttributes> => {
+export const findPostById = async (id: number): Promise<PostItem> => {
   // with user and channel
   return (await (
     await pool
@@ -87,18 +81,18 @@ export const findPostById = async (id: number): Promise<PostAttributes> => {
   SELECT p.id, text, u.username AS user, user_id, c.name AS channel_name, channel_id, p.created_at, p.updated_at FROM posts AS p
   JOIN channels AS c ON channel_id = c.id
   JOIN users AS u ON user_id = u.id;
-  `)) as unknown as PostAttributes;
+  `)) as unknown as PostItem;
 };
 
 export const findAllPostsByChannel = async (
   channel_id: number
-): Promise<PostAttributes[]> => {
+): Promise<PostItem[]> => {
   return (await (
     await pool
   )
     .any(sql`SELECT p.id, text, u.username AS user, user_id, p.created_at, p.updated_at FROM posts AS p
   JOIN users AS u ON user_id = u.id
-  WHERE channel_id = ${channel_id};`)) as unknown as PostAttributes[];
+  WHERE channel_id = ${channel_id};`)) as unknown as PostItem[];
 };
 
 export const updatePost = async () => {};

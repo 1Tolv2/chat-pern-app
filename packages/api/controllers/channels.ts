@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { findAllChannels, findChannelById } from "../models/Channel";
 import { findAllPostsByChannel } from "../models/Post";
+
 export const handleNewChannel = async (req: Request, res: Response) => {
   res.json({ channel: { message: "New channel created" } });
 }; 

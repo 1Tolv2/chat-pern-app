@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
+import { ServerItem } from "@chat-app-typescript/shared";
 import {
   createServer,
   findAllServers,
   findServerById,
-  ServerAttributes,
 } from "../models/Server";
 import { requiredFieldsCheck } from ".";
 
 export const handleNewServer = async (
-  req: Request<ServerAttributes>,
+  req: Request<ServerItem>,
   res: Response
 ): Promise<void> => {
   const missingFields = requiredFieldsCheck(req.body, ["name", "description"]);

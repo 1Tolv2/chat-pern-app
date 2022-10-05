@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
+import { UserItem } from "@chat-app-typescript/shared";
 import { findAllPostsByUser } from "../models/Post";
 import {
   createUser,
   findAllUsers,
   findUserById,
-  UserAttributes,
 } from "../models/User";
 import { requiredFieldsCheck } from ".";
 
 export const handleNewUser = async (
-  req: Request<UserAttributes>,
+  req: Request<UserItem>,
   res: Response
 ): Promise<void> => {
 
@@ -54,7 +54,7 @@ export const getUserById = async (
   try {
     let user = (await findUserById(
       parseInt(req.params.id)
-    )) as unknown as UserAttributes;
+    )) as unknown as UserItem;
     user.posts = await findAllPostsByUser(parseInt(req.params.id));
     // user.servers = await findAllServersByUser(parseInt(req.params.id)) as unknown as ServerAttributes[];
     res.json(user);

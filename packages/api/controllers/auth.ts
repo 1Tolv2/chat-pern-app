@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import User, { UserAttributes } from "../models/User";
+import { UserItem } from "@chat-app-typescript/shared";
+import User from "../models/User";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
@@ -12,7 +13,7 @@ export const requireLogin = (
   req.user ? next() : res.status(401).json({ error: "Unauthorized" });
 };
 
-export const logInUser = async (req: Request<UserAttributes>, res: Response) => {
+export const logInUser = async (req: Request<UserItem>, res: Response) => {
   const { password } = req.body;
   let { username } = req.body;
   username = username.toLowerCase();
