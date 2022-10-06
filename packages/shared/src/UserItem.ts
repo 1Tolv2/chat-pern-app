@@ -1,10 +1,10 @@
 import { PostItem } from "./PostItem";
-import { ServerTrait } from "./ServerItem";
+import { ServerTrait } from "./";
 
 export interface UserItem {
   id?: number;
   username: string;
-  email: string;
+  email?: string;
   password?: string;
   posts?: PostItem[];
   servers?: ServerTrait[];

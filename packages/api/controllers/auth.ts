@@ -3,6 +3,7 @@ import { UserItem } from "@chat-app-typescript/shared";
 import User from "../models/User";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { requiredFieldsCheck } from ".";
 dotenv.config();
 
 export const requireLogin = (
@@ -13,18 +14,11 @@ export const requireLogin = (
   req.user ? next() : res.status(401).json({ error: "Unauthorized" });
 };
 
-export const logInUser = async (req: Request<UserItem>, res: Response) => {
-  const { password } = req.body;
-  let { username } = req.body;
-  username = username.toLowerCase();
-  
-  if (!(username && password)) {
-    res
-      .status(400)
-      .json({ error: "Incorrect data, username and password is required" })
-      .end();
-  } else {
-    const user = await User.authorizeUser(username, password);
+export const logInUser = async (req: Request, res: Response) => {
+  const missingFields = requiredFieldsCheck(req.body, ["username", "password"])
+  if (missingFields.length === 0) {
+    const username = req.body.username.toLowerCase()
+    const user = await User.authorizeUser({username, password: req.body.password});
     if (user) {
       const token = jwt.sign(
         { userId: user.id?.toString(), username: username },
@@ -40,8 +34,9 @@ export const logInUser = async (req: Request<UserItem>, res: Response) => {
         })
         .json({ message: "Login successful" });
     } else {
-      res.status(401).json({
-        error: "Validation failed, username or password is incorrect",
+      res.status(400).json({
+        error: "Missing required fields",
+        missingFields,
       });
     }
   }
