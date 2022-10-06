@@ -1,12 +1,12 @@
-import React from "react";
+import React, { SyntheticEvent } from "react";
 import Label from "../atoms/Label";
 import InputField from "../atoms/InputField";
 
 type Props = {
   type: string;
-  //   id: string;
-  //   value: string;
-  //   setValue: React.Dispatch<React.SetStateAction<string>>;
+  id: string;
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
   placeholder?: string;
   labelText?: string;
   required?: boolean;
@@ -17,24 +17,24 @@ type Props = {
 
 const InputWithLabel = ({
   type,
-  //   id,
-  //   value,
-  //   setValue,
+  id,
+  value,
+  setValue,
   labelText,
   placeholder,
   required,
   bgColor,
   mb,
-  textColor
+  textColor,
 }: Props) => {
   return (
     <>
-      <Label text={labelText} color={textColor} required={required}/>
+      <Label id={id} text={labelText} color={textColor} required={required} />
       <InputField
         type={type}
-        //   id={id}
-        //   value={value}
-        //   onChange={(e) => setValue(e.target.value)}
+        id={id}
+        value={value}
+        setValue={setValue}
         placeholder={placeholder}
         required={required}
         bgColor={bgColor}

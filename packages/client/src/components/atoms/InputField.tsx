@@ -6,9 +6,9 @@ const { colors } = theme;
 
 type Props = {
   type: string;
-  //   id: string;
-  //   value: string;
-  //   setValue: React.Dispatch<React.SetStateAction<string>>;
+    id: string;
+    value: string;
+    setValue: React.Dispatch<React.SetStateAction<string>>;
   placeholder?: string;
   label?: string;
   required?: boolean;
@@ -30,34 +30,38 @@ const StyledInput = styled.input`
   margin-bottom: ${(props) => (props.mb ? props.mb : "0px")};
   background-color: ${(props: StyleProps) =>
     props.bgColor && colors[props.bgColor as string as keyof ThemeColors]};
-    color: ${
-      (props) => (props.color ? colors[props.color as string as keyof ThemeColors] : colors.lighterGrey)
-    };
+  color: ${(props) =>
+    props.color
+      ? colors[props.color as string as keyof ThemeColors]
+      : colors.lighterGrey};
   font-weight: 400;
   font-size: 16px;
   border-radius: 3px;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 const InputField = ({
   type,
-  //   id,
-  //   value,
-  //   setValue,
-  label,
+  id,
+  value,
+  setValue,
   placeholder,
   required,
   bgColor,
   mb,
-  color
+  color,
 }: Props) => {
   console.log(bgColor);
   return (
     <>
       <StyledInput
         type={type}
-        //   id={id}
-        //   value={value}
-        //   onChange={(e) => setValue(e.target.value)}
+        id={id}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder}
         required={required}
         bgColor={bgColor}

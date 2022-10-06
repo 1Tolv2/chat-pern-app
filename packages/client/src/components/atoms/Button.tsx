@@ -28,6 +28,12 @@ const StyledButton = styled.div`
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.7;
+  }
 `;
 
 type Props = {
