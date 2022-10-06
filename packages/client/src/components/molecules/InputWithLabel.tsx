@@ -29,7 +29,7 @@ const InputWithLabel = ({
 }: Props) => {
   return (
     <>
-      <Label text={labelText} color={textColor}/>
+      <Label text={labelText} color={textColor} required={required}/>
       <InputField
         type={type}
         //   id={id}
@@ -39,6 +39,7 @@ const InputWithLabel = ({
         required={required}
         bgColor={bgColor}
         mb={mb}
+        color={textColor}
       />
     </>
   );

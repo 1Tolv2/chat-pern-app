@@ -25,7 +25,7 @@ position: relative;
 max-width: 480px;
 max-height: 480px;
 height: fit-content;
-min-height: 430px;
+min-height: 420px;
 padding: 32px;
 background-color: ${colors.darkGrey};
 box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);

@@ -14,10 +14,12 @@ type Props = {
   required?: boolean;
   bgColor: string;
   mb?: string;
+  color?: string;
 };
 
 type StyleProps = {
   bgColor?: string;
+  color?: string;
   mb?: string;
 };
 const StyledInput = styled.input`
@@ -26,8 +28,11 @@ const StyledInput = styled.input`
   height: 40px;
   width: 100%;
   margin-bottom: ${(props) => (props.mb ? props.mb : "0px")};
-  background-color: ${({ bgColor }: StyleProps) =>
-    bgColor && colors[bgColor as string as keyof ThemeColors]};
+  background-color: ${(props: StyleProps) =>
+    props.bgColor && colors[props.bgColor as string as keyof ThemeColors]};
+    color: ${
+      (props) => (props.color ? colors[props.color as string as keyof ThemeColors] : colors.lighterGrey)
+    };
   font-weight: 400;
   font-size: 16px;
   border-radius: 3px;
@@ -43,6 +48,7 @@ const InputField = ({
   required,
   bgColor,
   mb,
+  color
 }: Props) => {
   console.log(bgColor);
   return (
@@ -56,6 +62,7 @@ const InputField = ({
         required={required}
         bgColor={bgColor}
         mb={mb}
+        color={color}
       />
     </>
   );
