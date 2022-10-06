@@ -30,7 +30,7 @@ const MessageItem = ({data}: Props) => {
                   <s.Heading>
                     {firstLetterToUppercase(data.user)}
                   </s.Heading>
-                  <Paragraph fontSize="0.75rem" color="lighterGrey">
+                  <Paragraph editStyle={{fontSize: "0.75rem"}} color="lighterGrey">
                     {renderDateString(new Date(data.created_at))}
                   </Paragraph>
                 </div>

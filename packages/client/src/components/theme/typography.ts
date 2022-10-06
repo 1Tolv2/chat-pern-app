@@ -3,7 +3,7 @@ import {theme,ThemeColors} from "./index";
 
  const {colors} = theme
 
-type Props = {
+export type FontProps = {
     color?: string,
     fontSize?: string,
     fontWeight?: string,
@@ -14,29 +14,29 @@ type Props = {
 }
 
 const baseStyle = css`
-  color: ${(props: Props) => (props ? colors[(props.color as string) as keyof ThemeColors] : colors.white)};
-  ${(props: Props) =>
+  color: ${(props: FontProps) => (props ? colors[(props.color as string) as keyof ThemeColors] : colors.white)};
+  ${(props: FontProps) =>
     props.fontWeight &&
     css`
       font-weight: ${props.fontWeight};
     `};
-    ${(props: Props) =>
+    ${(props: FontProps) =>
     props.fontSize &&
     css`
       font-size: ${props.fontSize};
     `};
-  text-align: ${(props: Props) => (props ? props.textAlign : "center")};
-  ${(props: Props) =>
+  text-align: ${(props: FontProps) => (props ? props.textAlign : "center")};
+  ${(props: FontProps) =>
     props.mb &&
     css`
       margin-bottom: ${props.mb};
     `};
-    ${(props: Props) =>
+    ${(props: FontProps) =>
     props.mt &&
     css`
       margin-top: ${props.mt};
     `};
-    ${(props: Props) =>
+    ${(props: FontProps) =>
     props.lineHeight &&
     css`
       line-height: ${props.lineHeight};

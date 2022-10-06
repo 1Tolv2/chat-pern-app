@@ -16,9 +16,9 @@ const MessageList = (props: Props) => {
       );
       setPosts(data.posts);
     } catch (err) {
-      console.log(err);
-      setPosts([]);
-      console.log("Something went wrong when fetching my posts...");
+      if (err instanceof Error) {
+        console.error("ERROR", err);
+      }
     }
   };
 

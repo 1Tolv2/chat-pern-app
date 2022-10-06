@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext, useState } from "react";
 import styled from "styled-components";
 import Header from "./Header";
 
@@ -14,18 +14,28 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.main`
-display: grid;
-grid-template-columns: auto 1fr;
-border-top-left-radius: 5px;
-height: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  border-top-left-radius: 5px;
+  height: 100%;
 `;
 
-const Layout = ({ children }: Props) => {
+interface ModalContext {
+  modalVisible: boolean;
+  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const ModalContext = createContext<ModalContext>({} as ModalContext);
+
+
+export default function Layout ({ children }: Props){
+  const [modalVisible, setModalVisible] = useState(true);
+
   return (
-    <Container>
-      <Wrapper>{children}</Wrapper>
-    </Container>
+    <ModalContext.Provider value={{ modalVisible, setModalVisible }}>
+      <Container>
+        <Wrapper>{children}</Wrapper>
+      </Container>
+    </ModalContext.Provider>
   );
 };
-
-export default Layout;
+export { ModalContext };
