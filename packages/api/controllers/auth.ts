@@ -29,10 +29,10 @@ export const logInUser = async (req: Request, res: Response) => {
         }
       );
       res
-        .cookie("access_token", token, {
-          httpOnly: true,
-        })
-        .json({ message: "Login successful" });
+        // .cookie("access_token", token, {
+        //   httpOnly: true,
+        // })
+        .json({ message: "Login successful", token });
     } else {
       res.status(400).json({
         error: "Missing required fields",

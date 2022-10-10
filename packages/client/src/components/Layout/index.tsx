@@ -1,6 +1,7 @@
 import React, { createContext, useState } from "react";
 import styled from "styled-components";
 import Header from "./Header";
+import { UserItem } from "@chat-app-typescript/shared";
 
 type Props = {
   children: React.ReactNode;
@@ -20,22 +21,34 @@ const Wrapper = styled.main`
   height: 100%;
 `;
 
-interface ModalContext {
+interface ModalCtx {
   modalVisible: boolean;
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const ModalContext = createContext<ModalContext>({} as ModalContext);
+const ModalContext = createContext<ModalCtx>({} as ModalCtx);
 
+interface UserCtx {
+  user: UserItem | null;
+  setUser: React.Dispatch<React.SetStateAction<UserItem | null>>;
+}
+const defaultUserState = {
+  user: null,
+  setUser: () => {},
+};
+const UserContext = createContext<UserCtx>(defaultUserState);
 
-export default function Layout ({ children }: Props){
+export default function Layout({ children }: Props) {
+  const [user, setUser] = useState<UserItem | null>(null);
   const [modalVisible, setModalVisible] = useState(true);
 
   return (
-    <ModalContext.Provider value={{ modalVisible, setModalVisible }}>
-      <Container>
-        <Wrapper>{children}</Wrapper>
-      </Container>
-    </ModalContext.Provider>
+    <UserContext.Provider value={{ user, setUser }}>
+      <ModalContext.Provider value={{ modalVisible, setModalVisible }}>
+        <Container>
+          <Wrapper>{children}</Wrapper>
+        </Container>
+      </ModalContext.Provider>
+    </UserContext.Provider>
   );
-};
-export { ModalContext };
+}
+export { ModalContext, UserContext };

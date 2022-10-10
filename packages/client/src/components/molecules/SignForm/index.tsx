@@ -1,10 +1,13 @@
-import React, { Children } from "react";
+import React, { useContext } from "react";
 import Button from "../../atoms/Button";
 import Paragraph from "../../atoms/Paragraph";
 import InputWithLabel from "../InputWithLabel";
 import * as t from "../../theme/typography";
 import { theme } from "../../theme";
 import styled from "styled-components";
+import { loginUser } from "../../../global/api";
+import { ModalContext } from "../../Layout";
+import { CustomError } from "../../../global/types";
 
 const { colors } = theme;
 
@@ -22,6 +25,24 @@ const SignForm = ({ type, children }: Props) => {
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const [username, setUsername] = React.useState<string>("");
+  const { setModalVisible } = useContext(ModalContext);
+
+  const handleOnClick = async () => {
+    console.log("CLICKED", email, password, username);
+    if (type === "register") {
+      console.log("REGISTER");
+    } else if (type === "login") {
+      try {
+        const data = await loginUser(username, password);
+        console.log(data)
+        data === 200 && setModalVisible(false);
+      } catch (err) {
+        if (err instanceof CustomError) {
+          console.error(err.data);
+        }
+      }
+    }
+  };
   return (
     <>
       <Heading>
@@ -79,7 +100,9 @@ const SignForm = ({ type, children }: Props) => {
             Forgot your password?
           </Paragraph>
         )}
-        <Button>{type === "register" ? "Register" : "Login"}</Button>
+        <Button onClick={handleOnClick}>
+          {type === "register" ? "Register" : "Login"}
+        </Button>
         {children}
       </form>
     </>

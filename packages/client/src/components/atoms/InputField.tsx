@@ -6,9 +6,9 @@ const { colors } = theme;
 
 type Props = {
   type: string;
-    id: string;
-    value: string;
-    setValue: React.Dispatch<React.SetStateAction<string>>;
+  id: string;
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
   placeholder?: string;
   label?: string;
   required?: boolean;
@@ -54,7 +54,6 @@ const InputField = ({
   mb,
   color,
 }: Props) => {
-  console.log(bgColor);
   return (
     <>
       <StyledInput

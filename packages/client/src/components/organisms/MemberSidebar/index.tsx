@@ -1,17 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import * as s from "./styles";
 import MemberList from "../../molecules/MemberList";
 import { ActivityData } from "../../../global/types";
-import {getChannelUsers} from '../../../global/api'
+import {getServerUsers} from '../../../global/api'
+import {ModalContext} from "../../Layout";
+
+
 
 type Props = {};
 
 const MemberSidebar = (props: Props) => {
+const { modalVisible } = useContext(ModalContext);
   const [members, setMembers] = useState<ActivityData[]>([]);
 
   const fetchData = async () => {
-    const data = await getChannelUsers('6c5b4071-7f0f-4f47-b5a7-ae74d6ca06cf')
-    setMembers([data])
+    console.log("Fetching users")
+    if (!modalVisible){
+    const data = await getServerUsers('1')
+    setMembers([data])}
   }
 
   useEffect(() => {

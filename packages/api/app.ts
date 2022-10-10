@@ -17,9 +17,13 @@ app.use(json());
 app.use(cookieParser());
 
 app.use(async (req: Request, res: Response, next: NextFunction) => {
-  const token = req.cookies.access_token;
-  if (token) {
-    try {
+  // const token = req.cookies.access_token;
+  // console.log("token", req.cookies);4
+console.log("Authorizing")
+  const authHeader = req.header("Authorization");
+  if (authHeader && authHeader.split(" ")[0] === "Bearer") {
+    const token = authHeader.split(" ")[1]; // splitta så vi får ut tokenen
+  try {
       req.user = jwt.verify(
         token,
         process.env.JWT_SECRET as string

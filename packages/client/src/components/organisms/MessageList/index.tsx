@@ -1,30 +1,34 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { Post } from "../../../global/types";
 import { getChannelPosts } from "../../../global/api";
 import MessageItem from "../../molecules/MessageItem";
 import * as s from "./styles";
+import {ModalContext} from "../../Layout";
+
 
 type Props = {};
 
 const MessageList = (props: Props) => {
+  const {modalVisible} = useContext(ModalContext);
   const [posts, setPosts] = React.useState<Post[]>([]);
 
   const fetchData = async () => {
+    if (!modalVisible) {
     try {
       const data = await getChannelPosts(
-        "6c5b4071-7f0f-4f47-b5a7-ae74d6ca06cf"
+        "1"
       );
       setPosts(data.posts);
     } catch (err) {
       if (err instanceof Error) {
         console.error("ERROR", err);
       }
-    }
+    }}
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [modalVisible]);
 
   return (
     <s.MessageList>
