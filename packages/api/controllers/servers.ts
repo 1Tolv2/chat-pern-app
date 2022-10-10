@@ -1,10 +1,6 @@
 import { Request, Response } from "express";
 import { ServerItem } from "@chat-app-typescript/shared";
-import {
-  createServer,
-  findAllServers,
-  findServerById,
-} from "../models/Server";
+import { createServer, findAllServers, findServerById } from "../models/Server";
 import { requiredFieldsCheck } from ".";
 
 export const handleNewServer = async (
@@ -42,6 +38,7 @@ export const getServerById = async (
   req: Request,
   res: Response
 ): Promise<void> => {
+  console.log("ID", req.params);
   const id = parseInt(req.params.id);
   const server = await findServerById(id);
   res.json(server);

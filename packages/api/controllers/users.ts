@@ -55,7 +55,7 @@ export const getUserById = async (
     let user = (await findUserById(
       parseInt(req.params.id)
     )) as unknown as UserItem;
-    user.posts = await findAllPostsByUser(parseInt(req.params.id));
+    // user.posts = await findAllPostsByUser(parseInt(req.params.id));
     // user.servers = await findAllServersByUser(parseInt(req.params.id)) as unknown as ServerAttributes[];
     res.json(user);
   } catch (err) {

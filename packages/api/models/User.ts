@@ -4,6 +4,7 @@ import { TimeStamps } from "../global/types";
 import bcrypt from "bcryptjs";
 import { UserItem } from "@chat-app-typescript/shared";
 import { createServer } from "./Server";
+import Post from "./Post";
 
 class User implements UserItem, TimeStamps {
   username: string;
@@ -41,6 +42,7 @@ class User implements UserItem, TimeStamps {
     WHERE table_name = 'servers'`))
     ) {
       await createServer({ name: "First server", description: "Hello World!" });
+      await Post.setupTable()
     }
 
     if (

@@ -92,7 +92,7 @@ export const findAllPostsByChannel = async (
   )
     .any(sql`SELECT p.id, text, u.username AS user, user_id, p.created_at, p.updated_at FROM posts AS p
   JOIN users AS u ON user_id = u.id
-  WHERE channel_id = ${channel_id};`)) as unknown as PostItem[];
+  WHERE channel_id = ${channel_id};`)) as unknown as PostItem[];  
 };
 
 export const updatePost = async () => {};
