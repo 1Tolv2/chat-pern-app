@@ -3,6 +3,7 @@ import { pool } from "../config/env/test";
 import { TimeStamps } from "../global/types";
 import { createChannel } from "./Channel";
 import { ServerItem } from "@chat-app-typescript/shared";
+import { ServerTrait } from "@chat-app-typescript/shared/src/UserItem";
 
 class Server implements ServerItem, TimeStamps {
   name: string;
@@ -85,6 +86,15 @@ export const findServerById = async (id: number): Promise<ServerItem> => {
     await pool
   ).any(sql`SELECT * FROM servers
   WEHERE id = ${id};`)) as unknown as ServerItem;
+};
+
+export const findServersByUser = async (userId: number): Promise<ServerTrait[]> => {
+  return (await (
+    await pool
+  ).any(sql`
+SELECT su.user_id, su.role, su.server_id, s.name as server_name, s.description as server_description FROM serverusers as su
+JOIN servers as s ON s.id = su.server_id
+WHERE user_id = ${userId};`)) as unknown as ServerTrait[];
 };
 
 export const updateServer = async () => {};

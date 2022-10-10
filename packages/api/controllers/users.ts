@@ -1,18 +1,14 @@
 import { Request, Response } from "express";
 import { UserItem } from "@chat-app-typescript/shared";
 import { findAllPostsByUser } from "../models/Post";
-import {
-  createUser,
-  findAllUsers,
-  findUserById,
-} from "../models/User";
+import { createUser, findAllUsers, findUserById } from "../models/User";
 import { requiredFieldsCheck } from ".";
+import { findServersByUser } from "../models/Server";
 
 export const handleNewUser = async (
   req: Request<UserItem>,
   res: Response
 ): Promise<void> => {
-
   const missingFields = requiredFieldsCheck(req.body, [
     "username",
     "email",
@@ -47,18 +43,18 @@ export const getAllUsers = async (
   }
 };
 
-export const getUserById = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const getUser = async (req: Request, res: Response): Promise<void> => {
+  console.log(req.user);
   try {
     let user = (await findUserById(
-      parseInt(req.params.id)
+      parseInt(req.user?.userId)
     )) as unknown as UserItem;
-    // user.posts = await findAllPostsByUser(parseInt(req.params.id));
-    // user.servers = await findAllServersByUser(parseInt(req.params.id)) as unknown as ServerAttributes[];
+    user.posts = await findAllPostsByUser(parseInt(req.user?.userId));
+    user.servers = await findServersByUser(parseInt(req.user?.userId));
     res.json(user);
   } catch (err) {
+    console.log(err);
+
     res.sendStatus(400);
   }
 };
