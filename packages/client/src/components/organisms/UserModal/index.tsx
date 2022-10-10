@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { ModalContext } from "../../Layout";
 import * as s from "./styles";
 import * as t from "../../theme/typography";
@@ -17,6 +17,13 @@ const UserModal = (props: Props) => {
   const toggleForm = () => {
     setFormType(formType === "login" ? "register" : "login");
   }
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwt_token");
+    if (token) {
+      setModalVisible(false);
+    }
+  }, [])
   return (
     <>
       {modalVisible && (
