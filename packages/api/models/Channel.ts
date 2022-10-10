@@ -27,6 +27,8 @@ class Channel implements ChannelItem, TimeStamps {
           id SERIAL PRIMARY KEY,
           name VARCHAR(60) NOT NULL UNIQUE,
           description VARCHAR,
+          server_id SERIAL NOT NULL,
+          FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE,
           created_at TIMESTAMP DEFAULT current_timestamp,
           updated_at TIMESTAMP
           );
@@ -38,8 +40,8 @@ class Channel implements ChannelItem, TimeStamps {
     const newChannel = await (
       await pool
     ).one(sql`
-          INSERT INTO channels (name, description)
-          VALUES (${this.name}, ${this.description})
+          INSERT INTO channels (name, description, server_id)
+          VALUES (${this.name}, ${this.description}, ${this.server_id})
           RETURNING *;
           `);
     // Call on to create default channel general
