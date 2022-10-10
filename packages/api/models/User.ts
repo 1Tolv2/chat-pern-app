@@ -7,7 +7,7 @@ import { createServer } from "./Server";
 
 class User implements UserItem, TimeStamps {
   username: string;
-  email: string;
+  email?: string;
   password?: string;
   created_at: Date | null;
   updated_at: Date | null;
@@ -76,7 +76,11 @@ class User implements UserItem, TimeStamps {
     }
   };
 
-  static addToDatabase = async ({username, password, email}: UserItem): Promise<UserItem | void> => {
+  static addToDatabase = async ({
+    username,
+    password,
+    email,
+  }: UserItem): Promise<UserItem | void> => {
     await this.setupTable();
     password = await bcrypt.hash(password || "", 10);
 
@@ -85,7 +89,7 @@ class User implements UserItem, TimeStamps {
         await pool
       ).one(sql`
         INSERT INTO users (username, email, password)
-        VALUES (${username}, ${email}, ${password})
+        VALUES (${username}, ${email || ""}, ${password})
         RETURNING id, username, email, created_at, updated_at;
         `)) as unknown as UserItem;
 
@@ -99,11 +103,11 @@ class User implements UserItem, TimeStamps {
         throw new Error("Username or email already exists");
       }
     }
-    return new User(username, email, password);
+    return new User(username, email || "", password);
     // TODO: add a trigger function for the above insert so this is not needed.
   };
 
-  static authorizeUser = async (username: string, password: string) => {
+  static authorizeUser = async ({ username, password }: UserItem) => {
     const user = (await (
       await pool
     ).one(
@@ -118,11 +122,9 @@ class User implements UserItem, TimeStamps {
   };
 }
 
-export const createUser = async (
-  user: UserItem
-): Promise<UserItem | void> => {
+export const createUser = async (user: UserItem): Promise<UserItem | void> => {
   try {
-    const newUser = await User.addToDatabase(user) as UserItem;
+    const newUser = (await User.addToDatabase(user)) as UserItem;
     delete newUser.password;
   } catch (err) {
     if (err instanceof Error) {
@@ -132,23 +134,27 @@ export const createUser = async (
 };
 
 export const findAllUsers = async (): Promise<UserItem[]> => {
-  return await (
+  return (await (
     await pool
-  ).any(sql`SELECT id, username, email, created_at FROM users;`) as unknown as UserItem[];
+  ).any(
+    sql`SELECT id, username, email, created_at FROM users;`
+  )) as unknown as UserItem[];
 };
 
 export const findUserById = async (id: number): Promise<UserItem> => {
-  return await (
+  return (await (
     await pool
   ).one(sql`SELECT id, username, email, created_at FROM users
-  WHERE id = ${id};`) as unknown as UserItem;
+  WHERE id = ${id};`)) as unknown as UserItem;
 };
 
-export const findUserByUsername = async (username: string): Promise<UserItem> => {
-  return await (
+export const findUserByUsername = async (
+  username: string
+): Promise<UserItem> => {
+  return (await (
     await pool
   ).one(sql`SELECT id, username FROM users
-  WHERE username = ${username};`) as unknown as UserItem;
+  WHERE username = ${username};`)) as unknown as UserItem;
 };
 
 export const updateUser = async () => {};
