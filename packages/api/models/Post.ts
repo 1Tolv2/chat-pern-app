@@ -63,7 +63,8 @@ export const createPost = async (
 export const findAllPosts = async () => {
   return (await (
     await pool
-  ).any(sql`SELECT * FROM posts;`)) as unknown as PostItem[];
+  ).any(sql`SELECT * FROM posts
+  ORDER BY created_at DESC;`)) as unknown as PostItem[];
 };
 
 export const findAllPostsByUser = async (user_id: number) => {
@@ -92,7 +93,8 @@ export const findAllPostsByChannel = async (
   )
     .any(sql`SELECT p.id, text, u.username AS user, user_id, p.created_at, p.updated_at FROM posts AS p
   JOIN users AS u ON user_id = u.id
-  WHERE channel_id = ${channel_id};`)) as unknown as PostItem[];  
+  WHERE channel_id = ${channel_id}
+  ORDER BY created_at ASC;`)) as unknown as PostItem[];  
 };
 
 export const updatePost = async () => {};

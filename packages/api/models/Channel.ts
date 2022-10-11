@@ -71,6 +71,12 @@ export const findChannelById = async (
   return channel;
 }; // with posts with users'
 
+export const findChannelsByServer = async (id: number): Promise<ChannelItem[]> => {
+  return await (await pool).any(sql`
+  SELECT id, name, description FROM channels WHERE server_id = ${id}`) as unknown as ChannelItem[]
+}
+
+
 export const updateChannel = async () => {};
 export const deleteChannel = async () => {};
 

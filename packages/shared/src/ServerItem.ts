@@ -1,7 +1,9 @@
+import { ChannelItem } from "./ChannelItem";
+
 export interface ServerItem {
     id?: number;
     name: string;
     description: string;
-    channels?: number[];
+    channels?: ChannelItem[];
     users?: number[];
   }

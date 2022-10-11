@@ -2,10 +2,13 @@ import React from "react";
 import * as s from "./styles";
 import * as t from "../../theme/typography";
 import logo from "../../../logo.svg";
+import {ChannelItem} from "@chat-app-typescript/shared"; 
 
-type Props = {};
+type Props = {
+  activeChannel: ChannelItem | null;
+};
 
-const Header = (props: Props) => {
+const Header = ({activeChannel}: Props) => {
 
   const handleOnClick = () => {
 console.log("clicked");
@@ -21,7 +24,7 @@ console.log("clicked");
           mb="3px"
           mt="0"
         >
-          {"#general"}
+          {`#${activeChannel?.name}`}
         </t.H2>
       </div>
       <div>

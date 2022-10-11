@@ -1,3 +1,4 @@
+import { ChannelItem } from "@chat-app-typescript/shared";
 import axios, { AxiosResponse } from "axios";
 import { Post, ActivityData } from "./types";
 
@@ -13,14 +14,6 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
-export type Channel = {
-  id: string;
-  name: string;
-  description: string;
-  created_at: Date;
-  updated_at: Date;
-  posts: Post[];
-};
 interface OkResponse extends AxiosResponse {
   token: string;
 }
@@ -29,9 +22,12 @@ export const loginUser = async (
   username: string,
   password: string
 ): Promise<number> => {
-  const res: OkResponse = await axios.post("/users/auth", { username, password });
+  const res: OkResponse = await axios.post("/users/auth", {
+    username,
+    password,
+  });
   if (res.data.token) localStorage.setItem("jwt_token", res.data.token);
-  
+
   return res.status;
 };
 
@@ -40,8 +36,9 @@ export const getAllUsers = async () => {
   return res;
 };
 
-export const getChannelPosts = async (channelId: string): Promise<Channel> => {
-  const res = await axios.get<Channel>(`/channels/${channelId}`);
+export const getChannelPosts = async (channelId: number): Promise<ChannelItem> => {
+  const res = await axios.get<ChannelItem>(`/channels/${channelId}`);
+  console.log("Channel", res)
   return res.data;
 };
 
@@ -51,3 +48,18 @@ export const getServerUsers = async (
   const res = await axios.get<ActivityData>(`/servers/${serverId}`);
   return { title: "online", users: res.data.users };
 };
+
+export const getServer = async (serverId: number) => { 
+  const res = await axios.get(`/servers/${serverId}`);
+  return res.data;
+}
+
+export const createPost = async (message: string, channel_id: number) => {
+  const res = await axios.post("/posts", {text: message, channel_id});
+  return res;
+};
+
+export const getUser = async () => {
+  const res = await axios.get("/users/me");
+  return res;
+}

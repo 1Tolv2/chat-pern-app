@@ -3,17 +3,21 @@ import MessageList from "../MessageList";
 import MessageStart from "../../molecules/MessageStart";
 import MessageCreator from "../../molecules/MessageCreator";
 import * as s from "./styles";
+import { ChannelItem } from "@chat-app-typescript/shared";
 
-type Props = {};
+type Props = {
+  activeChannel: ChannelItem | null;
+};
 
-const MessageBoard = (props: Props) => {
+const MessageBoard = ({activeChannel}: Props) => {
+
   return (
     <s.Container>
       <s.Wrapper>
-        <MessageStart />
-        <MessageList />
+        <MessageStart activeChannel={activeChannel}/>
+        <MessageList activeChannel={activeChannel}/>
       </s.Wrapper>
-      <MessageCreator />
+      <MessageCreator activeChannel={activeChannel}/>
     </s.Container>
   );
 };

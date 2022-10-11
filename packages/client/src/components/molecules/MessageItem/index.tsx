@@ -1,11 +1,11 @@
+import { PostItem } from '@chat-app-typescript/shared';
 import React from 'react'
-import { Post } from '../../../global/types'
 import logo from "../../../logo.svg";
 import Paragraph from '../../atoms/Paragraph';
 import * as s from './styles'
 
 type Props = {
-    data: Post,
+    data: PostItem,
 }
 
 const MessageItem = ({data}: Props) => {
@@ -18,7 +18,7 @@ const MessageItem = ({data}: Props) => {
         const month = date.getMonth();
         const year = date.getFullYear();
         return `${day < 10 ? "0" + day : day}/${
-          month < 10 ? "0" + month : month
+          month < 9 ? "0" + (month+1) : (month+1)
         }/${year}`;
       };
   return (
@@ -28,13 +28,13 @@ const MessageItem = ({data}: Props) => {
               <div>
                 <div>
                   <s.Heading>
-                    {firstLetterToUppercase(data.user)}
+                    {firstLetterToUppercase(data.user || "")}
                   </s.Heading>
                   <Paragraph editStyle={{fontSize: "0.75rem"}} color="lighterGrey">
-                    {renderDateString(new Date(data.created_at))}
+                    {renderDateString(new Date(data.created_at || "11/10/2022"))}
                   </Paragraph>
                 </div>
-                <Paragraph>{data.body}</Paragraph>
+                <Paragraph>{data.text}</Paragraph>
               </div>
             </s.MessageWrapper>
 

@@ -1,24 +1,26 @@
 import React, { useEffect, useContext } from "react";
-import { Post } from "../../../global/types";
 import { getChannelPosts } from "../../../global/api";
 import MessageItem from "../../molecules/MessageItem";
 import * as s from "./styles";
 import {ModalContext} from "../../Layout";
+import { ChannelItem, PostItem } from "@chat-app-typescript/shared";
 
 
-type Props = {};
+type Props = {
+  activeChannel: ChannelItem | null;
+};
 
-const MessageList = (props: Props) => {
+const MessageList = ({activeChannel}: Props) => {
   const {modalVisible} = useContext(ModalContext);
-  const [posts, setPosts] = React.useState<Post[]>([]);
+  const [posts, setPosts] = React.useState<PostItem[]>([]);
 
   const fetchData = async () => {
     if (!modalVisible) {
     try {
       const data = await getChannelPosts(
-        "1"
+        activeChannel?.id || 1
       );
-      setPosts(data.posts);
+      setPosts(data.posts || []);
     } catch (err) {
       if (err instanceof Error) {
         console.error("ERROR", err);
@@ -28,11 +30,11 @@ const MessageList = (props: Props) => {
 
   useEffect(() => {
     fetchData();
-  }, [modalVisible]);
+  }, [modalVisible, activeChannel]);
 
   return (
     <s.MessageList>
-      {posts.map((post: Post, index) => {
+      {posts.map((post: PostItem, index) => {
         return <MessageItem key={index} data={post} />;
       })}
     </s.MessageList>

@@ -1,7 +1,8 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import styled from "styled-components";
 import Header from "./Header";
 import { UserItem } from "@chat-app-typescript/shared";
+import { getUser } from "../../global/api";
 
 type Props = {
   children: React.ReactNode;
@@ -40,6 +41,20 @@ const UserContext = createContext<UserCtx>(defaultUserState);
 export default function Layout({ children }: Props) {
   const [user, setUser] = useState<UserItem | null>(null);
   const [modalVisible, setModalVisible] = useState(true);
+
+  const fetchUser = async () => {
+    const res = await getUser();
+    if (res.status === 200) {
+      setUser(res.data);
+      setModalVisible(false)
+    }
+  };
+  useEffect(() => {
+    const token = localStorage.getItem("jwt_token");
+    if (token) {
+      fetchUser();
+    }
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

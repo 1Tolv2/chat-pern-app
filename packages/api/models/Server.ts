@@ -84,8 +84,8 @@ export const findAllServers = async (): Promise<ServerItem[]> => {
 export const findServerById = async (id: number): Promise<ServerItem> => {
   return (await (
     await pool
-  ).any(sql`SELECT * FROM servers
-  WEHERE id = ${id};`)) as unknown as ServerItem;
+  ).one(sql`SELECT * FROM servers
+  WHERE id = ${id};`)) as unknown as ServerItem;
 };
 
 export const findServersByUser = async (userId: number): Promise<ServerTrait[]> => {

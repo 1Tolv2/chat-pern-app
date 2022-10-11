@@ -16,42 +16,43 @@ const UserModal = (props: Props) => {
 
   const toggleForm = () => {
     setFormType(formType === "login" ? "register" : "login");
-  }
+  };
 
-  useEffect(() => {
-    const token = localStorage.getItem("jwt_token");
-    if (token) {
-      setModalVisible(false);
-    }
-  }, [])
+  // useEffect(() => {
+  //   const token = localStorage.getItem("jwt_token");
+  //   if (token) {
+  //     setModalVisible(false);
+  //   }
+  // }, [])
   return (
     <>
       {modalVisible && (
         <s.Wrapper>
           <s.Container>
-            <SignForm type={formType} >
+            <SignForm type={formType}>
               <Paragraph
-              color="lightGrey"
-              editStyle={{ fontSize: "14px", mt: "4px", fontWeight: "700" }}
-            >
-              {formType === "register" ? (
-                <span style={{ color: colors.blue }} onClick={toggleForm}>
-                  {"Already have an account?"}
-                </span>
-              ) : (
-                <>
-                  {"Need an account? "}
-                  <span style={{ color: colors.blue }} onClick={toggleForm}>{"Register"}</span>
-                </>
-              )}
-            </Paragraph>
+                color="lightGrey"
+                editStyle={{ fontSize: "14px", mt: "4px", fontWeight: "700" }}
+              >
+                {formType === "register" ? (
+                  <span style={{ color: colors.blue }} onClick={toggleForm}>
+                    {"Already have an account?"}
+                  </span>
+                ) : (
+                  <>
+                    {"Need an account? "}
+                    <span style={{ color: colors.blue }} onClick={toggleForm}>
+                      {"Register"}
+                    </span>
+                  </>
+                )}
+              </Paragraph>
             </SignForm>
-            
           </s.Container>
         </s.Wrapper>
       )}
     </>
   );
-}
+};
 
 export default UserModal;
