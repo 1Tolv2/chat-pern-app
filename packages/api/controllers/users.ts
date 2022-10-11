@@ -44,7 +44,6 @@ export const getAllUsers = async (
 };
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
-  console.log(req.user);
   try {
     let user = (await findUserById(
       parseInt(req.user?.userId)

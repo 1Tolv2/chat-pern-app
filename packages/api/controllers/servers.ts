@@ -42,7 +42,6 @@ export const getServerById = async (
   const id = parseInt(req.params.id);
   const server = await findServerById(id);
   server.channels = await findChannelsByServer(id)
-  console.log(server)
   res.json(server);
 };
 
