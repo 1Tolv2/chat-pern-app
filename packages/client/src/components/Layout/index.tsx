@@ -3,24 +3,7 @@ import styled from "styled-components";
 import Header from "./Header";
 import { UserItem } from "@chat-app-typescript/shared";
 import { getUser } from "../../global/api";
-
-type Props = {
-  children: React.ReactNode;
-};
-
-const Container = styled.div`
-  padding: 1rem 0 0 5rem;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-`;
-
-const Wrapper = styled.main`
-  display: grid;
-  grid-template-columns: auto 1fr;
-  border-top-left-radius: 5px;
-  height: 100%;
-`;
+import * as s from "./styles";
 
 interface ModalCtx {
   modalVisible: boolean;
@@ -38,6 +21,10 @@ const defaultUserState = {
 };
 const UserContext = createContext<UserCtx>(defaultUserState);
 
+type Props = {
+  children: React.ReactNode;
+};
+
 export default function Layout({ children }: Props) {
   const [user, setUser] = useState<UserItem | null>(null);
   const [modalVisible, setModalVisible] = useState(true);
@@ -46,7 +33,7 @@ export default function Layout({ children }: Props) {
     const res = await getUser();
     if (res.status === 200) {
       setUser(res.data);
-      setModalVisible(false)
+      setModalVisible(false);
     }
   };
   useEffect(() => {
@@ -55,13 +42,13 @@ export default function Layout({ children }: Props) {
       fetchUser();
     }
   }, []);
-
+console.log(user)
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <ModalContext.Provider value={{ modalVisible, setModalVisible }}>
-        <Container>
-          <Wrapper>{children}</Wrapper>
-        </Container>
+        <s.Container>
+          <s.Wrapper>{children}</s.Wrapper>
+        </s.Container>
       </ModalContext.Provider>
     </UserContext.Provider>
   );

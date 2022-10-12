@@ -3,14 +3,15 @@ import React from "react";
 import Paragraph from "../../atoms/Paragraph";
 import * as s from "./styles";
 
-type Props = {activeChannel: ChannelItem | null};
+type Props = { activeChannel: ChannelItem | null };
 
-const MessageStart = ({activeChannel}: Props) => {
-  console.log(activeChannel)
+const MessageStart = ({ activeChannel }: Props) => {
   return (
     <s.Container>
       <s.Header>{`Welcome to #${activeChannel?.name || ""}`}</s.Header>
-      <Paragraph color="lighterGrey">{`This is the start of the #${activeChannel?.name || ""} channel.`}</Paragraph>
+      <Paragraph color="lighterGrey">{`This is the start of the #${
+        activeChannel?.name || ""
+      } channel.`}</Paragraph>
     </s.Container>
   );
 };

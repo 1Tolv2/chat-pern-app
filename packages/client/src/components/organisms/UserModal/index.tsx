@@ -12,18 +12,12 @@ type Props = {};
 
 const UserModal = (props: Props) => {
   const [formType, setFormType] = useState<"login" | "register">("login");
-  const { modalVisible, setModalVisible } = useContext(ModalContext);
+  const { modalVisible } = useContext(ModalContext);
 
   const toggleForm = () => {
     setFormType(formType === "login" ? "register" : "login");
   };
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("jwt_token");
-  //   if (token) {
-  //     setModalVisible(false);
-  //   }
-  // }, [])
   return (
     <>
       {modalVisible && (

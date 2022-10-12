@@ -24,7 +24,7 @@ console.log("clicked");
           mb="3px"
           mt="0"
         >
-          {`#${activeChannel?.name}`}
+          {`#${activeChannel?.name||""}`}
         </t.H2>
       </div>
       <div>

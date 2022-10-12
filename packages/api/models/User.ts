@@ -130,6 +130,7 @@ export const createUser = async (user: UserItem): Promise<UserItem | void> => {
     delete newUser.password;
   } catch (err) {
     if (err instanceof Error) {
+      console.error(err)
       throw new Error(err.message);
     }
   }

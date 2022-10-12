@@ -1,4 +1,4 @@
-import { ChannelItem } from "@chat-app-typescript/shared";
+import { ChannelItem, ServerItem, UserItem } from "@chat-app-typescript/shared";
 import axios, { AxiosResponse } from "axios";
 import { Post, ActivityData } from "./types";
 
@@ -14,21 +14,17 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
-interface OkResponse extends AxiosResponse {
-  token: string;
-}
-
 export const loginUser = async (
   username: string,
   password: string
-): Promise<number> => {
-  const res: OkResponse = await axios.post("/users/auth", {
+): Promise<AxiosResponse> => {
+  const res = await axios.post("/users/auth", {
     username,
     password,
   });
   if (res.data.token) localStorage.setItem("jwt_token", res.data.token);
 
-  return res.status;
+  return res;
 };
 
 export const getAllUsers = async () => {
@@ -36,9 +32,15 @@ export const getAllUsers = async () => {
   return res;
 };
 
-export const getChannelPosts = async (channelId: number): Promise<ChannelItem> => {
+export const getChannelPosts = async (
+  channelId: number
+): Promise<ChannelItem> => {
   const res = await axios.get<ChannelItem>(`/channels/${channelId}`);
-  console.log("Channel", res)
+  return res.data;
+};
+
+export const getServers = async (): Promise<ServerItem[]> => {
+  const res = await axios.get("/servers");
   return res.data;
 };
 
@@ -49,17 +51,17 @@ export const getServerUsers = async (
   return { title: "online", users: res.data.users };
 };
 
-export const getServer = async (serverId: number) => { 
+export const getServer = async (serverId: number): Promise<ServerItem> => {
   const res = await axios.get(`/servers/${serverId}`);
   return res.data;
-}
+};
 
 export const createPost = async (message: string, channel_id: number) => {
-  const res = await axios.post("/posts", {text: message, channel_id});
+  const res = await axios.post("/posts", { text: message, channel_id });
   return res;
 };
 
 export const getUser = async () => {
   const res = await axios.get("/users/me");
   return res;
-}
+};

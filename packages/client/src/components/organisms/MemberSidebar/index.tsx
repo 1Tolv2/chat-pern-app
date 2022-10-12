@@ -14,7 +14,6 @@ const { modalVisible } = useContext(ModalContext);
   const [members, setMembers] = useState<ActivityData[]>([]);
 
   const fetchData = async () => {
-    console.log("Fetching users")
     if (!modalVisible){
     const data = await getServerUsers('1')
     setMembers([data])}

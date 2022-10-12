@@ -34,7 +34,7 @@ const MessageList = ({activeChannel}: Props) => {
 
   return (
     <s.MessageList>
-      {posts.map((post: PostItem, index) => {
+      {activeChannel && posts.map((post: PostItem, index) => {
         return <MessageItem key={index} data={post} />;
       })}
     </s.MessageList>

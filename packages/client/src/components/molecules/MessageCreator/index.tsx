@@ -8,13 +8,12 @@ type Props = {
   activeChannel: ChannelItem | null;
 };
 
-const MessageCreator = ({activeChannel}: Props) => {
+const MessageCreator = ({ activeChannel }: Props) => {
   const [message, setMessage] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const res = await createPost(message, activeChannel?.id || 1);
-    console.log(res, message);
     setMessage("");
   };
 

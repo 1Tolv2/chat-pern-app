@@ -25,12 +25,13 @@ class Channel implements ChannelItem, TimeStamps {
     ).query(sql`
         CREATE TABLE IF NOT EXISTS channels (
           id SERIAL PRIMARY KEY,
-          name VARCHAR(60) NOT NULL UNIQUE,
+          name VARCHAR(60) NOT NULL,
           description VARCHAR,
           server_id SERIAL NOT NULL,
           FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE,
           created_at TIMESTAMP DEFAULT current_timestamp,
-          updated_at TIMESTAMP
+          updated_at TIMESTAMP,
+          UNIQUE (name, server_id)
           );
       `);
   };

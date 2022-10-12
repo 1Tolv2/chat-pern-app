@@ -8,6 +8,7 @@ import styled from "styled-components";
 import { loginUser } from "../../../global/api";
 import { ModalContext } from "../../Layout";
 import { CustomError } from "../../../global/types";
+import { UserContext } from "../../Layout";
 
 const { colors } = theme;
 
@@ -26,16 +27,18 @@ const SignForm = ({ type, children }: Props) => {
   const [password, setPassword] = React.useState<string>("");
   const [username, setUsername] = React.useState<string>("");
   const { setModalVisible } = useContext(ModalContext);
+  const { setUser } = useContext(UserContext);
 
   const handleOnClick = async () => {
-    console.log("CLICKED", email, password, username);
     if (type === "register") {
       console.log("REGISTER");
     } else if (type === "login") {
       try {
-        const data = await loginUser(username, password);
-        console.log(data)
-        data === 200 && setModalVisible(false);
+        const res = await loginUser(username, password);
+        if (res.status === 200) {
+          setModalVisible(false)
+          console.log(res.data.user)
+          setUser(res.data.user)}
       } catch (err) {
         if (err instanceof CustomError) {
           console.error(err.data);

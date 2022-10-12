@@ -4,7 +4,13 @@ import { theme, ThemeColors } from "../../theme";
 const { colors } = theme;
 
 const Container = styled.div`
-  /* background-color: ${colors.darkerGrey}; */
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  text-align: center;
+  & > * {
+    width: 48px;
+  }
 `;
 
 export { Container };

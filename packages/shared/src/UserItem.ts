@@ -1,11 +1,5 @@
 import { PostItem } from "./PostItem";
-export type ServerTrait = {
-  user_id: number;
-  role: "admin" | "user";
-  server_id: number;
-  server_name: string;
-  server_description: string;
-};
+import { ServerItem } from "./ServerItem";
 
 export interface UserItem {
   id?: number;
@@ -13,5 +7,5 @@ export interface UserItem {
   email?: string;
   password?: string;
   posts?: PostItem[];
-  servers?: ServerTrait[];
+  servers?: ServerItem[];
 }

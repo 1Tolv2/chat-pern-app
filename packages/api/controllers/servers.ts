@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { ServerItem } from "@chat-app-typescript/shared";
 import { createServer, findAllServers, findServerById } from "../models/Server";
 import { requiredFieldsCheck } from ".";
-import { findChannelsByServer } from "../models/Channel";
+import { createChannel, findChannelsByServer } from "../models/Channel";
 
 export const handleNewServer = async (
   req: Request<ServerItem>,

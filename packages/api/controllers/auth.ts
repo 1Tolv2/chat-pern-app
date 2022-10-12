@@ -32,7 +32,7 @@ export const logInUser = async (req: Request, res: Response) => {
         // .cookie("access_token", token, {
         //   httpOnly: true,
         // })
-        .json({ message: "Login successful", token });
+        .json({ user: {userId: user.id?.toString(), username: username}, token });
     } else {
       res.status(400).json({
         error: "Missing required fields",

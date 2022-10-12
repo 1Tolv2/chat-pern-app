@@ -1,36 +1,48 @@
 import { ServerItem } from "@chat-app-typescript/shared";
-import { ServerTrait } from "@chat-app-typescript/shared/src/UserItem";
-import React, { useEffect, useState, useContext, ReactEventHandler } from "react";
-import { UserContext } from "../../Layout";
+import React, { useEffect, useState } from "react";
+import { getServer, getServers } from "../../../global/api";
 import * as s from "./styles";
 
 type Props = {
-  // states: {
-  //   activeServer: ServerItem;
-  //   setActiveServer: React.Dispatch<React.SetStateAction<ServerItem>>;
-  // }
+  states: {
+    activeServer: ServerItem | null;
+    setActiveServer: React.Dispatch<React.SetStateAction<ServerItem | null>>;
+  };
 };
 
-const ServerList = (props: Props) => {
-  const [serverList, setServerList] = useState<ServerTrait[]>([]);
-  const {user} = useContext(UserContext);
+const ServerList = ({ states }: Props) => {
+  const [serverList, setServerList] = useState<ServerItem[]>([]);
 
-  useEffect(()=> {
-    console.log("ServerList",user)
-    if (user) {
-        setServerList(user.servers || []);
-    }
-  }, [])
-
-  const handleOnClick = (e: any) => {
-    console.log("CLICKED", e.target);
+  const fetchServers = async (): Promise<void> => {
+    const servers = await getServers();
+    setServerList(servers)
   }
+  useEffect(() => {
+    fetchServers()
+  }, []);
 
-  return <s.Container><ul>
-    {serverList.map((server, index) => {
-        return <li key={index} onClick={handleOnClick}>* {server.server_name}  </li>
-    })}
-    </ul></s.Container>;
+  const handleOnClick = async (e: any) => {
+    states.setActiveServer(await getServer(e.target.id));
+  };
+
+  return (
+    <s.Container>
+      <ul>
+        {serverList.map((server: ServerItem) => {
+          return (
+            <li
+              key={server?.id}
+              id={server?.id?.toString() || ""}
+              onClick={handleOnClick}
+              style={{ color: "white" }}
+            >
+              {server.name}
+            </li>
+          );
+        })}
+      </ul>
+    </s.Container>
+  );
 };
 
 export default ServerList;

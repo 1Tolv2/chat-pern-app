@@ -1,22 +1,23 @@
-import { ChannelItem } from "@chat-app-typescript/shared";
 import React from "react";
+import { ChannelItem } from "@chat-app-typescript/shared";
+import Header from "../../Layout/Header";
 import MemberSidebar from "../MemberSidebar";
 import MessageBoard from "../MessageBoard";
-import UserModal from "../UserModal";
 import * as s from "./styles";
 
 type Props = {
   activeChannel: ChannelItem | null;
 };
 
-const ChannelContent = ( {activeChannel}: Props) => {
-  console.log("ChannelContent", activeChannel);
+const ChannelContent = ({ activeChannel }: Props) => {
   return (
-    <s.Container>
-      <UserModal />
-      {activeChannel && <MessageBoard activeChannel={activeChannel}/>}
-      {/* <MemberSidebar /> */}
-    </s.Container>
+    <div style={{ height: "100%" }}>
+      <Header activeChannel={activeChannel} />
+      <s.Container>
+        <MessageBoard activeChannel={activeChannel} />
+        {/* <MemberSidebar /> */}
+      </s.Container>
+    </div>
   );
 };
 

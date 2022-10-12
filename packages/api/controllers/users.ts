@@ -9,6 +9,8 @@ export const handleNewUser = async (
   req: Request<UserItem>,
   res: Response
 ): Promise<void> => {
+  console.log("LOGGING IN USER: ", req.body);
+
   const missingFields = requiredFieldsCheck(req.body, [
     "username",
     "email",

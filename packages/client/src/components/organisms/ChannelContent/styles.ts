@@ -5,7 +5,7 @@ const { colors } = theme;
 
 const Container = styled.div`
   display: flex;
-  height: 94%;
+  height: 95%;
   width: 100%;
   background-color: ${colors.darkGrey};
 `;
