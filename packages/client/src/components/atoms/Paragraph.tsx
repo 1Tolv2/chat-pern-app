@@ -22,6 +22,9 @@ const Paragraph = ({ children, color, editStyle }: Props) => {
       <t.Paragraph
         mb={editStyle?.mb}
         mt={editStyle?.mt}
+        pl={editStyle?.pl}
+        pr={editStyle?.pr}
+        pt={editStyle?.pt}
         fontSize={editStyle?.fontSize}
         color={color}
       >

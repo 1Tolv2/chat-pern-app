@@ -9,8 +9,6 @@ export const handleNewUser = async (
   req: Request<UserItem>,
   res: Response
 ): Promise<void> => {
-  console.log("LOGGING IN USER: ", req.body);
-
   const missingFields = requiredFieldsCheck(req.body, [
     "username",
     "email",
@@ -50,9 +48,8 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     let user = (await findUserById(
       parseInt(req.user?.userId)
     )) as unknown as UserItem;
-    user.posts = await findAllPostsByUser(parseInt(req.user?.userId));
+    // user.posts = await findAllPostsByUser(parseInt(req.user?.userId));
     user.servers = await findServersByUser(parseInt(req.user?.userId));
-    console.log("USER: ", user);
     res.json(user);
   } catch (err) {
     console.log(err);

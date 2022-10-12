@@ -35,13 +35,12 @@ const SignForm = ({ type, children }: Props) => {
   const handleOnClick = async () => {
     if (type?.formType === "register") {
       const res = await registerUser(email, username, password);
-      res === 201 && type?.setFormType("login");
+      res && type?.setFormType("login");
     } else if (type?.formType === "login") {
       try {
-        const res = await loginUser(username, password);
-        if (res.status === 200) {
+        const user = await loginUser(username, password);
           setModalVisible(false)
-          setUser(res.data.user)}
+          setUser(user)
       } catch (err) {
         if (err instanceof CustomError) {
           console.error(err.data);

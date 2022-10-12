@@ -19,6 +19,7 @@ export const logInUser = async (req: Request, res: Response) => {
   if (missingFields.length === 0) {
     const username = req.body.username.toLowerCase()
     const user = await User.authorizeUser({username, password: req.body.password});
+    console.log(user)
     if (user) {
       const token = jwt.sign(
         { userId: user.id?.toString(), username: username },

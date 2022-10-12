@@ -10,6 +10,9 @@ export type FontProps = {
     textAlign?: string,
     mb?: string,
     mt?: string,
+    pl?: string,
+    pr?: string,
+    pt?: string,
     lineHeight?: string,
 }
 
@@ -35,6 +38,21 @@ const baseStyle = css`
     props.mt &&
     css`
       margin-top: ${props.mt};
+    `};
+    ${(props: FontProps) =>
+    props.pl &&
+    css`
+      padding-left: ${props.pl};
+    `};
+    ${(props: FontProps) =>
+    props.pr &&
+    css`
+      padding-right: ${props.pr};
+    `};
+    ${(props: FontProps) =>
+    props.pt &&
+    css`
+      padding-top: ${props.pt};
     `};
     ${(props: FontProps) =>
     props.lineHeight &&

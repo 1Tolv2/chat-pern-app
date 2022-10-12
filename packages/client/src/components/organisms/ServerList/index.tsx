@@ -16,7 +16,6 @@ const ServerList = ({ states }: Props) => {
   const fetchServers = async (): Promise<void> => {
     const servers = await getServers();
     setServerList(servers)
-    console.log("SERVERS", servers)
     states.setActiveServer(servers[0])
   }
   useEffect(() => {
