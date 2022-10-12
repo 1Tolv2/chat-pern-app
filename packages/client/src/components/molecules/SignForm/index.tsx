@@ -5,7 +5,7 @@ import InputWithLabel from "../InputWithLabel";
 import * as t from "../../theme/typography";
 import { theme } from "../../theme";
 import styled from "styled-components";
-import { loginUser } from "../../../global/api";
+import { loginUser, registerUser } from "../../../global/api";
 import { ModalContext } from "../../Layout";
 import { CustomError } from "../../../global/types";
 import { UserContext } from "../../Layout";
@@ -18,7 +18,10 @@ const Heading = styled.div`
 `;
 
 type Props = {
-  type?: string;
+  type?: {
+    formType: "login" | "register";
+    setFormType: (type: "login" | "register") => void;
+  };
   children?: React.ReactNode;
 };
 
@@ -30,9 +33,11 @@ const SignForm = ({ type, children }: Props) => {
   const { setUser } = useContext(UserContext);
 
   const handleOnClick = async () => {
-    if (type === "register") {
+    if (type?.formType === "register") {
       console.log("REGISTER");
-    } else if (type === "login") {
+      const res = await registerUser(email, username, password);
+      res === 201 && type?.setFormType("login");
+    } else if (type?.formType === "login") {
       try {
         const res = await loginUser(username, password);
         if (res.status === 200) {
@@ -49,7 +54,7 @@ const SignForm = ({ type, children }: Props) => {
   return (
     <>
       <Heading>
-        {type === "register" ? (
+        {type?.formType === "register" ? (
           <t.H1 fontSize="27px" fontWeight="700" color="white" mb="8px">
             Create an account
           </t.H1>
@@ -63,7 +68,7 @@ const SignForm = ({ type, children }: Props) => {
         )}
       </Heading>
       <form>
-        {type === "register" && (
+        {type?.formType === "register" && (
           <InputWithLabel
             id="email"
             value={email}
@@ -98,13 +103,13 @@ const SignForm = ({ type, children }: Props) => {
           textColor="lighterGrey"
           required
         />
-        {type === "register" && (
+        {type?.formType === "register" && (
           <Paragraph editStyle={{ fontSize: "14px", mb: "20px", mt: "4px" }}>
             Forgot your password?
           </Paragraph>
         )}
         <Button onClick={handleOnClick}>
-          {type === "register" ? "Register" : "Login"}
+          {type?.formType === "register" ? "Register" : "Login"}
         </Button>
         {children}
       </form>

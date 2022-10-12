@@ -14,6 +14,10 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
+export const registerUser = async (email:string, username: string, password:string): Promise<number> => {
+  const res = await axios.post("/users", { email, username, password });
+  return res.status
+}
 export const loginUser = async (
   username: string,
   password: string

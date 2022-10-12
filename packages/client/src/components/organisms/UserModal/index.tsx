@@ -23,7 +23,7 @@ const UserModal = (props: Props) => {
       {modalVisible && (
         <s.Wrapper>
           <s.Container>
-            <SignForm type={formType}>
+            <SignForm type={{formType, setFormType}}>
               <Paragraph
                 color="lightGrey"
                 editStyle={{ fontSize: "14px", mt: "4px", fontWeight: "700" }}
