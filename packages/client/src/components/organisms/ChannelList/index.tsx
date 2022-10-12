@@ -1,6 +1,8 @@
-import { ChannelItem, ServerItem } from "@chat-app-typescript/shared";
+import { ChannelItem, ServerItem, UserItem } from "@chat-app-typescript/shared";
+import userEvent from "@testing-library/user-event";
 import React, { useEffect, useState } from "react";
-import { getServer } from "../../../global/api";
+import { createChannel, getServer } from "../../../global/api";
+import Paragraph from "../../atoms/Paragraph";
 import * as s from "./styles";
 
 type Props = {
@@ -9,26 +11,29 @@ type Props = {
     activeChannel: ChannelItem | null;
     setActiveChannel: React.Dispatch<React.SetStateAction<ChannelItem | null>>;
   };
+  user: UserItem
 };
 
-const ChannelList = ({ states }: Props) => {
+const ChannelList = ({ states, user}: Props) => {
   const [channelList, setChannelList] = useState<ChannelItem[]>([]);
-  console.log(states.activeServer);
+  const [ channelName, setChannelName ] = useState<string>('');
+  const [ channelDescription, setChannelDescription ] = useState<string>('');
+const { activeServer, activeChannel, setActiveChannel } = states;
 
   const fetchServer = async (): Promise<ServerItem> => {
-    const res = await getServer(states.activeServer?.id || 1)
+    const res = await getServer(activeServer?.id || 1)
     setChannelList(res.channels || []);
     return res;
   };
   const handleActiveChannel = async () => {
     const server = await fetchServer();
     const channel = server?.channels?.[0] || null;
-    states.setActiveChannel(channel as unknown as ChannelItem);
+    setActiveChannel(channel as unknown as ChannelItem);
   };
 
   useEffect(() => {
     handleActiveChannel();
-  }, [states.activeServer]);
+  }, [activeServer]);
 
   const handleOnClick = async (e: any) => {
     const server = await fetchServer();
@@ -39,8 +44,24 @@ const ChannelList = ({ states }: Props) => {
     states.setActiveChannel(channel as unknown as ChannelItem);
   };
 
+  const addChannel = async () => {
+    console.log("CLICKED")
+    // const res = await createChannel(channelName, channelDescription, states.activeServer?.id || 1);
+    // res === 201 && handleActiveChannel()
+  }
+console.log("ACTIVE",activeChannel, activeServer)
   return (
     <s.Container>
+      <div style={{display: "flex"}}>
+      <Paragraph>Text Channels</Paragraph>
+      {
+        user.servers?.map((server) => {
+          if (activeServer?.name === server.name && server?.role === "admin") {
+            return <span onClick={addChannel}>+</span>
+          }
+        })
+      }
+      </div>
       <ul style={{minWidth: "64px"}}>
         {channelList.map((channel) => {
           return (

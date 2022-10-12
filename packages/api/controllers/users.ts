@@ -52,6 +52,7 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     )) as unknown as UserItem;
     user.posts = await findAllPostsByUser(parseInt(req.user?.userId));
     user.servers = await findServersByUser(parseInt(req.user?.userId));
+    console.log("USER: ", user);
     res.json(user);
   } catch (err) {
     console.log(err);

@@ -42,7 +42,6 @@ export default function Layout({ children }: Props) {
       fetchUser();
     }
   }, []);
-console.log(user)
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <ModalContext.Provider value={{ modalVisible, setModalVisible }}>

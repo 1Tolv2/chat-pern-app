@@ -12,7 +12,7 @@ export const handleNewServer = async (
 
   if (missingFields.length === 0) {
     try {
-      const server = await createServer(req.body);
+      const server = await createServer(req.body, req?.user?.id);
       res.status(201).json(server);
     } catch (err) {
       if (err instanceof Error) {

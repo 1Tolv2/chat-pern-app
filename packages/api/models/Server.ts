@@ -2,7 +2,8 @@ import { sql, UniqueIntegrityConstraintViolationError } from "slonik";
 import { pool } from "../config/env/test";
 import { TimeStamps } from "../global/types";
 import { createChannel } from "./Channel";
-import { ServerItem } from "@chat-app-typescript/shared";
+import { ServerItem, UserItem } from "@chat-app-typescript/shared";
+import { JwtPayload } from "jsonwebtoken";
 
 class Server implements ServerItem, TimeStamps {
   name: string;
@@ -34,7 +35,8 @@ class Server implements ServerItem, TimeStamps {
   static addToDatabase = async ({
     name,
     description,
-  }: ServerItem): Promise<ServerItem> => {
+    
+  }: ServerItem, user_id: number | null): Promise<ServerItem> => {
     await this.setupTable();
     try {
       const newServer = (await (
@@ -44,7 +46,11 @@ class Server implements ServerItem, TimeStamps {
           VALUES (${name}, ${description})
           RETURNING *;
           `)) as unknown as ServerItem;
-
+          await (
+            await pool
+          ).one(sql`
+            SELECT addusertoserver('admin', ${newServer.id || 1}, ${user_id || 1});
+            `);
       if (newServer) {
         createChannel({
           name: "general",
@@ -62,10 +68,10 @@ class Server implements ServerItem, TimeStamps {
 }
 
 export const createServer = async (
-  server: ServerItem
+  server: ServerItem, user_id?: number | null
 ): Promise<ServerItem | void> => {
   try {
-    const newServer = Server.addToDatabase(server);
+    const newServer = Server.addToDatabase(server, user_id || null);
     return newServer;
   } catch (err) {
     if (err instanceof Error) {
