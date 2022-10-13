@@ -17,9 +17,11 @@ const MessageItem = ({data}: Props) => {
         const day = date.getDate();
         const month = date.getMonth();
         const year = date.getFullYear();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
         return `${day < 10 ? "0" + day : day}/${
           month < 9 ? "0" + (month+1) : (month+1)
-        }/${year}`;
+        }/${year} - ${hours<10 ? "0" + hours : hours }.${minutes < 10 ? "0" + minutes : minutes}`;
       };
   return (
     <s.Container>
