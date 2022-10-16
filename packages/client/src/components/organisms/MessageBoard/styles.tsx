@@ -24,7 +24,7 @@ const Wrapper = styled.div`
 const ScrollContainer = styled.div`
   position: relative;
   bottom: 50px;
-  height: 100%;
+  height: fit-content;
   max-height: 84vh;
   overflow-y: scroll;
   &::-webkit-scrollbar {

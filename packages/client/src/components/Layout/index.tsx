@@ -39,9 +39,10 @@ export default function Layout({ children }: Props) {
   useEffect(() => {
     const token = localStorage.getItem("jwt_token");
     if (token) {
+      console.log("fetching USER")
       fetchUser();
     }
-  }, []);
+  }, [modalVisible]);
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <ModalContext.Provider value={{ modalVisible, setModalVisible }}>

@@ -1,7 +1,6 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { ModalContext } from "../../Layout";
 import * as s from "./styles";
-import * as t from "../../theme/typography";
 import Paragraph from "../../atoms/Paragraph";
 import SignForm from "../../molecules/SignForm";
 import { theme } from "../../theme";

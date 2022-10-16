@@ -4,7 +4,6 @@ import UserModal from "./components/organisms/UserModal";
 import MainContent from "./components/organisms/MainContent";
 
 function App() {
-
   return (
     <>
       <Layout>

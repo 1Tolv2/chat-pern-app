@@ -1,4 +1,4 @@
-import { ServerItem } from "@chat-app-typescript/shared";
+import { ServerItem, UserItem } from "@chat-app-typescript/shared";
 import React, { useEffect, useState } from "react";
 import { getServer, getServers } from "../../../global/api";
 import * as s from "./styles";
@@ -8,9 +8,10 @@ type Props = {
     activeServer: ServerItem | null;
     setActiveServer: React.Dispatch<React.SetStateAction<ServerItem | null>>;
   };
+  user: UserItem
 };
 
-const ServerList = ({ states }: Props) => {
+const ServerList = ({ states, user }: Props) => {
   const [serverList, setServerList] = useState<ServerItem[]>([]);
 
   const fetchServers = async (): Promise<void> => {
@@ -19,8 +20,9 @@ const ServerList = ({ states }: Props) => {
     states.setActiveServer(servers[0])
   }
   useEffect(() => {
-    fetchServers()
-  }, []);
+    if (user){
+    fetchServers()}
+  }, [user]);
 
   const handleOnClick = async (e: any) => {
     states.setActiveServer(await getServer(e.target.id));

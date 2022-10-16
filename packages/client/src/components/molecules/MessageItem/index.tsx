@@ -30,13 +30,13 @@ const MessageItem = ({data}: Props) => {
               <div>
                 <div>
                   <s.Heading>
-                    {firstLetterToUppercase(data.user || "")}
+                    {firstLetterToUppercase(data?.user || "")}
                   </s.Heading>
                   <Paragraph editStyle={{fontSize: "0.75rem"}} color="lighterGrey">
-                    {renderDateString(new Date(data.created_at || "11/10/2022"))}
+                    {renderDateString(new Date(data?.created_at || "11/10/2022"))}
                   </Paragraph>
                 </div>
-                <Paragraph>{data.text}</Paragraph>
+                <Paragraph>{data?.text}</Paragraph>
               </div>
             </s.MessageWrapper>
 

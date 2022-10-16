@@ -1,7 +1,6 @@
 import { ChannelItem, ServerItem, UserItem } from "@chat-app-typescript/shared";
-import userEvent from "@testing-library/user-event";
-import React, { useEffect, useState } from "react";
-import { createChannel, getServer } from "../../../global/api";
+import React, { useEffect, useReducer } from "react";
+import { getServer } from "../../../global/api";
 import Paragraph from "../../atoms/Paragraph";
 import * as s from "./styles";
 
@@ -14,29 +13,51 @@ type Props = {
   user: UserItem;
 };
 
-const ChannelList = ({ states, user }: Props) => {
-  const [channelList, setChannelList] = useState<ChannelItem[]>([]);
-  const [channelName, setChannelName] = useState<string>("");
-  const [channelDescription, setChannelDescription] = useState<string>("");
-  const { activeServer, activeChannel, setActiveChannel } = states;
+type ChannelAction = {
+  type: "add" | "remove" | "replace";
+  input: ChannelItem | ChannelItem[];
+};
+const channelReducer = (state: ChannelItem[], action: ChannelAction) => {
+  if (!action.input) {
+    return state;
+  } else {
+    switch (action.type) {
+      case "add":
+        return [...state, action.input as ChannelItem];
+      case "remove":
+        return state.filter(
+          (channel) => channel.id !== (action.input as ChannelItem).id
+        );
+      case "replace": {
+        return action.input as ChannelItem[];
+      }
+    }
+  }
+};
 
-  const fetchServer = async (): Promise<ServerItem> => {
+const ChannelList = ({ states, user }: Props) => {
+  const [channels, dispatch] = useReducer(channelReducer, []);
+  // const [channelName, setChannelName] = useState<string>("");
+  // const [channelDescription, setChannelDescription] = useState<string>("");
+  const { activeServer, setActiveChannel } = states;
+
+  const fetchServerChannels = async (): Promise<ServerItem> => {
     const res = await getServer(activeServer?.id || 1);
-    setChannelList(res.channels || []);
+    dispatch({ type: "replace", input: res.channels || [] });
     return res;
-  };
-  const handleActiveChannel = async () => {
-    const server = await fetchServer();
-    const channel = server?.channels?.[0] || null;
-    setActiveChannel(channel as unknown as ChannelItem);
   };
 
   useEffect(() => {
-    handleActiveChannel();
-  }, [activeServer]);
+    if (activeServer) {
+      fetchServerChannels().then((server) => {
+        const channel = server?.channels?.[0] || null;
+        setActiveChannel(channel as unknown as ChannelItem);
+      });
+    }
+  }, [activeServer, dispatch]);
 
   const handleOnClick = async (e: any) => {
-    const server = await fetchServer();
+    const server = await fetchServerChannels();
     const channel =
       server?.channels?.find(
         (item: any) => item.id === parseInt(e.target.id)
@@ -52,18 +73,41 @@ const ChannelList = ({ states, user }: Props) => {
 
   return (
     <s.Container>
-      <s.Header><h3>{activeServer?.name}</h3></s.Header>
-      <div style={{ display: "flex",justifyContent: "space-between", paddingTop: "16px", paddingLeft: "16px", paddingRight: "8px" }}>
-        <Paragraph editStyle={{fontSize:"14px", fontWeight: "500"}} color="lightGrey">{"Text Channels".toUpperCase()}</Paragraph>
-        {user.servers?.map((server) => {
+      <s.Header>
+        <h3>{activeServer?.name}</h3>
+      </s.Header>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          paddingTop: "16px",
+          paddingLeft: "16px",
+          paddingRight: "8px",
+        }}
+      >
+        <Paragraph
+          editStyle={{ fontSize: "14px", fontWeight: "500" }}
+          color="lightGrey"
+        >
+          {"Text Channels".toUpperCase()}
+        </Paragraph>
+        {user.servers?.map((server, index) => {
           if (activeServer?.name === server.name && server?.role === "admin")
-            return <span onClick={addChannel}>+</span>;
+            return (
+              <span key={index} onClick={addChannel}>
+                +
+              </span>
+            );
         })}
       </div>
       <s.StyledChanneList style={{ minWidth: "64px" }}>
-        {channelList.map((channel) => {
+        {channels.map((channel) => {
           return (
-            <s.StyledChannelItem key={channel.id} id={`${channel.id}`} onClick={handleOnClick}>
+            <s.StyledChannelItem
+              key={channel.id}
+              id={`${channel.id}`}
+              onClick={handleOnClick}
+            >
               # {channel.name}{" "}
             </s.StyledChannelItem>
           );

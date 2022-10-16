@@ -15,6 +15,7 @@ export const requireLogin = (
 };
 
 export const logInUser = async (req: Request, res: Response) => {
+  console.log("LOGIN USER", req.body);
   const missingFields = requiredFieldsCheck(req.body, ["username", "password"])
   if (missingFields.length === 0) {
     const username = req.body.username.toLowerCase()
