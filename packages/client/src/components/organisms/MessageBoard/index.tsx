@@ -9,15 +9,16 @@ type Props = {
   activeChannel: ChannelItem | null;
 };
 
-const MessageBoard = ({activeChannel}: Props) => {
-
+const MessageBoard = ({ activeChannel }: Props) => {
   return (
     <s.Container>
       <s.Wrapper>
-        <MessageStart activeChannel={activeChannel}/>
-        <MessageList activeChannel={activeChannel}/>
+        <s.ScrollContainer>
+          <MessageStart activeChannel={activeChannel} />
+          <MessageList activeChannel={activeChannel} />
+        </s.ScrollContainer>
       </s.Wrapper>
-      <MessageCreator activeChannel={activeChannel}/>
+      <MessageCreator activeChannel={activeChannel} />
     </s.Container>
   );
 };
