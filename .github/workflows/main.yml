@@ -22,16 +22,16 @@ jobs:
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}.
       
-  build: 
-    runs-on: ubuntu-latest
-    steps: 
-      - run: echo Hello, world!
-      - run: echo "build job's status is ${{ job.status }}.
+#   build: 
+#     runs-on: ubuntu-latest
+#     steps: 
+#       - run: echo Hello, world!
+#       - run: echo "build job's status is ${{ job.status }}.
   
-  test: 
-    runs-on: ubuntu-latest
-    steps: 
-      - name: Linting
-        run: echo "I will run linting stuff"
-      - run: echo "${{job.name}} job's status is ${{ job.status }}.
+#   test: 
+#     runs-on: ubuntu-latest
+#     steps: 
+#       - name: Linting
+#         run: echo "I will run linting stuff"
+#       - run: echo "${{job.name}} job's status is ${{ job.status }}.
     
