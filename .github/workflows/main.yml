@@ -27,9 +27,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install modules
-      run: npm install
+      run: npm 
     - name: Run ESLint
-      run: eslint . --ext .js,.jsx,.ts,.tsx
+      run: eslint . -w packages/api
   
   test: 
     runs-on: ubuntu-latest
