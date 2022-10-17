@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - run: echo Hello, world!
-      - run: echo "${{job.name}} job's status is ${{ job.status }}.
+      - run: echo "build job's status is ${{ job.status }}.
   
   test: 
     runs-on: ubuntu-latest
