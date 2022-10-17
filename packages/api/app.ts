@@ -8,7 +8,7 @@ import http from "http";
 import { Server } from "socket.io";
 import { PORT } from "./config/config";
 import routes from "./routes/index";
-import {runSocketServer} from "./controllers/socket";
+import {runSocketServer, SocketServer} from "./controllers/socket";
 
 const CORS_ORIGIN = ["http://localhost:3000"];
 const app: Express = express(); // sätter upp en express server
@@ -18,7 +18,7 @@ app.use(json());
 // app.use(cookieParser());
 
 const server = http.createServer(app); // skapar en http server
-export const io = new Server(server, {
+export const io = new Server<SocketServer>(server, {
   cors: { origin: ["http://localhost:3000"], credentials: true },
 });
 

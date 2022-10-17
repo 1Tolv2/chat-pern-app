@@ -1,40 +1,65 @@
 // import { Request, Response, NextFunction } from "express";
 // import { UserItem } from "@chat-app-typescript/shared";
 // import User from "../models/User";
-import jwt, { JwtPayload } from "jsonwebtoken";
-// import dotenv from "dotenv";
-// import { requiredFieldsCheck } from ".";
+import { JwtPayload } from "jsonwebtoken";
 import { PostItem } from "@chat-app-typescript/shared";
 import { io } from "../app";
 import { createPost, findAllPostsByChannel } from "../models/Post";
+import { verifyToken } from "./auth";
+import { Socket } from "socket.io";
 
-const posts: PostItem[] = [
-  { text: "Hello World!", user_id: 1, channel_id: 1 },
-  { text: "Hello World! 2", user_id: 1, channel_id: 1 },
-];
+interface ServerToClientEvents {
+  noArg: () => void;
+  basicEmit: (a: number, b: string, c: Buffer) => void;
+  withAck: (d: string, callback: (e: number) => void) => void;
+  message: (a: PostItem) => void
+  messages: (a: PostItem[]) => void
+}
 
-export const runSocketServer = async(socket: any, next: any) => {
+interface ClientToServerEvents {
+  hello: () => void;
+}
+
+interface InterServerEvents {
+  ping: () => void;
+}
+
+interface SocketData {
+  name: string;
+  age: number;
+}
+
+export interface SocketServer extends ServerToClientEvents, ClientToServerEvents, InterServerEvents, SocketData {}
+
+export const runSocketServer = async (socket: Socket, next: () => void): Promise<void> => {
   const token = socket.handshake.auth.token;
-
   if (token) {
     let user: JwtPayload | null = null;
     try {
-      user = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
-    } catch (error: any) {
-      console.error("ERROR", error);
+      user = verifyToken(token);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error("ERROR", err);
+      }
     }
     if (user) {
       console.log("A client connected to server");
-      const posts = await findAllPostsByChannel(socket.handshake.query.channel_id)
-      socket.emit("messages", posts); // skicka meddelande när de kopplar upp sig
+      const posts = await findAllPostsByChannel(
+        parseInt(socket.handshake.query?.channel_id as string || "0")
+      );
+      socket.emit("messages", posts); // skicka alla meddelande när de kopplar upp sig
 
-      socket.on("message", async (message: PostItem) => {
-        const {text, channel_id} = message
-        const newPost = await createPost({text, user_id: user?.userId, channel_id})
-        io.emit("message", {...newPost, user: user?.username}); // skicka meddelande när nytt dykt upp
+      socket.on("message", async (message: PostItem): Promise<void> => {
+        const { text, channel_id } = message;
+        const newPost = await createPost({
+          text,
+          user_id: user?.userId,
+          channel_id,
+        });
+        io.emit("message", { ...newPost, user: user?.username || "" } as PostItem); // skicka meddelandet när nytt dykt upp
       });
 
-      socket.on("disconnect", (reason: any) => {
+      socket.on("disconnect", (reason: string) => {
         console.log("A client disconnected from the server due to: " + reason);
       });
     }

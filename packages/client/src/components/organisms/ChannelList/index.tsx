@@ -56,11 +56,11 @@ const ChannelList = ({ states, user }: Props) => {
     }
   }, [activeServer, dispatch]);
 
-  const handleOnClick = async (e: any) => {
+  const handleOnClick = async (e: any): Promise<void> => {
     const server = await fetchServerChannels();
     const channel =
       server?.channels?.find(
-        (item: any) => item.id === parseInt(e.target.id)
+        (item: ChannelItem) => item.id === parseInt((e.target as HTMLLIElement).id)
       ) || null;
     states.setActiveChannel(channel as unknown as ChannelItem);
   };
