@@ -1,6 +1,11 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+on: 
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+    
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
@@ -15,4 +20,18 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - run: echo "🍏 This job's status is ${{ job.status }}.
+      
+  build: 
+    runs-on: ubuntu-latest
+    steps: 
+      - run: echo Hello, world!
+      - run: echo "${{job.name}} job's status is ${{ job.status }}.
+  
+  test: 
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Linting
+        run: echo "I will run linting stuff"
+      - run: echo "${{job.name}} job's status is ${{ job.status }}.
+    
