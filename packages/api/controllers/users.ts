@@ -44,7 +44,7 @@ export const getAllUsers = async (
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    let user = (await findUserById(
+    const user = (await findUserById(
       parseInt(req.user?.userId)
     )) as unknown as UserItem;
     user.servers = await findServersByUser(parseInt(req.user?.userId));

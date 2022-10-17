@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { UserItem } from "@chat-app-typescript/shared";
 import User from "../models/User";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";

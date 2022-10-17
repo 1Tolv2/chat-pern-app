@@ -12,8 +12,8 @@ interface ServerToClientEvents {
   noArg: () => void;
   basicEmit: (a: number, b: string, c: Buffer) => void;
   withAck: (d: string, callback: (e: number) => void) => void;
-  message: (a: PostItem) => void
-  messages: (a: PostItem[]) => void
+  message: (a: PostItem) => void;
+  messages: (a: PostItem[]) => void;
 }
 
 interface ClientToServerEvents {
@@ -29,9 +29,16 @@ interface SocketData {
   age: number;
 }
 
-export interface SocketServer extends ServerToClientEvents, ClientToServerEvents, InterServerEvents, SocketData {}
+export interface SocketServer
+  extends ServerToClientEvents,
+    ClientToServerEvents,
+    InterServerEvents,
+    SocketData {}
 
-export const runSocketServer = async (socket: Socket, next: () => void): Promise<void> => {
+export const runSocketServer = async (
+  socket: Socket,
+  next: () => void
+): Promise<void> => {
   const token = socket.handshake.auth.token;
   if (token) {
     let user: JwtPayload | null = null;
@@ -45,7 +52,7 @@ export const runSocketServer = async (socket: Socket, next: () => void): Promise
     if (user) {
       console.log("A client connected to server");
       const posts = await findAllPostsByChannel(
-        parseInt(socket.handshake.query?.channel_id as string || "0")
+        parseInt((socket.handshake.query?.channel_id as string) || "0")
       );
       socket.emit("messages", posts); // skicka alla meddelande när de kopplar upp sig
 
@@ -56,7 +63,10 @@ export const runSocketServer = async (socket: Socket, next: () => void): Promise
           user_id: user?.userId,
           channel_id,
         });
-        io.emit("message", { ...newPost, user: user?.username || "" } as PostItem); // skicka meddelandet när nytt dykt upp
+        io.emit("message", {
+          ...newPost,
+          user: user?.username || "",
+        } as PostItem); // skicka meddelandet när nytt dykt upp
       });
 
       socket.on("disconnect", (reason: string) => {

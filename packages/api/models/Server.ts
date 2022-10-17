@@ -2,8 +2,7 @@ import { sql, UniqueIntegrityConstraintViolationError } from "slonik";
 import { pool } from "../config/env/test";
 import { TimeStamps } from "../global/types";
 import { createChannel } from "./Channel";
-import { ServerItem, UserItem } from "@chat-app-typescript/shared";
-import { JwtPayload } from "jsonwebtoken";
+import { ServerItem } from "@chat-app-typescript/shared";
 
 class Server implements ServerItem, TimeStamps {
   name: string;
@@ -32,11 +31,10 @@ class Server implements ServerItem, TimeStamps {
       `);
   };
 
-  static addToDatabase = async ({
-    name,
-    description,
-    
-  }: ServerItem, user_id: number | null): Promise<ServerItem> => {
+  static addToDatabase = async (
+    { name, description }: ServerItem,
+    user_id: number | null
+  ): Promise<ServerItem> => {
     await this.setupTable();
     try {
       const newServer = (await (
@@ -46,10 +44,12 @@ class Server implements ServerItem, TimeStamps {
           VALUES (${name}, ${description})
           RETURNING *;
           `)) as unknown as ServerItem;
-          await (
-            await pool
-          ).one(sql`
-            SELECT addusertoserver('admin', ${newServer.id || 1}, ${user_id || 1});
+      await (
+        await pool
+      ).one(sql`
+            SELECT addusertoserver('admin', ${newServer.id || 1}, ${
+        user_id || 1
+      });
             `);
       if (newServer) {
         createChannel({
@@ -68,7 +68,8 @@ class Server implements ServerItem, TimeStamps {
 }
 
 export const createServer = async (
-  server: ServerItem, user_id?: number | null
+  server: ServerItem,
+  user_id?: number | null
 ): Promise<ServerItem | void> => {
   try {
     const newServer = Server.addToDatabase(server, user_id || null);
@@ -104,7 +105,7 @@ JOIN servers as s ON s.id = su.server_id
 WHERE user_id = ${userId};`)) as unknown as ServerItem[];
 };
 
-export const updateServer = async () => {};
-export const deleteServer = async () => {};
+// export const updateServer = async () => {};
+// export const deleteServer = async () => {};
 
 export default Server;

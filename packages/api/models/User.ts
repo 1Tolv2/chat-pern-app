@@ -42,7 +42,7 @@ class User implements UserItem, TimeStamps {
     WHERE table_name = 'servers'`))
     ) {
       await createServer({ name: "First server", description: "Hello World!" });
-      await Post.setupTable()
+      await Post.setupTable();
     }
 
     if (
@@ -130,7 +130,7 @@ export const createUser = async (user: UserItem): Promise<UserItem | void> => {
     delete newUser.password;
   } catch (err) {
     if (err instanceof Error) {
-      console.error(err)
+      console.error(err);
       throw new Error(err.message);
     }
   }
@@ -160,7 +160,7 @@ export const findUserByUsername = async (
   WHERE username = ${username};`)) as unknown as UserItem;
 };
 
-export const updateUser = async () => {};
-export const deleteUser = async () => {};
+// export const updateUser = async () => {};
+// export const deleteUser = async () => {};
 
 export default User;

@@ -32,6 +32,6 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - name: Linting
-        run: echo "I will run linting stuff"
+        run: npm run eslint -w packages/api
       - run: echo "${{job.name}} job's status is ${{ job.status }}."
     

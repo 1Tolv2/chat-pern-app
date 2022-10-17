@@ -6,13 +6,17 @@ export const handleNewPost = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const missingFields = requiredFieldsCheck({...req.body, user_id:
-     req.user?.userId}, ["channel_id", "text", "user_id"]);
+  const missingFields = requiredFieldsCheck(
+    { ...req.body, user_id: req.user?.userId },
+    ["channel_id", "text", "user_id"]
+  );
   if (missingFields.length === 0) {
     try {
-      const post = await createPost({ ...req.body, user_id: parseInt(req.user?.userId) });
+      const post = await createPost({
+        ...req.body,
+        user_id: parseInt(req.user?.userId),
+      });
       res.status(201).json(post);
-
     } catch (err) {
       if (err instanceof Error) {
         res.status(409).json({ error: err.message });
