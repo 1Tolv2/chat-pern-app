@@ -26,15 +26,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Install modules
+    - name: Installing dependencies
       run: npm install
-    - name: Run ESLint
+    - name: Running ESLint on Server
       run:  | 
         cd packages/api
         npm run eslint
+    - name: Running ESLint on Client
+      run: echo "Running ESLint on Client"
+    - run: echo "${{job.name}} job status ${{ job.status }}."
   
   test: 
     runs-on: ubuntu-latest
     steps: 
-      - run: echo "${{job.name}} job's status is ${{ job.status }}."
+      - run: echo "${{job.name}} job status ${{ job.status }}."
     
