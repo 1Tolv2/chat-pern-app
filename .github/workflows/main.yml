@@ -30,8 +30,8 @@ jobs:
       run: npm install
     - name: Run ESLint
       run:  | 
-      cd packages/api
-      eslint .
+        cd packages/api
+        eslint .
   
   test: 
     runs-on: ubuntu-latest
