@@ -10,17 +10,19 @@ export const requireLogin = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   req.user ? next() : res.status(401).json({ error: "Unauthorized" });
 };
 
-export const verifyToken = (token: string) => {
-return jwt.verify( token,
-    process.env.JWT_SECRET as string
-  ) as JwtPayload;
-} 
+export const verifyToken = (token: string): JwtPayload => {
+  return jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
+};
 
-export const handleToken = async (req: Request, res: Response, next: NextFunction) => {
+export const handleToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   // const token = req.cookies.access_token;
   // console.log("token", req.cookies);
   const authHeader = req.header("Authorization");
@@ -30,15 +32,15 @@ export const handleToken = async (req: Request, res: Response, next: NextFunctio
       req.user = verifyToken(token);
     } catch (err) {
       if (err instanceof Error) {
-      err.message === "invalid token" &&
-        res.status(401).json({ error: "Invalid token" });}
-        else console.error(err)
+        err.message === "invalid token" &&
+          res.status(401).json({ error: "Invalid token" });
+      } else console.error(err);
     }
   }
   next();
-}
+};
 
-export const logInUser = async (req: Request, res: Response) => {
+export const logInUser = async (req: Request, res: Response): Promise<void> => {
   const missingFields = requiredFieldsCheck(req.body, ["username", "password"]);
   if (missingFields.length === 0) {
     const username = req.body.username.toLowerCase();
