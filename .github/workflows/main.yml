@@ -22,16 +22,17 @@ jobs:
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
       
-  build: 
+  build:
     runs-on: ubuntu-latest
-    steps: 
-      - run: echo Hello, world!
-      - run: echo "build job's status is ${{ job.status }}."
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install modules
+      run: yarn
+    - name: Run ESLint
+      run: eslint . --ext .js,.jsx,.ts,.tsx
   
   test: 
     runs-on: ubuntu-latest
     steps: 
-      - name: Linting
-        run: npm run eslint -w packages/api
       - run: echo "${{job.name}} job's status is ${{ job.status }}."
     
