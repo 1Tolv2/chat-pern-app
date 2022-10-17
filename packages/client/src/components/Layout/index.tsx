@@ -39,7 +39,6 @@ export default function Layout({ children }: Props) {
   useEffect(() => {
     const token = localStorage.getItem("jwt_token");
     if (token) {
-      console.log("fetching USER")
       fetchUser();
     }
   }, [modalVisible]);

@@ -56,7 +56,6 @@ const MessageList = ({ activeChannel, socket, setSocket }: Props) => {
   // }, [activeChannel]);
 
   useEffect(() => {
-    console.log("I RUN!");
     const token = localStorage.getItem("jwt_token");
     if (activeChannel && token) {
       const socket = io("http://localhost:8800", {
