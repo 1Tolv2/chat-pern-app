@@ -15,7 +15,7 @@ const MainContent = (props: Props) => {
   return (
     user && (
       <>
-        <ServerList states={{ activeServer, setActiveServer }} />
+        <ServerList user={user} states={{ activeServer, setActiveServer }} />
         <ChannelList user={user}
           states={{ activeChannel, setActiveChannel, activeServer }}
         />

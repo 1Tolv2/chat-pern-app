@@ -1,6 +1,6 @@
 import { ChannelItem, ServerItem, UserItem } from "@chat-app-typescript/shared";
-import axios, { AxiosResponse } from "axios";
-import { Post, ActivityData } from "./types";
+import axios from "axios";
+import { ActivityData } from "./types";
 
 axios.defaults.baseURL = "http://localhost:8800";
 axios.interceptors.request.use((config) => {
@@ -33,8 +33,8 @@ export const loginUser = async (
 
   if (res?.status === 200) {
     localStorage.setItem("jwt_token", res.data.token);
-    const {data} = await axios.get("/users/me");
-    return data
+    const { data } = await axios.get("/users/me");
+    return data;
   }
   return null;
 };

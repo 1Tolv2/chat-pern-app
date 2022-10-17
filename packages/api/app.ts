@@ -1,42 +1,30 @@
 import express, {
-  Request,
-  Response,
   Express,
   json,
-  NextFunction,
 } from "express";
 import cors from "cors";
-import { PORT, ALTER_DATABASE } from "./config/config";
-import routes from "./routes/index";
-import jwt, { JwtPayload } from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import http from "http";
+import { Server } from "socket.io";
+import { PORT } from "./config/config";
+import routes from "./routes/index";
+import {runSocketServer, SocketServer} from "./controllers/socket";
 
-const app: Express = express();
-app.use(cors());
+const CORS_ORIGIN = ["http://localhost:3000"];
+const app: Express = express(); // sätter upp en express server
+
+app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
 app.use(json());
-app.use(cookieParser());
+// app.use(cookieParser());
 
-app.use(async (req: Request, res: Response, next: NextFunction) => {
-  // const token = req.cookies.access_token;
-  // console.log("token", req.cookies);
-  const authHeader = req.header("Authorization");
-  if (authHeader && authHeader.split(" ")[0] === "Bearer") {
-    const token = authHeader.split(" ")[1]; // splitta så vi får ut tokenen
-  try {
-      req.user = jwt.verify(
-        token,
-        process.env.JWT_SECRET as string
-      ) as JwtPayload;
-    } catch (error: any) {
-      error.message === "invalid token" &&
-        res.status(401).json({ error: "Invalid token" });
-    }
-  }
-  next();
+const server = http.createServer(app); // skapar en http server
+export const io = new Server<SocketServer>(server, {
+  cors: { origin: ["http://localhost:3000"], credentials: true },
 });
 
+io.use(runSocketServer)
 app.use("/", routes);
 
-app.listen(PORT, async () => {
+server.listen(PORT, async () => {
   console.log(`Express server running on port: ${PORT}`);
-});
+}); // lyssnar på http servern
