@@ -1,7 +1,5 @@
 import express, { NextFunction, Request, Response, Router } from 'express';
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { PostItem } from "@chat-app-typescript/shared";
-
 import { requireLogin } from '../controllers/auth';
 import usersRouter from './users'
 import postsRouter from './posts'

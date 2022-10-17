@@ -70,11 +70,9 @@ const MessageList = ({ activeChannel, socket, setSocket }: Props) => {
       socket.connect();
       setSocket && setSocket(socket);
       socket.on("message", (message) => {
-        console.log("HERE a", message);
         dispatch({ type: "add", input: message });
       });
       socket.on("messages", (messages) => {
-        console.log("HERE b", messages);
         dispatch({ type: "replace", input: messages });
       });
       return () => {
@@ -83,7 +81,7 @@ const MessageList = ({ activeChannel, socket, setSocket }: Props) => {
         socket.disconnect();
       };
     }
-  }, []);
+  }, [activeChannel]);
 
   return (
     <s.MessageList>
