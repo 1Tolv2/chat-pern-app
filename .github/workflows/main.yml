@@ -31,7 +31,7 @@ jobs:
     - name: Run ESLint
       run:  | 
         cd packages/api
-        eslint .
+        npm run eslint
   
   test: 
     runs-on: ubuntu-latest
