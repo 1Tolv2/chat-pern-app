@@ -29,8 +29,9 @@ jobs:
     - name: Install modules
       run: npm install
     - name: Run ESLint
-      working-directory: ./packages/api
-      run: eslint . --ext .js,.ts,.tsx
+      run:  | 
+      cd packages/api
+      eslint . --ext .js,.ts,.tsx
   
   test: 
     runs-on: ubuntu-latest
