@@ -15,8 +15,8 @@ export const handleNewUser = async (
   ]);
   if (missingFields.length === 0) {
     try {
-      const user = await createUser(req.body);
-      res.status(201).json(user);
+      await createUser(req.body);
+      res.sendStatus(201);
     } catch (err) {
       if (err instanceof Error) {
         res.status(409).json({ error: err.message });

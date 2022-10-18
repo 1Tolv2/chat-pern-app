@@ -1,5 +1,5 @@
 import { sql, UniqueIntegrityConstraintViolationError } from "slonik";
-import { pool } from "../config/env/test";
+import { pool } from ".";
 import { TimeStamps } from "../global/types";
 import { createChannel } from "./Channel";
 import { ServerItem } from "@chat-app-typescript/shared";

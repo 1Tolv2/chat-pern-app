@@ -1,5 +1,5 @@
 import { sql, UniqueIntegrityConstraintViolationError } from "slonik";
-import { pool } from "../config/env/test";
+import { pool } from ".";
 import { TimeStamps } from "../global/types";
 import bcrypt from "bcryptjs";
 import { UserItem } from "@chat-app-typescript/shared";
@@ -124,7 +124,7 @@ class User implements UserItem, TimeStamps {
   };
 }
 
-export const createUser = async (user: UserItem): Promise<UserItem | void> => {
+export const createUser = async (user: UserItem): Promise<void> => {
   try {
     const newUser = (await User.addToDatabase(user)) as UserItem;
     delete newUser.password;

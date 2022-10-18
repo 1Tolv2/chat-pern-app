@@ -64,11 +64,11 @@ export const logInUser = async (req: Request, res: Response): Promise<void> => {
           user: { userId: user.id?.toString(), username: username },
           token,
         });
-    } else {
-      res.status(400).json({
-        error: "Missing required fields",
-        missingFields,
-      });
     }
+  } else {
+    res.status(400).json({
+      error: "Missing required fields",
+      missingFields,
+    });
   }
 };

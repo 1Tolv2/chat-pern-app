@@ -1,5 +1,5 @@
 import { sql } from "slonik";
-import { pool } from "../config/env/test";
+import { pool } from ".";
 import { TimeStamps } from "../global/types";
 import { PostItem } from "@chat-app-typescript/shared";
 
