@@ -2,7 +2,7 @@ import { ChannelItem, ServerItem, UserItem } from "@chat-app-typescript/shared";
 import axios from "axios";
 import { ActivityData } from "./types";
 
-axios.defaults.baseURL = "http://localhost:8800";
+axios.defaults.baseURL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 axios.interceptors.request.use((config) => {
   if (!config?.headers) {
     config.headers = {};
