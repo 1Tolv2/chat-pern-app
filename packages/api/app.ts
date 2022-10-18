@@ -4,18 +4,18 @@ import http from "http";
 import { Server } from "socket.io";
 import routes from "./routes/index";
 import { runSocketServer, SocketServer } from "./controllers/socket";
-import { PORT } from "./config/config";
+import { CORS_ORIGINS } from "./config/config";
+import dotenv from "dotenv";
+dotenv.config();
 
-const CORS_ORIGIN = ["http://localhost:3000"];
 const app: Express = express(); // sätter upp en express server
-
-app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
+app.use(cors({ origin: CORS_ORIGINS, credentials: true }));
 app.use(json());
 // app.use(cookieParser());
 
 const server = http.createServer(app); // skapar en http server
 const io = new Server<SocketServer>(server, {
-  cors: { origin: ["http://localhost:3000"], credentials: true },
+  cors: { origin: CORS_ORIGINS, credentials: true },
 });
 
 io.use(runSocketServer);

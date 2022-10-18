@@ -15,7 +15,7 @@ jest.mock("../../models/User", () => {
   const mockUser = {
     id: 1,
     email: "tolv@test.com",
-    username: "tolv",
+    username: "tolv2",
     password: "lol",
     createdAt: new Date(),
     updatedAt: null,
@@ -28,15 +28,25 @@ jest.mock("../../models/User", () => {
   };
 });
 describe("GET /users", () => {
-  //   test("should return 200 and array of users", () => {
-  //     request(server)
-  //       .get("/users")
-  //       .set("Authorization", `Bearer ${token}`)
-  //       .then((res) => {
-  //         console.log(res.body);
-  //         expect(res.statusCode).toBe(200);
-  //       });
-  //   });
+  User.authorizeUser = jest.fn().mockReturnValueOnce(defaultUser);
+  let token = "";
+  beforeAll(async () => {
+    const res = await request(server)
+      .post("/users/auth")
+      .send({ username: "Tolv", email: "tolv@test.com", password: "lol" });
+    token = res.body.token;
+    console.log("NODE_ENV: ", process.env.NODE_ENV);
+  });
+
+  test("should return 200 and array of users", () => {
+    request(server)
+      .get("/users")
+      .set("Authorization", `Bearer ${token}`)
+      .then((res) => {
+        console.log(res.body);
+        expect(res.statusCode).toBe(200);
+      });
+  });
 });
 
 describe("POST /users", () => {
@@ -61,30 +71,32 @@ describe("POST /users", () => {
         expect(res.body.missingFields).toEqual(["email", "password"]);
       });
   });
-  test("/auth should return 400 if missing required fields", () => {
-    return request(server)
-      .post("/users/auth")
-      .send({ username: "Tolv" })
-      .set("Accept", "application/json")
-      .expect(400)
-      .then((res) => {
-        expect(res.body).toHaveProperty("error");
-        expect(res.body).toHaveProperty("missingFields");
-      });
-  });
-  test("/auth should return user object with token", () => {
-    User.authorizeUser = jest.fn().mockReturnValueOnce(defaultUser);
+  describe("/auth", () => {
+    test("Should return user object with token", () => {
+      User.authorizeUser = jest.fn().mockReturnValueOnce(defaultUser);
 
-    return request(server)
-      .post("/users/auth")
-      .send({ username: "Tolv", password: "lol" })
-      .set("Accept", "application/json")
-      .expect(200)
-      .then((res) => {
-        expect(res.body).toHaveProperty("user");
-        expect(res.body.token).toMatch(/^(?:[\w-]*\.){2}[\w-]*$/);
-        expect(res.body.user).toHaveProperty("userId");
-        expect(res.body.user).toHaveProperty("username");
-      });
+      return request(server)
+        .post("/users/auth")
+        .send({ username: "Tolv", password: "lol" })
+        .set("Accept", "application/json")
+        .expect(200)
+        .then((res) => {
+          expect(res.body).toHaveProperty("user");
+          expect(res.body.token).toMatch(/^(?:[\w-]*\.){2}[\w-]*$/);
+          expect(res.body.user).toHaveProperty("userId");
+          expect(res.body.user).toHaveProperty("username");
+        });
+    });
+    test("Should return 400 if missing required fields", () => {
+      return request(server)
+        .post("/users/auth")
+        .send({ username: "Tolv" })
+        .set("Accept", "application/json")
+        .expect(400)
+        .then((res) => {
+          expect(res.body).toHaveProperty("error");
+          expect(res.body).toHaveProperty("missingFields");
+        });
+    });
   });
 });
