@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  database:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    container_name: database
+    volumes:
+      - /data:/var/lib/postgresql/data
+
+  api:
+    build: 
+      dockerfile: Dockerfile.api
+    ports:
+      - "8800:4000"
+    environment:
+      - POSTGRES_DEV_URL=postgres://postgres:postgres@database:5432/chatappdb
+  
+  client: 
+    build: 
+      dockerfile: Dockerfile.client
+      args:
+        REACT_APP_API_URL: http://localhost:8800
+    ports:
+      - "3000:3000"

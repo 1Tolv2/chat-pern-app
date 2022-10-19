@@ -4,11 +4,16 @@ import http from "http";
 import { Server } from "socket.io";
 import routes from "./routes/index";
 import { runSocketServer, SocketServer } from "./controllers/socket";
-import { CORS_ORIGINS } from "./config/config";
+import { CORS_ORIGINS, PORT, POSTGRES_URL } from "./config/config";
 import dotenv from "dotenv";
+import { setUpDatabase } from "./models";
 dotenv.config();
 
 const app: Express = express(); // sätter upp en express server
+if (!process.env.NODE_ENV) {
+  process.env.NODE_ENV = "development";
+}
+
 app.use(cors({ origin: CORS_ORIGINS, credentials: true }));
 app.use(json());
 // app.use(cookieParser());
@@ -21,4 +26,9 @@ const io = new Server<SocketServer>(server, {
 io.use(runSocketServer);
 app.use("/", routes);
 
-export { app, server, io };
+server.listen(PORT, async () => {
+  await setUpDatabase(POSTGRES_URL);
+  console.log(`Express server running on port: ${PORT}`);
+});
+
+export { server, app, io };
