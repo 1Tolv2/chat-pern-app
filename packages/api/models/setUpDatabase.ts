@@ -86,7 +86,7 @@ const createServerUsersTable = async () => {
       FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE,
       role VARCHAR(60) NOT NULL CHECK (role = 'admin' OR role = 'member'),
       UNIQUE (user_id, server_id)
-    )
+    );
     `);
 };
 

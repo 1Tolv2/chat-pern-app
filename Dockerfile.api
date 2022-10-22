@@ -13,6 +13,6 @@ COPY ./packages/shared ./packages/shared
 
 RUN npm run build -w packages/api
 
-EXPOSE 4000
+EXPOSE 8800
 
 CMD [ "node", "packages/api/dist/app.js" ]

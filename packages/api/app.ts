@@ -22,12 +22,17 @@ const server = http.createServer(app); // skapar en http server
 const io = new Server<SocketServer>(server, {
   cors: { origin: CORS_ORIGINS, credentials: true },
 });
-
 io.use(runSocketServer);
 app.use("/", routes);
 
 server.listen(PORT, async () => {
-  await setUpDatabase(POSTGRES_URL);
+  try {
+    await setUpDatabase(POSTGRES_URL);
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(`Error connecting to Postgres: ${err.message}`);
+    }
+  }
   console.log(`Express server running on port: ${PORT}`);
 });
 

@@ -95,11 +95,20 @@ class User implements UserItem, TimeStamps {
         RETURNING id, username, email, created_at, updated_at;
         `)) as unknown as UserItem;
 
-      await (
-        await pool
-      ).one(sql`
-        SELECT addusertoserver('member', 1, ${newUser.id as unknown as string});
+      const newServer = await createServer(
+        { name: `${username}'s server`, description: "Hello World!" },
+        newUser.id
+      );
+      console.log(newServer);
+      if (newServer) {
+        await (
+          await pool
+        ).one(sql`
+        SELECT addusertoserver('admin', ${newServer.id || 1}, ${
+          newUser.id as unknown as string
+        });
         `);
+      }
     } catch (err) {
       if (err instanceof UniqueIntegrityConstraintViolationError) {
         throw new Error("Username or email already exists");
