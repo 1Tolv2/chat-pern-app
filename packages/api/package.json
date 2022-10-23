@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --detectOpenHandles",
-    "start": "nodemon app.ts",
+    "start": "nodemon server.ts",
     "build": "tsc",
     "eslint": "eslint .",
     "eslint-fix": "eslint . --fix"

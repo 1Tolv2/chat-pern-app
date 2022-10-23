@@ -99,7 +99,6 @@ class User implements UserItem, TimeStamps {
         { name: `${username}'s server`, description: "Hello World!" },
         newUser.id
       );
-      console.log(newServer);
       if (newServer) {
         await (
           await pool

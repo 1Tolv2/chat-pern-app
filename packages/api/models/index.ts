@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 let pool: any = null;
-export const setUpDatabase = async (url: string) => {
+export const connectToDatabase = async (url: string) => {
   try {
     console.info("Setting up Postgres database connection");
     pool = await createPool(url);
