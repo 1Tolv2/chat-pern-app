@@ -1,8 +1,6 @@
-import React, { useEffect, useContext, useState, useReducer } from "react";
-import { getChannelPosts } from "../../../global/api";
+import React, { useEffect, useReducer } from "react";
 import MessageItem from "../../molecules/MessageItem";
 import * as s from "./styles";
-import { ModalContext } from "../../Layout";
 import { ChannelItem, PostItem } from "@chat-app-typescript/shared";
 import { io, Socket } from "socket.io-client";
 
