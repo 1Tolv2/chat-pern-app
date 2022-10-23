@@ -53,7 +53,7 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     user.servers = await findServersByUser(parseInt(req.user?.userId));
     res.json(user);
   } catch (err) {
-    console.log(err);
+    console.error(err);
 
     res.sendStatus(400);
   }

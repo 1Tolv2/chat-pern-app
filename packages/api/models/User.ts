@@ -1,4 +1,4 @@
-import { sql, UniqueIntegrityConstraintViolationError } from "slonik";
+import { sql } from "slonik";
 import { pool } from ".";
 import { TimeStamps } from "../global/types";
 import bcrypt from "bcryptjs";

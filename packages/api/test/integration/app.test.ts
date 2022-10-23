@@ -35,7 +35,6 @@ describe("GET /users", () => {
       .post("/users/auth")
       .send({ username: "Tolv", email: "tolv@test.com", password: "lol" });
     token = res.body.token;
-    console.log("NODE_ENV: ", process.env.NODE_ENV);
   });
 
   test("should return 200 and array of users", () => {
@@ -43,7 +42,6 @@ describe("GET /users", () => {
       .get("/users")
       .set("Authorization", `Bearer ${token}`)
       .then((res) => {
-        console.log(res.body);
         expect(res.statusCode).toBe(200);
       });
   });

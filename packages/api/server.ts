@@ -13,5 +13,5 @@ server.listen(PORT, async () => {
   }
   await handleDBSetup();
 
-  console.log(`Express server running on port: ${PORT}`);
+  console.info(`Express server running on port: ${PORT}`);
 });

@@ -50,7 +50,7 @@ export const runSocketServer = async (
       }
     }
     if (user) {
-      console.log("A client connected to server");
+      console.info("A client connected to server");
       const posts = await findAllPostsByChannel(
         parseInt((socket.handshake.query?.channel_id as string) || "0")
       );
