@@ -37,18 +37,18 @@ const MessageList = ({ activeChannel, socket, setSocket }: Props) => {
   const { modalVisible } = useContext(ModalContext);
   const [posts, dispatch] = useReducer(postReducer, []);
 
-  const fetchData = async () => {
-    if (!modalVisible) {
-      try {
-        const data = await getChannelPosts(activeChannel?.id || 1);
-        dispatch({ type: "replace", input: data?.posts || [] });
-      } catch (err) {
-        if (err instanceof Error) {
-          console.error("ERROR", err);
-        }
-      }
-    }
-  };
+  // const fetchData = async () => {
+  //   if (!modalVisible) {
+  //     try {
+  //       const data = await getChannelPosts(activeChannel?.id || 1);
+  //       dispatch({ type: "replace", input: data?.posts || [] });
+  //     } catch (err) {
+  //       if (err instanceof Error) {
+  //         console.error("ERROR", err);
+  //       }
+  //     }
+  //   }
+  // };
 
   // useEffect(() => {
   // console.log("fetching posts")

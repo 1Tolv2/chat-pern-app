@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+  database:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=dockeruser
+      - POSTGRES_PASSWORD=dockerpass
+      - POSTGRES_DB=dockerchatappdb
+    container_name: database
+    volumes:
+      - /data/db
+      - ./packages/api/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  api:
+    build: 
+      dockerfile: Dockerfile.api
+    depends_on:
+      - database
+    ports:
+      - "8800:8800"
+    environment:
+      - POSTGRES_DEV_URL=postgres://dockeruser:dockerpass@database:5432/dockerchatappdb
+      - CORS_ORIGINS=http://localhost:3000
+      - JWT_SECRET=239nc57v29874do9qx87as8mzkmdxwdl923xcm4riow
+    container_name: ts-chatapp-api
+  
+  client: 
+    build: 
+      dockerfile: Dockerfile.client
+      args:
+        CHAT_APP_API_URL: http://localhost:8800
+    ports:
+      - "3000:3000"
+    container_name: ts-chatapp-client

@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { UserItem } from "@chat-app-typescript/shared";
 import User from "../models/User";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 import { requiredFieldsCheck } from ".";
+import { UserItem } from "@chat-app-typescript/shared";
 dotenv.config();
 
 export const requireLogin = (
@@ -44,10 +44,19 @@ export const logInUser = async (req: Request, res: Response): Promise<void> => {
   const missingFields = requiredFieldsCheck(req.body, ["username", "password"]);
   if (missingFields.length === 0) {
     const username = req.body.username.toLowerCase();
-    const user = await User.authorizeUser({
-      username,
-      password: req.body.password,
-    });
+    let user: UserItem | null = null;
+    try {
+      user = await User.authorizeUser({
+        username,
+        password: req.body.password,
+      });
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+      }
+    }
+
     if (user) {
       const token = jwt.sign(
         { userId: user.id?.toString(), username: username },
@@ -65,11 +74,11 @@ export const logInUser = async (req: Request, res: Response): Promise<void> => {
           user: { userId: user.id?.toString(), username: username },
           token,
         });
-    } else {
-      res.status(400).json({
-        error: "Missing required fields",
-        missingFields,
-      });
     }
+  } else {
+    res.status(400).json({
+      error: "Missing required fields",
+      missingFields,
+    });
   }
 };

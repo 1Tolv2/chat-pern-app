@@ -1,5 +1,5 @@
 import { sql, UniqueIntegrityConstraintViolationError } from "slonik";
-import { pool } from "../config/env/test";
+import { pool } from ".";
 import { TimeStamps } from "../global/types";
 import bcrypt from "bcryptjs";
 import { UserItem } from "@chat-app-typescript/shared";
@@ -42,7 +42,7 @@ class User implements UserItem, TimeStamps {
     WHERE table_name = 'servers'`))
     ) {
       await createServer({ name: "First server", description: "Hello World!" });
-      await Post.setupTable()
+      await Post.setupTable();
     }
 
     if (
@@ -95,11 +95,19 @@ class User implements UserItem, TimeStamps {
         RETURNING id, username, email, created_at, updated_at;
         `)) as unknown as UserItem;
 
-      await (
-        await pool
-      ).one(sql`
-        SELECT addusertoserver('member', 1, ${newUser.id as unknown as string});
+      const newServer = await createServer(
+        { name: `${username}'s server`, description: "Hello World!" },
+        newUser.id
+      );
+      if (newServer) {
+        await (
+          await pool
+        ).one(sql`
+        SELECT addusertoserver('admin', ${newServer.id || 1}, ${
+          newUser.id as unknown as string
+        });
         `);
+      }
     } catch (err) {
       if (err instanceof UniqueIntegrityConstraintViolationError) {
         throw new Error("Username or email already exists");
@@ -124,13 +132,13 @@ class User implements UserItem, TimeStamps {
   };
 }
 
-export const createUser = async (user: UserItem): Promise<UserItem | void> => {
+export const createUser = async (user: UserItem): Promise<void> => {
   try {
     const newUser = (await User.addToDatabase(user)) as UserItem;
     delete newUser.password;
   } catch (err) {
     if (err instanceof Error) {
-      console.error(err)
+      console.error(err);
       throw new Error(err.message);
     }
   }
@@ -160,7 +168,7 @@ export const findUserByUsername = async (
   WHERE username = ${username};`)) as unknown as UserItem;
 };
 
-export const updateUser = async () => {};
-export const deleteUser = async () => {};
+// export const updateUser = async () => {};
+// export const deleteUser = async () => {};
 
 export default User;

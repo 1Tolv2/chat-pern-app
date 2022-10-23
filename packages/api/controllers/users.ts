@@ -15,8 +15,8 @@ export const handleNewUser = async (
   ]);
   if (missingFields.length === 0) {
     try {
-      const user = await createUser(req.body);
-      res.status(201).json(user);
+      await createUser(req.body);
+      res.sendStatus(201);
     } catch (err) {
       if (err instanceof Error) {
         res.status(409).json({ error: err.message });
@@ -44,7 +44,7 @@ export const getAllUsers = async (
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    let user = (await findUserById(
+    const user = (await findUserById(
       parseInt(req.user?.userId)
     )) as unknown as UserItem;
     user.servers = await findServersByUser(parseInt(req.user?.userId));

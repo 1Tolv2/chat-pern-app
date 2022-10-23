@@ -1,5 +1,5 @@
 import { sql } from "slonik";
-import { pool } from "../config/env/test";
+import { pool } from ".";
 import { TimeStamps } from "../global/types";
 import { ChannelItem } from "@chat-app-typescript/shared";
 
@@ -62,9 +62,7 @@ export const findAllChannels = async (): Promise<ChannelItem[]> => {
   return channels;
 };
 
-export const findChannelById = async (
-  id: number
-): Promise<ChannelItem> => {
+export const findChannelById = async (id: number): Promise<ChannelItem> => {
   const channel = (await (
     await pool
   ).one(sql`
@@ -72,13 +70,16 @@ export const findChannelById = async (
   return channel;
 }; // with posts with users'
 
-export const findChannelsByServer = async (id: number): Promise<ChannelItem[]> => {
-  return await (await pool).any(sql`
-  SELECT id, name, description FROM channels WHERE server_id = ${id}`) as unknown as ChannelItem[]
-}
+export const findChannelsByServer = async (
+  id: number
+): Promise<ChannelItem[]> => {
+  return (await (
+    await pool
+  ).any(sql`
+  SELECT id, name, description FROM channels WHERE server_id = ${id}`)) as unknown as ChannelItem[];
+};
 
-
-export const updateChannel = async () => {};
-export const deleteChannel = async () => {};
+// export const updateChannel = async () => {};
+// export const deleteChannel = async () => {};
 
 export default Channel;

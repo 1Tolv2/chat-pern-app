@@ -1,7 +1,7 @@
 import { sql } from "slonik";
-import { pool } from "../config/env/test";
+import { pool } from ".";
 import { TimeStamps } from "../global/types";
-import { PostItem } from '@chat-app-typescript/shared'
+import { PostItem } from "@chat-app-typescript/shared";
 
 class Post implements PostItem, TimeStamps {
   id?: number | null;
@@ -42,20 +42,18 @@ class Post implements PostItem, TimeStamps {
     channel_id,
   }: PostItem): Promise<PostItem> => {
     this.setupTable();
-    (await (
+    await (
       await pool
     ).one(sql`
     INSERT INTO posts (text, user_id, channel_id)
     VALUES (${text}, ${user_id}, ${channel_id})
     RETURNING *;
-        `))
+        `);
     return new Post(text, user_id, channel_id);
   };
 }
 
-export const createPost = async (
-  post: PostItem
-): Promise<PostItem | void> => {
+export const createPost = async (post: PostItem): Promise<PostItem | void> => {
   const newPost = (await Post.addToDatabase(post)) as PostItem;
   return newPost;
 };
@@ -81,8 +79,8 @@ export const findPostById = async (id: number): Promise<PostItem> => {
   ).one(sql`
   SELECT p.id, text, u.username AS user, user_id, c.name AS channel_name, channel_id, p.created_at, p.updated_at FROM posts AS p
   JOIN channels AS c ON channel_id = c.id
-  JOIN users AS u ON user_id = u.id;
-  `)) as unknown as PostItem;
+  JOIN users AS u ON user_id = u.id
+  WHERE p.id = ${id};`)) as unknown as PostItem;
 };
 
 export const findAllPostsByChannel = async (
@@ -94,10 +92,10 @@ export const findAllPostsByChannel = async (
     .any(sql`SELECT p.id, text, u.username AS user, user_id, p.created_at, p.updated_at FROM posts AS p
   JOIN users AS u ON user_id = u.id
   WHERE channel_id = ${channel_id}
-  ORDER BY created_at ASC;`)) as unknown as PostItem[];  
+  ORDER BY created_at ASC;`)) as unknown as PostItem[];
 };
 
-export const updatePost = async () => {};
-export const deletePost = async () => {};
+// export const updatePost = async () => {};
+// export const deletePost = async () => {};
 
 export default Post;

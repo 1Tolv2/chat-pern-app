@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { ServerItem } from "@chat-app-typescript/shared";
 import { createServer, findAllServers, findServerById } from "../models/Server";
 import { requiredFieldsCheck } from ".";
-import { createChannel, findChannelsByServer } from "../models/Channel";
+import { findChannelsByServer } from "../models/Channel";
 
 export const handleNewServer = async (
   req: Request<ServerItem>,
@@ -41,7 +41,7 @@ export const getServerById = async (
 ): Promise<void> => {
   const id = parseInt(req.params.id);
   const server = await findServerById(id);
-  server.channels = await findChannelsByServer(id)
+  server.channels = await findChannelsByServer(id);
   res.json(server);
 };
 

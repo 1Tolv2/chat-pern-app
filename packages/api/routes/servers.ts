@@ -1,5 +1,4 @@
 import express, { Router } from "express";
-import { requireLogin } from "../controllers/auth";
 import {
   getAllServers,
   getServerById,
