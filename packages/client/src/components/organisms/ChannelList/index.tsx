@@ -2,6 +2,7 @@ import { ChannelItem, ServerItem, UserItem } from "@chat-app-typescript/shared";
 import React, { useEffect, useReducer } from "react";
 import { getServer } from "../../../global/api";
 import Paragraph from "../../atoms/Paragraph";
+import AdminChannelModal from "../../molecules/AdminChannelModal";
 import * as s from "./styles";
 
 type Props = {
@@ -37,8 +38,6 @@ const channelReducer = (state: ChannelItem[], action: ChannelAction) => {
 
 const ChannelList = ({ states, user }: Props) => {
   const [channels, dispatch] = useReducer(channelReducer, []);
-  // const [channelName, setChannelName] = useState<string>("");
-  // const [channelDescription, setChannelDescription] = useState<string>("");
   const { activeServer, setActiveChannel } = states;
 
   const fetchServerChannels = async (): Promise<ServerItem> => {
@@ -65,41 +64,16 @@ const ChannelList = ({ states, user }: Props) => {
     states.setActiveChannel(channel as unknown as ChannelItem);
   };
 
-  const addChannel = async () => {
-    console.log("CLICKED");
-    // const res = await createChannel(channelName, channelDescription, states.activeServer?.id || 1);
-    // res === 201 && handleActiveChannel()
-  };
+const isServerAdmin = () => {
+return user.servers?.find((server) => server.name === activeServer?.name)?.role === "admin";
+}
 
   return (
     <s.Container>
       <s.Header>
         <h3>{activeServer?.name}</h3>
       </s.Header>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          paddingTop: "16px",
-          paddingLeft: "16px",
-          paddingRight: "8px",
-        }}
-      >
-        <Paragraph
-          editStyle={{ fontSize: "14px", fontWeight: "500" }}
-          color="lightGrey"
-        >
-          {"Text Channels".toUpperCase()}
-        </Paragraph>
-        {user.servers?.map((server, index) => {
-          if (activeServer?.name === server.name && server?.role === "admin")
-            return (
-              <span key={index} onClick={addChannel}>
-                +
-              </span>
-            );
-        })}
-      </div>
+      <AdminChannelModal isAdmin={isServerAdmin()} serverId={activeServer?.id || 0}/>
       <s.StyledChanneList style={{ minWidth: "64px" }}>
         {channels.map((channel) => {
           return (
@@ -107,6 +81,7 @@ const ChannelList = ({ states, user }: Props) => {
               key={channel.id}
               id={`${channel.id}`}
               onClick={handleOnClick}
+              className={channel.id === states.activeChannel?.id ? "active" : ""}
             >
               # {channel.name}{" "}
             </s.StyledChannelItem>

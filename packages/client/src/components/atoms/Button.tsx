@@ -7,12 +7,13 @@ const { colors } = theme;
 type StyledProps = {
   bgColor?: string;
   color?: string;
+  width?: string;
 };
 const StyledButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: ${props => props.width || "100%"};
   height: 44px;
   padding: 2px 16px 5px 16px;
   margin-bottom: "8px";
@@ -39,11 +40,12 @@ const StyledButton = styled.div`
 type Props = {
   children?: React.ReactNode;
   onClick?: () => void;
+  width?: string;
 };
 
-const Button = ({ children, onClick, bgColor, color }: Props & StyledProps) => {
+const Button = ({ children, onClick, bgColor, color, width }: Props & StyledProps) => {
   return (
-    <StyledButton onClick={onClick} bgColor={bgColor} color={color}>
+    <StyledButton onClick={onClick} bgColor={bgColor} color={color} width={width}>
       {children}
     </StyledButton>
   );
