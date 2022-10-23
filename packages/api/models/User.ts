@@ -1,10 +1,9 @@
-import { sql, UniqueIntegrityConstraintViolationError } from "slonik";
+import { sql } from "slonik";
 import { pool } from ".";
 import { TimeStamps } from "../global/types";
 import bcrypt from "bcryptjs";
 import { UserItem } from "@chat-app-typescript/shared";
 import { createServer } from "./Server";
-import Post from "./Post";
 
 class User implements UserItem, TimeStamps {
   username: string;
@@ -33,90 +32,29 @@ class User implements UserItem, TimeStamps {
         updated_at TIMESTAMP
         );
     `);
-
-    // checks if a server exists otherwise creates one
-    if (
-      !(await (
-        await pool
-      ).exists(sql`SELECT FROM information_schema.tables
-    WHERE table_name = 'servers'`))
-    ) {
-      await createServer({ name: "First server", description: "Hello World!" });
-      await Post.setupTable();
-    }
-
-    if (
-      !(await (
-        await pool
-      ).exists(sql`SELECT FROM information_schema.tables
-    WHERE table_name = 'serverusers'`))
-    ) {
-      await (
-        await pool
-      ).query(sql`
-    CREATE TABLE IF NOT EXISTS serverusers (
-      id SERIAL PRIMARY KEY,
-      user_id INT NOT NULL,
-      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-      server_id INT NOT NULL,
-      FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE,
-      role VARCHAR(60) NOT NULL CHECK (role = 'admin' OR role = 'member'),
-      UNIQUE (user_id, server_id)
-    )
-    `);
-
-      await (
-        await pool
-      ).query(sql`
-      CREATE OR REPLACE FUNCTION addusertoserver(text, numeric, numeric) RETURNS void
-      AS $$
-      INSERT INTO serverusers (role, server_id, user_id)
-      VALUES ($1, $2, $3)
-      $$
-      LANGUAGE SQL;
-    `);
-    }
   };
-
   static addToDatabase = async ({
     username,
     password,
     email,
   }: UserItem): Promise<UserItem | void> => {
-    await this.setupTable();
     password = await bcrypt.hash(password || "", 10);
-
-    try {
-      const newUser = (await (
-        await pool
-      ).one(sql`
+    const newUser = (await (
+      await pool
+    ).one(sql`
         INSERT INTO users (username, email, password)
         VALUES (${username}, ${email || ""}, ${password})
         RETURNING id, username, email, created_at, updated_at;
         `)) as unknown as UserItem;
 
-      const newServer = await createServer(
-        { name: `${username}'s server`, description: "Hello World!" },
-        newUser.id
-      );
-      if (newServer) {
-        await (
-          await pool
-        ).one(sql`
-        SELECT addusertoserver('admin', ${newServer.id || 1}, ${
-          newUser.id as unknown as string
-        });
-        `);
-      }
-    } catch (err) {
-      if (err instanceof UniqueIntegrityConstraintViolationError) {
-        throw new Error("Username or email already exists");
-      }
-    }
+    await createServer(
+      { name: `${username}'s server`, description: "Hello World!" },
+      newUser?.id
+    );
+
     return new User(username, email || "", password);
     // TODO: add a trigger function for the above insert so this is not needed.
   };
-
   static authorizeUser = async ({ username, password }: UserItem) => {
     const user = (await (
       await pool
@@ -133,15 +71,8 @@ class User implements UserItem, TimeStamps {
 }
 
 export const createUser = async (user: UserItem): Promise<void> => {
-  try {
-    const newUser = (await User.addToDatabase(user)) as UserItem;
-    delete newUser.password;
-  } catch (err) {
-    if (err instanceof Error) {
-      console.error(err);
-      throw new Error(err.message);
-    }
-  }
+  const newUser = (await User.addToDatabase(user)) as UserItem;
+  delete newUser.password;
 };
 
 export const findAllUsers = async (): Promise<UserItem[]> => {

@@ -1,8 +1,6 @@
-import React, { useEffect, useContext, useState, useReducer } from "react";
-import { getChannelPosts } from "../../../global/api";
+import React, { useEffect, useReducer } from "react";
 import MessageItem from "../../molecules/MessageItem";
 import * as s from "./styles";
-import { ModalContext } from "../../Layout";
 import { ChannelItem, PostItem } from "@chat-app-typescript/shared";
 import { io, Socket } from "socket.io-client";
 
@@ -33,27 +31,8 @@ const postReducer = (state: PostItem[], action: PostAction) => {
   }
 };
 
-const MessageList = ({ activeChannel, socket, setSocket }: Props) => {
-  const { modalVisible } = useContext(ModalContext);
+const MessageList = ({ activeChannel, setSocket }: Props) => {
   const [posts, dispatch] = useReducer(postReducer, []);
-
-  // const fetchData = async () => {
-  //   if (!modalVisible) {
-  //     try {
-  //       const data = await getChannelPosts(activeChannel?.id || 1);
-  //       dispatch({ type: "replace", input: data?.posts || [] });
-  //     } catch (err) {
-  //       if (err instanceof Error) {
-  //         console.error("ERROR", err);
-  //       }
-  //     }
-  //   }
-  // };
-
-  // useEffect(() => {
-  // console.log("fetching posts")
-  //   fetchData();
-  // }, [activeChannel]);
 
   useEffect(() => {
     const token = localStorage.getItem("jwt_token");

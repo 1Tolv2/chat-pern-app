@@ -73,7 +73,6 @@ export const findAllPostsByUser = async (user_id: number) => {
 };
 
 export const findPostById = async (id: number): Promise<PostItem> => {
-  // with user and channel
   return (await (
     await pool
   ).one(sql`

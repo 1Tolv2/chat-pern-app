@@ -1,6 +1,3 @@
-// import { Request, Response, NextFunction } from "express";
-// import { UserItem } from "@chat-app-typescript/shared";
-// import User from "../models/User";
 import { JwtPayload } from "jsonwebtoken";
 import { PostItem } from "@chat-app-typescript/shared";
 import { io } from "../app";
@@ -50,11 +47,11 @@ export const runSocketServer = async (
       }
     }
     if (user) {
-      console.log("A client connected to server");
+      console.info("A client connected to server");
       const posts = await findAllPostsByChannel(
         parseInt((socket.handshake.query?.channel_id as string) || "0")
       );
-      socket.emit("messages", posts); // skicka alla meddelande när de kopplar upp sig
+      socket.emit("messages", posts);
 
       socket.on("message", async (message: PostItem): Promise<void> => {
         const { text, channel_id } = message;
@@ -66,7 +63,7 @@ export const runSocketServer = async (
         io.emit("message", {
           ...newPost,
           user: user?.username || "",
-        } as PostItem); // skicka meddelandet när nytt dykt upp
+        } as PostItem);
       });
 
       socket.on("disconnect", (reason: string) => {
