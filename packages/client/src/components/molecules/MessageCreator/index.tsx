@@ -1,7 +1,6 @@
 import { ChannelItem } from "@chat-app-typescript/shared";
 import React, { useState } from "react";
 import { Socket } from "socket.io-client";
-// import { createPost } from "../../../global/api";
 import Textarea from "../../atoms/Textarea";
 import * as s from "./styles";
 
@@ -17,7 +16,6 @@ const MessageCreator = ({ activeChannel, socket, setSocket }: Props) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     socket?.emit("message", {text: message, channel_id: activeChannel?.id || 1});
-    // const res = await createPost(message, activeChannel?.id || 1);
     setMessage("");
   };
 

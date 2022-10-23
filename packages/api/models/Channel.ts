@@ -47,7 +47,6 @@ class Channel implements ChannelItem, TimeStamps {
           VALUES (${name}, ${description}, ${server_id})
           RETURNING *;
           `);
-    // Call on to create default channel general
     return newChannel;
   };
 }
@@ -70,7 +69,7 @@ export const findChannelById = async (id: number): Promise<ChannelItem> => {
   ).one(sql`
   SELECT * from channels WHERE id = ${id}`)) as unknown as ChannelItem;
   return channel;
-}; // with posts with users'
+};
 
 export const findChannelsByServer = async (
   id: number

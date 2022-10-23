@@ -33,27 +33,8 @@ const postReducer = (state: PostItem[], action: PostAction) => {
   }
 };
 
-const MessageList = ({ activeChannel, socket, setSocket }: Props) => {
-  const { modalVisible } = useContext(ModalContext);
+const MessageList = ({ activeChannel, setSocket }: Props) => {
   const [posts, dispatch] = useReducer(postReducer, []);
-
-  // const fetchData = async () => {
-  //   if (!modalVisible) {
-  //     try {
-  //       const data = await getChannelPosts(activeChannel?.id || 1);
-  //       dispatch({ type: "replace", input: data?.posts || [] });
-  //     } catch (err) {
-  //       if (err instanceof Error) {
-  //         console.error("ERROR", err);
-  //       }
-  //     }
-  //   }
-  // };
-
-  // useEffect(() => {
-  // console.log("fetching posts")
-  //   fetchData();
-  // }, [activeChannel]);
 
   useEffect(() => {
     const token = localStorage.getItem("jwt_token");
