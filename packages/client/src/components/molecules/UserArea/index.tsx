@@ -18,6 +18,7 @@ const Container = styled.div`
 `;
 
 const TextWrapper = styled.div`
+position: relative;
   margin-right: 4px;
   padding: 4px 0 4px 8px;
   color: ${colors.white};
@@ -29,6 +30,7 @@ const InfoWrapper = styled.div`
   width: fit-content;
   min-width: 120px;
   height: 39px;
+  padding-left:2px;
   &:hover {
     background-color: ${colors.grey};
     border-radius: 5px;
