@@ -1,4 +1,4 @@
-import React from "react";
+import React, { SyntheticEvent } from "react";
 import styled from "styled-components";
 import { theme, ThemeColors } from "../theme";
 
@@ -8,7 +8,7 @@ type Props = {
   type: string;
   id: string;
   value: string;
-  setValue: React.Dispatch<React.SetStateAction<string>>;
+  setValue: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
   placeholder?: string;
   label?: string;
   required?: boolean;

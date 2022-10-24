@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { theme, ThemeColors } from "../../theme";
+import { theme } from "../../theme";
 
 const { colors } = theme;
 
@@ -14,15 +14,19 @@ const Container = styled.div`
 const StyledChanneList = styled.ul`
   width: 100%;
   padding-right: 16px;
+  min-width: "64px";
 `;
 
 const StyledChannelItem = styled.li`
+  display: flex;
+  align-items: center;
   box-sizing: border-box;
   width: 100%;
   margin-left: 8px;
   margin-bottom: 2px;
   padding: 5px 8px 7px 8px;
   border-radius: 4px;
+  cursor: pointer;
   &:hover {
     background-color: ${colors.darkGrey};
     color: ${colors.lightestGrey};
@@ -31,18 +35,11 @@ const StyledChannelItem = styled.li`
     background-color: ${colors.grey};
     color: ${colors.white};
   }
-`;
-
-const Header = styled.div`
-  padding: 12px 16px;
-  height: 48px;
-  box-shadow: 0 1px 2px ${colors.darkestGrey};
-  h3 {
-    margin: 0;
-    margin-top: -4px;
-    color: ${colors.white};
+  img {
+    width: 24px;
   }
 `;
+
 const ListLabelWrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -57,6 +54,5 @@ export {
   Container,
   StyledChanneList,
   StyledChannelItem,
-  Header,
   ListLabelWrapper,
 };

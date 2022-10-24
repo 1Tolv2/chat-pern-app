@@ -17,11 +17,19 @@ export const handleNewChannel = async (
   if (missingFields.length > 0) {
     let channel: ChannelItem | null = null;
     try {
-      channel = await createChannel(req.body);
+      const { name, server_id } = req.body;
+      channel = await createChannel({
+        name: name.toLowerCase(),
+        server_id,
+      } as ChannelItem);
     } catch (err) {
       console.error(err);
     }
-    res.status(201).json({ channel, message: "New channel created" });
+
+    res.status(201).json({
+      channel,
+      message: "New channel created",
+    });
   } else if (missingFields.length === 0) {
     res.status(400).json({
       error: "Missing required fields",

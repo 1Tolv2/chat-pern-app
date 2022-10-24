@@ -10,7 +10,7 @@ type Props = {
     activeChannel: ChannelItem | null;
     setActiveChannel: React.Dispatch<React.SetStateAction<ChannelItem | null>>;
   };
-  user: UserItem;
+  isAdmin: boolean;
 };
 
 type ChannelAction = {
@@ -35,7 +35,7 @@ const channelReducer = (state: ChannelItem[], action: ChannelAction) => {
   }
 };
 
-const ChannelList = ({ states, user }: Props) => {
+const ChannelList = ({ states, isAdmin }: Props) => {
   const [channels, dispatch] = useReducer(channelReducer, []);
   const { activeServer, setActiveChannel } = states;
 
@@ -64,17 +64,10 @@ const ChannelList = ({ states, user }: Props) => {
     states.setActiveChannel(channel as unknown as ChannelItem);
   };
 
-const isServerAdmin = () => {
-return user.servers?.find((server) => server.name === activeServer?.name)?.role === "admin";
-}
-
   return (
     <s.Container>
-      <s.Header>
-        <h3>{activeServer?.name}</h3>
-      </s.Header>
-      <AdminChannelModal isAdmin={isServerAdmin()} serverId={activeServer?.id || 0} setState={states.setActiveChannel} modifyChannelList={dispatch}/>
-      <s.StyledChanneList style={{ minWidth: "64px" }}>
+      <AdminChannelModal isAdmin={isAdmin} serverId={activeServer?.id || 0} setState={states.setActiveChannel} modifyChannelList={dispatch}/>
+      <s.StyledChanneList>
         {channels.map((channel) => {
           return (
             <s.StyledChannelItem
@@ -83,7 +76,7 @@ return user.servers?.find((server) => server.name === activeServer?.name)?.role 
               onClick={handleOnClick}
               className={channel.id === states.activeChannel?.id ? "active" : ""}
             >
-              # {channel.name}{" "}
+              <img src="/tag.svg" alt="hashtag icon"/> {channel.name}
             </s.StyledChannelItem>
           );
         })}

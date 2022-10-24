@@ -1,7 +1,6 @@
 import React from "react";
 import * as s from "./styles";
 import * as t from "../../theme/typography";
-import logo from "../../../logo.svg";
 import {ChannelItem} from "@chat-app-typescript/shared"; 
 
 type Props = {
@@ -16,7 +15,7 @@ console.log("clicked");
   return (
     <s.ChannelBar>
       <div style={{display: "flex"}}>
-        <img src={logo} />
+        <img src={"tag.svg"} alt="hashtag icon"/>
         <t.H2
           fontSize="20px"
           lineHeight="22px"
@@ -24,11 +23,11 @@ console.log("clicked");
           mb="3px"
           mt="0"
         >
-          {`#${activeChannel?.name||""}`}
+          {`${activeChannel?.name||""}`}
         </t.H2>
       </div>
       <div>
-        <img src={logo} onClick={handleOnClick} style={{cursor: "pointer"}}/>
+        <img src={"logo192.png"} onClick={handleOnClick} style={{cursor: "pointer"}}/>
       </div>
     </s.ChannelBar>
   );

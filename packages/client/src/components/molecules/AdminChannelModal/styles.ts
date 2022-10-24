@@ -12,6 +12,10 @@ position: relative;
   padding-left: 16px;
   padding-right: 8px;
   margin-bottom: 5px;
+  span {
+  cursor: pointer;
+
+  }
 `
 
 const ModalContainer = styled.div`

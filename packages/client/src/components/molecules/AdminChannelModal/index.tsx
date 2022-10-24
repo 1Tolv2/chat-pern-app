@@ -28,13 +28,16 @@ const clearModal = () => {
 }
 
   const addChannel = async () => {
-    console.log("CLICKED", name, serverId);
     const res: any = await createChannel(name, serverId || 0);
     if(res.status === 201 && res.data.channel) {
       modifyChannelList({type: "add", input: (res.data.channel as ChannelItem)});
       clearModal();
     }
   };
+
+  function handleOnChange(value: string) {
+    setName(value.replace(/\s/g, "-"));
+  }
   return (
     <s.Container>
       <Paragraph
@@ -48,7 +51,7 @@ const clearModal = () => {
           <span onClick={() => setIsModalOpen(true)}>{isModalOpen ? "-":"+"}</span>
           {isModalOpen && <s.ModalContainer>
             <h3>Create Channel</h3>
-            <InputWithLabel labelText="Channel name" textColor="lightGrey" id="name" type="text" value={name} setValue={setName} bgColor="darkestGrey"/>
+            <InputWithLabel labelText="Channel name" textColor="lightGrey" id="name" type="text" value={name} setValue={handleOnChange} bgColor="darkestGrey"/>
             <s.ButtonContainer>
             <Button width="fit-content" bgColor="darkerGrey" onClick={clearModal}>Cancel</Button>
               <Button width="fit-content" onClick={addChannel}>Create Channel</Button>
