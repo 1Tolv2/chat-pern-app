@@ -1,7 +1,7 @@
-import { ChannelItem, ServerItem, UserItem } from "@chat-app-typescript/shared";
+import { ChannelItem, ServerItem } from "@chat-app-typescript/shared";
 import React, { useEffect, useReducer } from "react";
 import { getServer } from "../../../global/api";
-import AdminChannelModal from "../../molecules/AdminChannelModal";
+import AdminChannelModal from "../AdminChannelModal";
 import * as s from "./styles";
 
 type Props = {

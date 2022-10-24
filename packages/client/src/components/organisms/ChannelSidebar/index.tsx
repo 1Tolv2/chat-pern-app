@@ -1,7 +1,7 @@
 import { ChannelItem, ServerItem, UserItem } from '@chat-app-typescript/shared';
 import React from 'react'
 import UserArea from '../../molecules/UserArea';
-import ChannelList from '../ChannelList'
+import ChannelList from '../../molecules/ChannelList'
 import * as s from './styles'
 
 type Props = {
