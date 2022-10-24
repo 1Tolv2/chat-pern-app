@@ -70,11 +70,10 @@ export const getServer = async (serverId: number): Promise<ServerItem> => {
 
 export const createChannel = async (
   name: string,
-  description: string,
   server_id: number
-): Promise<number> => {
-  const res = await axios.post("/channels", { name, description, server_id });
-  return res.status;
+)=> {
+  const res = await axios.post("/channels", { name, server_id });
+  return res;
 };
 
 export const createPost = async (message: string, channel_id: number) => {

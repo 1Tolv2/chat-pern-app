@@ -1,16 +1,24 @@
+import { ChannelItem } from "@chat-app-typescript/shared";
 import React, { useState } from "react";
+import { createChannel } from "../../../global/api";
 import Button from "../../atoms/Button";
-import InputField from "../../atoms/InputField";
 import Paragraph from "../../atoms/Paragraph";
 import InputWithLabel from "../InputWithLabel";
 import * as s from "./styles";
 
+type ChannelAction = {
+  type: "add" | "remove" | "replace";
+  input: ChannelItem | ChannelItem[];
+};
+
 type Props = {
   isAdmin: boolean;
   serverId: number;
+  setState: React.Dispatch<React.SetStateAction<ChannelItem | null>>;
+  modifyChannelList: React.Dispatch<ChannelAction>;
 };
 
-const AdminChannelModal = ({ isAdmin, serverId }: Props) => {
+const AdminChannelModal = ({ isAdmin, serverId, setState, modifyChannelList}: Props) => {
   const [name, setName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -21,8 +29,11 @@ const clearModal = () => {
 
   const addChannel = async () => {
     console.log("CLICKED", name, serverId);
-    // const res = await createChannel(channelName, channelDescription, states.activeServer?.id || 1);
-    // res === 201 && handleActiveChannel()
+    const res: any = await createChannel(name, serverId || 0);
+    if(res.status === 201 && res.data.channel) {
+      modifyChannelList({type: "add", input: (res.data.channel as ChannelItem)});
+      clearModal();
+    }
   };
   return (
     <s.Container>

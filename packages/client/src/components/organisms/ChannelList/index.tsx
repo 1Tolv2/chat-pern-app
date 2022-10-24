@@ -1,7 +1,6 @@
 import { ChannelItem, ServerItem, UserItem } from "@chat-app-typescript/shared";
 import React, { useEffect, useReducer } from "react";
 import { getServer } from "../../../global/api";
-import Paragraph from "../../atoms/Paragraph";
 import AdminChannelModal from "../../molecules/AdminChannelModal";
 import * as s from "./styles";
 
@@ -55,6 +54,7 @@ const ChannelList = ({ states, user }: Props) => {
     }
   }, [activeServer, dispatch]);
 
+
   const handleOnClick = async (e: any): Promise<void> => {
     const server = await fetchServerChannels();
     const channel =
@@ -73,7 +73,7 @@ return user.servers?.find((server) => server.name === activeServer?.name)?.role 
       <s.Header>
         <h3>{activeServer?.name}</h3>
       </s.Header>
-      <AdminChannelModal isAdmin={isServerAdmin()} serverId={activeServer?.id || 0}/>
+      <AdminChannelModal isAdmin={isServerAdmin()} serverId={activeServer?.id || 0} setState={states.setActiveChannel} modifyChannelList={dispatch}/>
       <s.StyledChanneList style={{ minWidth: "64px" }}>
         {channels.map((channel) => {
           return (

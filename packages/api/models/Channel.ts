@@ -35,16 +35,12 @@ class Channel implements ChannelItem, TimeStamps {
       `);
   };
 
-  static addToDatabase = async ({
-    name,
-    description,
-    server_id,
-  }: ChannelItem) => {
+  static addToDatabase = async ({ name, server_id }: ChannelItem) => {
     const newChannel = await (
       await pool
     ).one(sql`
-          INSERT INTO channels (name, description, server_id)
-          VALUES (${name}, ${description}, ${server_id})
+          INSERT INTO channels (name, server_id)
+          VALUES (${name}, ${server_id})
           RETURNING *;
           `);
     return newChannel;
