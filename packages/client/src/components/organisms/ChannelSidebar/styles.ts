@@ -12,6 +12,7 @@ const Container = styled.div`
 `;
 
 const Header = styled.div`
+  position: relative;
   padding: 12px 16px;
   height: 48px;
   box-shadow: 0 1px 2px ${colors.darkestGrey};
