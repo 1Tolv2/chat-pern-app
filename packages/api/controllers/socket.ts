@@ -67,7 +67,7 @@ export const runSocketServer = async (
       });
 
       socket.on("disconnect", (reason: string) => {
-        console.log("A client disconnected from the server due to: " + reason);
+        console.info("A client disconnected from the server due to: " + reason);
       });
     }
   }

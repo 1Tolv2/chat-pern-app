@@ -37,6 +37,7 @@ const MessageList = ({ activeChannel, setSocket }: Props) => {
   useEffect(() => {
     const token = localStorage.getItem("jwt_token");
     if (activeChannel && token) {
+
       const socket = io("http://localhost:8800", {
         auth: {
           token,

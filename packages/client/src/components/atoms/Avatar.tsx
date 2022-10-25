@@ -16,10 +16,10 @@ const Container = styled.div`
   background-color: ${(props: StyleProps) => colors[props.bgColor as keyof ThemeColors] || colors.purple};
   ${(props: StyleProps) => props.hover && css`
   transition: all 0.2s ease-in-out;
-  &:hover {
-    border-radius: 30%;
-    background-color: ${colors.purple};
+  & > * {
+    pointer-events: none;
   }
+  cursor: pointer;
   `}
   img {
     width: 100%;
@@ -45,13 +45,13 @@ type Props = {
   size?: string;
   text?: string;
   hover?: boolean;
+  onClick?: (e: any) => Promise<void>;
+  id?: string;
 };
 
-const Avatar = ({ bgColor, size, text, hover}: Props) => {
-
-  console.log(hover)
+const Avatar = ({ bgColor, size, text, hover, onClick, id}: Props) => {
   return (
-    <Container bgColor={bgColor} size={size} hover={hover}>
+    <Container id={id} bgColor={bgColor} size={size} hover={hover} onClick={onClick}>
       <IconContainer>
         {text ? (
           <span>{text}</span>

@@ -26,8 +26,8 @@ const ServerList = ({ states, user }: Props) => {
     }
   }, [user]);
 
-  const handleOnClick = async (e: any) => {
-    states.setActiveServer(await getServer(e.target.id));
+  const handleOnClick = async (e: any): Promise<void> => {
+    states.setActiveServer(await getServer(e.target.id.replace("channel_", "")));
   };
 
   const formatName = (name: string): string => {
@@ -45,24 +45,24 @@ const ServerList = ({ states, user }: Props) => {
 
   return (
     <s.Container>
-      <ul>
+      <s.StyledList>
         <s.ListItem>
-          <Avatar size="48px" bgColor="darkGrey" hover/>
+          <Avatar id="channel_start" size="48px" bgColor="darkGrey" hover/>
           <hr />
         </s.ListItem>
         {serverList.map((server: ServerItem) => {
           return (
             <s.ListItem
               key={server?.id}
-              id={server?.id?.toString() || ""}
-              onClick={handleOnClick}
               style={{ color: "white" }}
+              id={server.id === states.activeServer?.id ? "active" : ""}
             >
-              <Avatar text={formatName(server.name)} size="48px" hover={true}/>
+              <s.Pill className="pill"/>
+              <Avatar id={"channel_" + server?.id?.toString() || ""} text={formatName(server.name)} bgColor="darkGrey" size="48px" hover={true} onClick={handleOnClick}/>
             </s.ListItem>
           );
         })}
-      </ul>
+      </s.StyledList>
     </s.Container>
   );
 };

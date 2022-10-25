@@ -12,7 +12,6 @@ export const handleNewChannel = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  console.log("BODY", req.body);
   const missingFields = requiredFieldsCheck(req.body, ["name", "serverId"]);
   if (missingFields.length > 0) {
     let channel: ChannelItem | null = null;
