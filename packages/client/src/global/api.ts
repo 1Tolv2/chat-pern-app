@@ -40,7 +40,7 @@ export const loginUser = async (
 };
 
 export const getAllUsers = async () => {
-  const res = await axios.get("/users");
+  const res = (await axios.get("/users")).data;
   return res;
 };
 
@@ -85,3 +85,7 @@ export const getUser = async () => {
   const res = await axios.get("/users/me");
   return res;
 };
+
+export const addMemberToServer = async (serverId: number, userId: number) => {
+  return axios.post(`/servers/${serverId}/member`, { userId });
+}

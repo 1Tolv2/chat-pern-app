@@ -27,7 +27,7 @@ console.log("clicked");
         </t.H2>
       </div>
       <div>
-        <img src={"logo192.png"} onClick={handleOnClick} style={{cursor: "pointer"}}/>
+        <img src={"/group.svg"} onClick={handleOnClick} style={{cursor: "pointer"}}/>
       </div>
     </s.ChannelBar>
   );

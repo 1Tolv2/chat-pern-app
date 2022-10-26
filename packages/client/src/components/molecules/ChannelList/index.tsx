@@ -1,7 +1,7 @@
 import { ChannelItem, ServerItem } from "@chat-app-typescript/shared";
 import React, { useEffect, useReducer } from "react";
 import { getServer } from "../../../global/api";
-import AdminChannelModal from "../AdminChannelModal";
+import ChannelHeader from "../ChannelHeader";
 import * as s from "./styles";
 
 type Props = {
@@ -37,7 +37,7 @@ const channelReducer = (state: ChannelItem[], action: ChannelAction) => {
 
 const ChannelList = ({ states, isAdmin }: Props) => {
   const [channels, dispatch] = useReducer(channelReducer, []);
-  const { activeServer, setActiveChannel } = states;
+  const { activeChannel, activeServer, setActiveChannel } = states;
 
   const fetchServerChannels = async (): Promise<ServerItem> => {
     const res = await getServer(activeServer?.id || 1);
@@ -54,19 +54,26 @@ const ChannelList = ({ states, isAdmin }: Props) => {
     }
   }, [activeServer, dispatch]);
 
-
   const handleOnClick = async (e: any): Promise<void> => {
-    const server = await fetchServerChannels();
-    const channel =
-      server?.channels?.find(
-        (item: ChannelItem) => item.id === parseInt((e.target as HTMLLIElement).id)
-      ) || null;
-    states.setActiveChannel(channel as unknown as ChannelItem);
+    if (e.target.id !== activeChannel?.id) {
+      const server = await fetchServerChannels();
+      const channel =
+        server?.channels?.find(
+          (item: ChannelItem) =>
+            item.id === parseInt((e.target as HTMLLIElement).id)
+        ) || null;
+      states.setActiveChannel(channel as unknown as ChannelItem);
+    }
   };
 
   return (
     <s.Container>
-      <AdminChannelModal isAdmin={isAdmin} serverId={activeServer?.id || 0} setState={states.setActiveChannel} modifyChannelList={dispatch}/>
+      <ChannelHeader
+        isAdmin={isAdmin}
+        serverId={activeServer?.id || 0}
+        setState={states.setActiveChannel}
+        modifyChannelList={dispatch}
+      />
       <s.StyledChanneList>
         {channels.map((channel) => {
           return (
@@ -74,9 +81,11 @@ const ChannelList = ({ states, isAdmin }: Props) => {
               key={channel.id}
               id={`${channel.id}`}
               onClick={handleOnClick}
-              className={channel.id === states.activeChannel?.id ? "active" : ""}
+              className={
+                channel.id === states.activeChannel?.id ? "active" : ""
+              }
             >
-              <img src="/tag.svg" alt="hashtag icon"/> {channel.name}
+              <img src="/tag.svg" alt="hashtag icon" /> {channel.name}
             </s.StyledChannelItem>
           );
         })}

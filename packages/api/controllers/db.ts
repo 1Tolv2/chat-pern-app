@@ -4,16 +4,9 @@ import User from "../models/User";
 import Server from "../models/Server";
 import Channel from "../models/Channel";
 import Post from "../models/Post";
+import { pool } from "../app";
 
 dotenv.config();
-
-const DATABASE_URL =
-  process.env.NODE_ENV === "development"
-    ? process.env.POSTGRES_DEV_URL
-    : process.env.NODE_ENV === "test"
-    ? process.env.POSTGRES_TEST_URL
-    : process.env.POSTGRES_DEV_URL;
-export const pool = createPool(DATABASE_URL || "");
 
 const createAddUserToServerFunction = async () => {
   await (

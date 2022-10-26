@@ -32,7 +32,8 @@ const SignForm = ({ type, children }: Props) => {
   const { setModalVisible } = useContext(ModalContext);
   const { setUser } = useContext(UserContext);
 
-  const handleOnClick = async () => {
+  const handleOnClick = async (e:any) => {
+    e.preventDefault()
     if (type?.formType === "register") {
       const res = await registerUser(email, username, password);
       res && type?.setFormType("login");

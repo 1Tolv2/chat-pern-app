@@ -12,6 +12,7 @@ type ThemeColors = {
   purple: string;
   red: string;
   accentGrey: string;
+  green: string
 };
 
 const colors: ThemeColors = {
@@ -28,6 +29,7 @@ const colors: ThemeColors = {
     blue: "#3498db",
     purple: "#5865F2",
     red: "#ED4245",
+    green: "#3ba55d"
 }
 
 const size = {

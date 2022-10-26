@@ -39,6 +39,7 @@ export const handleToken = async (
 };
 
 export const logInUser = async (req: Request, res: Response): Promise<void> => {
+  console.log("LOGIN", req.body);
   const missingFields = requiredFieldsCheck(req.body, ["username", "password"]);
   if (missingFields.length === 0) {
     const username = req.body.username.toLowerCase();

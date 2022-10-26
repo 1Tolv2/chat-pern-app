@@ -16,7 +16,11 @@ const ServerList = ({ states, user }: Props) => {
   const [serverList, setServerList] = useState<ServerItem[]>([]);
 
   const fetchServers = async (): Promise<void> => {
-    const servers = await getServers();
+    const servers = (await getServers()).filter((server) => {
+      return user?.servers?.find((userServer) => {
+        return userServer.id === server.id
+      })
+    });
     setServerList(servers);
     states.setActiveServer(servers[0]);
   };
@@ -27,7 +31,8 @@ const ServerList = ({ states, user }: Props) => {
   }, [user]);
 
   const handleOnClick = async (e: any): Promise<void> => {
-    states.setActiveServer(await getServer(e.target.id.replace("channel_", "")));
+    if(parseInt(e.target.id.replace("channel_", "")) !== states?.activeServer?.id) {
+    states.setActiveServer(await getServer(e.target.id.replace("channel_", "")));}
   };
 
   const formatName = (name: string): string => {

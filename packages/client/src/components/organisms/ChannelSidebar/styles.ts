@@ -13,6 +13,9 @@ const Container = styled.div`
 
 const Header = styled.div`
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 12px 16px;
   height: 48px;
   box-shadow: 0 1px 2px ${colors.darkestGrey};
@@ -20,6 +23,9 @@ const Header = styled.div`
     margin: 0;
     margin-top: -4px;
     color: ${colors.white};
+  }
+  img {
+    height: 22px;
   }
 `;
 

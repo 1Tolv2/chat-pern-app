@@ -104,6 +104,15 @@ JOIN servers as s ON s.id = su.server_id
 WHERE user_id = ${userId};`)) as unknown as ServerItem[];
 };
 
+export const addToServerUsers = async (serverId: number, userId: number) => {
+  return await (
+    await pool
+  ).any(sql`
+  INSERT INTO serverusers (user_id, server_id, role)
+  VALUES (${userId}, ${serverId}, 'member');
+  `);
+};
+
 // export const updateServer = async () => {};
 // export const deleteServer = async () => {};
 
