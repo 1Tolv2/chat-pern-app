@@ -54,6 +54,10 @@ const StyledButton = styled.button`
       : colors.white};   
       border: 1px solid ${colors[props.color as string as keyof ThemeColors] || colors.purple}; 
   `}
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
 `;
 
 type Props = {
@@ -64,11 +68,12 @@ type Props = {
   height?: string;
   fontSize?: string;
   id?: string;
+  className?: string;
 };
 
-const Button = ({ id, fontSize, height, type, children, onClick, bgColor, color, width }: Props & StyledProps) => {
+const Button = ({ className, id, fontSize, height, type, children, onClick, bgColor, color, width }: Props & StyledProps) => {
   return (
-    <StyledButton id={id} fontSize={fontSize} buttonType={type || "filled"} onClick={onClick} bgColor={bgColor} color={color} width={width} height={height}>
+    <StyledButton className={className} id={id} fontSize={fontSize} buttonType={type || "filled"} onClick={onClick} bgColor={bgColor} color={color} width={width} height={height}>
       {children}
     </StyledButton>
   );

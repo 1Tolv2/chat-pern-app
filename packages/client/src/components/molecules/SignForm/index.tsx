@@ -49,6 +49,15 @@ const SignForm = ({ type, children }: Props) => {
       }
     }
   };
+
+  const disableClass = () => {
+    if (type?.formType === "register") {
+      return (username === "" || email === "" || password === "") ? "disabled" : ""
+    } else if (type?.formType === "login") {
+      return (username === "" || password === "") ? "disabled" : ""
+
+    }
+  }
   return (
     <>
       <Heading>
@@ -95,7 +104,7 @@ const SignForm = ({ type, children }: Props) => {
           value={password}
           setValue={setPassword}
           mb="20px"
-          type="text"
+          type="password"
           bgColor="darkestGrey"
           labelText="Password"
           textColor="lighterGrey"
@@ -106,7 +115,7 @@ const SignForm = ({ type, children }: Props) => {
             Forgot your password?
           </Paragraph>
         )}
-        <Button onClick={handleOnClick}>
+        <Button onClick={handleOnClick} className={disableClass()}>
           {type?.formType === "register" ? "Register" : "Login"}
         </Button>
         {children}
