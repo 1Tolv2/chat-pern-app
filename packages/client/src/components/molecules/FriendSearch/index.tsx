@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import userEvent from "@testing-library/user-event";
+import React, { useEffect, useState, useContext } from "react";
 import { addMemberToServer, getAllUsers } from "../../../global/api";
 import Avatar from "../../atoms/Avatar";
 import Button from "../../atoms/Button";
 import InputField from "../../atoms/InputField";
 import * as s from "./styles";
+import {UserContext} from '../../Layout'
 
 type Props = {
   serverId: number | null;
@@ -13,11 +15,15 @@ const FriendSearch = ({serverId}: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [memberList, setMemberList] = useState<any[]>([]);
   const [unfilteredMemberList, setUnfilteredMemberList] = useState<any[]>([]);
+  const {user} = useContext(UserContext)
 
   const fetchMembers = async () => {
     const data = await getAllUsers()
-    setUnfilteredMemberList(data)
-    setMemberList(data);
+    const filteredData = data.filter((member: any) => {
+      return user?.id !== member.id && !(member.servers.find((server:any) => server.server_id === serverId))
+    })
+    setUnfilteredMemberList(filteredData)
+    setMemberList(filteredData);
   };
 
   useEffect(() => {
@@ -34,8 +40,6 @@ const FriendSearch = ({serverId}: Props) => {
   }
 
   const handleOnInvite = async (e: any) => {
-    console.log("User: ", e.target.id)
-    console.log("Server: ", serverId)
     await addMemberToServer(serverId || 0, e.target.id);
   }
 

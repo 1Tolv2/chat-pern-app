@@ -104,6 +104,10 @@ JOIN servers as s ON s.id = su.server_id
 WHERE user_id = ${userId};`)) as unknown as ServerItem[];
 };
 
+export const findServerUsers = async () => {
+  return await (await pool).any(sql`SELECT * FROM serverusers;`);
+};
+
 export const addToServerUsers = async (serverId: number, userId: number) => {
   return await (
     await pool

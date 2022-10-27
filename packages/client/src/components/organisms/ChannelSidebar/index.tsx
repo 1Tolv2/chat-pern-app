@@ -39,7 +39,7 @@ const handleOnSubmit = () => {
     <s.Container>
         <s.Header>
         <h3>{activeServer?.name}</h3>
-        <img style={{cursor: "pointer"}} src="person_add.svg" alt="add member icon" onClick={() => setIsModalOpen(!isModalOpen)}/>
+        {isServerAdmin() && <img style={{cursor: "pointer"}} src="person_add.svg" alt="add member icon" onClick={() => setIsModalOpen(!isModalOpen)}/>}
         {isModalOpen && (
           <FormModal serverId={activeServer?.id || null} title={`Invite friends to ${activeServer?.name}`}
           input={{
