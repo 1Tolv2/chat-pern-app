@@ -1,7 +1,7 @@
 import { ChannelItem, PostItem } from '@chat-app-typescript/shared';
 import React, { useEffect, useReducer } from 'react'
 import { io, Socket } from 'socket.io-client';
-import MessageList from './MessageList'
+import MessageList from './MessageList';
 
 type Props = {
   activeChannel: ChannelItem | null;
@@ -31,7 +31,7 @@ const postReducer = (state: PostItem[], action: PostAction) => {
   }
 };
 
-const MessageFeed = ({ activeChannel, setSocket }: Props) => {
+const RenderMessageFeed = ({ activeChannel, setSocket }: Props) => {
   const [posts, dispatch] = useReducer(postReducer, []);
 
   const socketListeners = (socket: Socket) => {
@@ -80,4 +80,4 @@ const MessageFeed = ({ activeChannel, setSocket }: Props) => {
   )
 }
 
-export default MessageFeed
+export default RenderMessageFeed
