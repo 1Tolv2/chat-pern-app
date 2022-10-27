@@ -3,16 +3,12 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-let pool: any = null;
-export const connectToDatabase = async (url: string) => {
-  try {
-    console.info("Connecting to Postgres db...");
-    pool = await createPool(url);
-  } catch (err) {
-    if (err instanceof Error) {
-      throw err;
-    }
-  }
-};
+const DATABASE_URL =
+  process.env.NODE_ENV === "development"
+    ? process.env.POSTGRES_DEV_URL
+    : process.env.NODE_ENV === "test"
+    ? process.env.POSTGRES_TEST_URL
+    : process.env.POSTGRES_DEV_URL;
 
-export { pool };
+console.info("Connecting to Postgres db...");
+export const pool = createPool(DATABASE_URL || "");

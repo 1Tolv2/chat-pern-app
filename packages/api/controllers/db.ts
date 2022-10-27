@@ -1,10 +1,10 @@
-import { createPool, sql } from "slonik";
+import { sql } from "slonik";
 import dotenv from "dotenv";
 import User from "../models/User";
 import Server from "../models/Server";
 import Channel from "../models/Channel";
 import Post from "../models/Post";
-import { pool } from "../app";
+import { pool } from "../models";
 
 dotenv.config();
 

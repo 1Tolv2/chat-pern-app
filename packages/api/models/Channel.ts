@@ -48,7 +48,7 @@ class Channel implements ChannelItem, TimeStamps {
 }
 
 export const createChannel = async (channel: ChannelItem) => {
-  return Channel.addToDatabase(channel);
+  return Channel.addToDatabase(channel) as unknown as ChannelItem;
 };
 
 export const findAllChannels = async (): Promise<ChannelItem[]> => {
