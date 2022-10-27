@@ -56,7 +56,6 @@ const RenderMessageFeed = ({ activeChannel, setSocket }: Props) => {
         autoConnect: false,
       }
     );
-
     socket.connect();
     setSocket && setSocket(socket);
     socketListeners(socket)
@@ -70,7 +69,7 @@ const RenderMessageFeed = ({ activeChannel, setSocket }: Props) => {
   useEffect(() => {
     const token = localStorage.getItem("jwt_token");
     if (activeChannel && token) {
-      handleSocketConnection(token);
+      return handleSocketConnection(token);
     }
   }, [activeChannel]);
 
