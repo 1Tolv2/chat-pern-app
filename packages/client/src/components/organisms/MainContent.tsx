@@ -1,9 +1,10 @@
 import React, { useState, useContext } from "react";
 import ServerList from "./ServerList";
-import ChannelList from "./ChannelList";
+import ChannelList from "../molecules/ChannelList";
 import { ChannelItem, ServerItem } from "@chat-app-typescript/shared";
 import ChannelContent from "./ChannelContent";
 import { UserContext } from "../Layout";
+import ChannelSidebar from "./ChannelSidebar";
 
 type Props = {};
 
@@ -16,7 +17,7 @@ const MainContent = (props: Props) => {
     user && (
       <>
         <ServerList user={user} states={{ activeServer, setActiveServer }} />
-        <ChannelList user={user}
+        <ChannelSidebar user={user}
           states={{ activeChannel, setActiveChannel, activeServer }}
         />
         <ChannelContent activeChannel={activeChannel} />

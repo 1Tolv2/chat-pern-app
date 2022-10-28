@@ -23,11 +23,9 @@ export const handleToken = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  // const token = req.cookies.access_token;
-  // console.log("token", req.cookies);
   const authHeader = req.header("Authorization");
   if (authHeader && authHeader.split(" ")[0] === "Bearer") {
-    const token = authHeader.split(" ")[1]; // splitta så vi får ut tokenen
+    const token = authHeader.split(" ")[1];
     try {
       req.user = verifyToken(token);
     } catch (err) {
@@ -41,6 +39,7 @@ export const handleToken = async (
 };
 
 export const logInUser = async (req: Request, res: Response): Promise<void> => {
+  console.log("LOGIN", req.body);
   const missingFields = requiredFieldsCheck(req.body, ["username", "password"]);
   if (missingFields.length === 0) {
     const username = req.body.username.toLowerCase();
@@ -66,14 +65,10 @@ export const logInUser = async (req: Request, res: Response): Promise<void> => {
           subject: user.id?.toString(),
         }
       );
-      res
-        // .cookie("access_token", token, {
-        //   httpOnly: true,
-        // })
-        .json({
-          user: { userId: user.id?.toString(), username: username },
-          token,
-        });
+      res.json({
+        user: { userId: user.id?.toString(), username: username },
+        token,
+      });
     }
   } else {
     res.status(400).json({

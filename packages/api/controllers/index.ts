@@ -9,8 +9,8 @@ interface DynamicObject {
   input: UserItem | PostItem | ServerItem | ChannelItem;
 }
 export const requiredFieldsCheck = (
-  request: DynamicObject,
+  requestBody: DynamicObject,
   requiredFields: string[]
 ): string[] => {
-  return requiredFields.filter((key) => !request.hasOwnProperty(key));
+  return requiredFields.filter((key) => !requestBody.hasOwnProperty(key));
 };

@@ -6,7 +6,7 @@ type Props = {
   type: string;
   id: string;
   value: string;
-  setValue: React.Dispatch<React.SetStateAction<string>>;
+  setValue: React.Dispatch<React.SetStateAction<string>> | ((e: string) => void);
   placeholder?: string;
   labelText?: string;
   required?: boolean;

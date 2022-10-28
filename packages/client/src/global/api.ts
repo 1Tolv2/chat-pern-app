@@ -40,7 +40,7 @@ export const loginUser = async (
 };
 
 export const getAllUsers = async () => {
-  const res = await axios.get("/users");
+  const res = (await axios.get("/users")).data;
   return res;
 };
 
@@ -70,11 +70,10 @@ export const getServer = async (serverId: number): Promise<ServerItem> => {
 
 export const createChannel = async (
   name: string,
-  description: string,
   server_id: number
-): Promise<number> => {
-  const res = await axios.post("/channels", { name, description, server_id });
-  return res.status;
+)=> {
+  const res = await axios.post("/channels", { name, server_id });
+  return res;
 };
 
 export const createPost = async (message: string, channel_id: number) => {
@@ -86,3 +85,7 @@ export const getUser = async () => {
   const res = await axios.get("/users/me");
   return res;
 };
+
+export const addMemberToServer = async (serverId: number, userId: number) => {
+  return axios.post(`/servers/${serverId}/member`, { userId });
+}

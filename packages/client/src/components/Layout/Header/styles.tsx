@@ -13,6 +13,7 @@ const ChannelBar = styled.div`
   background-color: ${colors.darkGrey};
   box-shadow: 0 1px 2px ${colors.darkestGrey};
   overflow: hidden;
+  z-index: 1;
   img {
     width: 24px;
     height: 24px;

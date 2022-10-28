@@ -1,5 +1,6 @@
+import { typeImplementation } from "@testing-library/user-event/dist/type/typeImplementation";
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { theme, ThemeColors } from "../theme";
 
 const { colors } = theme;
@@ -7,43 +8,72 @@ const { colors } = theme;
 type StyledProps = {
   bgColor?: string;
   color?: string;
+  width?: string;
+  buttonType?: "filled" | "outlined";
+  height?: string;
+  fontSize?: string;
 };
-const StyledButton = styled.div`
+const StyledButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 44px;
-  padding: 2px 16px 5px 16px;
+  padding: 2px 16px 2px 16px;
   margin-bottom: "8px";
-  background-color: ${(props: StyledProps) =>
-    props.bgColor
-      ? colors[props.bgColor as string as keyof ThemeColors]
-      : colors.purple};
-  color: ${(props: StyledProps) =>
-    props.color
-      ? colors[props.color as string as keyof ThemeColors]
-      : colors.white};
   border-radius: 3px;
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
   cursor: pointer;
   transition: opacity 0.2s;
-
   &:hover {
     opacity: 0.7;
+  }
+  font-size: ${(props) => props.fontSize || "16px"};
+  width: ${(props: StyledProps) => props.width || "100%"};
+  height: ${(props: StyledProps) => props.height || "38px"};
+  ${(props: StyledProps) => props.buttonType === "outlined" 
+  ? css`
+  background-color: transparent;
+  border: 1px solid ${(props: StyledProps) =>
+    props.bgColor
+      ? colors[props.bgColor as string as keyof ThemeColors]
+      : colors.purple};
+    color: ${(props: StyledProps) =>
+    props.color
+      ? colors[props.color as string as keyof ThemeColors]
+      : colors.white};    
+  `
+  : css`
+   background-color: ${(props: StyledProps) =>
+    props.bgColor
+      ? colors[props.bgColor as string as keyof ThemeColors]
+      : colors.purple};
+    color: ${(props: StyledProps) =>
+    props.color
+      ? colors[props.color as string as keyof ThemeColors]
+      : colors.white};   
+      border: 1px solid ${colors[props.color as string as keyof ThemeColors] || colors.purple}; 
+  `}
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.5;
   }
 `;
 
 type Props = {
   children?: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (() => void) | ((e: any) => void);
+  width?: string;
+  type?: "outlined" | "filled";
+  height?: string;
+  fontSize?: string;
+  id?: string;
+  className?: string;
 };
 
-const Button = ({ children, onClick, bgColor, color }: Props & StyledProps) => {
+const Button = ({ className, id, fontSize, height, type, children, onClick, bgColor, color, width }: Props & StyledProps) => {
   return (
-    <StyledButton onClick={onClick} bgColor={bgColor} color={color}>
+    <StyledButton className={className} id={id} fontSize={fontSize} buttonType={type || "filled"} onClick={onClick} bgColor={bgColor} color={color} width={width} height={height}>
       {children}
     </StyledButton>
   );

@@ -1,7 +1,7 @@
-import { ChannelItem, ServerItem, UserItem } from "@chat-app-typescript/shared";
+import { ChannelItem, ServerItem } from "@chat-app-typescript/shared";
 import React, { useEffect, useReducer } from "react";
 import { getServer } from "../../../global/api";
-import Paragraph from "../../atoms/Paragraph";
+import ChannelHeader from "../ChannelHeader";
 import * as s from "./styles";
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
     activeChannel: ChannelItem | null;
     setActiveChannel: React.Dispatch<React.SetStateAction<ChannelItem | null>>;
   };
-  user: UserItem;
+  isAdmin: boolean;
 };
 
 type ChannelAction = {
@@ -35,11 +35,9 @@ const channelReducer = (state: ChannelItem[], action: ChannelAction) => {
   }
 };
 
-const ChannelList = ({ states, user }: Props) => {
+const ChannelList = ({ states, isAdmin }: Props) => {
   const [channels, dispatch] = useReducer(channelReducer, []);
-  // const [channelName, setChannelName] = useState<string>("");
-  // const [channelDescription, setChannelDescription] = useState<string>("");
-  const { activeServer, setActiveChannel } = states;
+  const { activeChannel, activeServer, setActiveChannel } = states;
 
   const fetchServerChannels = async (): Promise<ServerItem> => {
     const res = await getServer(activeServer?.id || 1);
@@ -57,58 +55,37 @@ const ChannelList = ({ states, user }: Props) => {
   }, [activeServer, dispatch]);
 
   const handleOnClick = async (e: any): Promise<void> => {
-    const server = await fetchServerChannels();
-    const channel =
-      server?.channels?.find(
-        (item: ChannelItem) => item.id === parseInt((e.target as HTMLLIElement).id)
-      ) || null;
-    states.setActiveChannel(channel as unknown as ChannelItem);
-  };
-
-  const addChannel = async () => {
-    console.log("CLICKED");
-    // const res = await createChannel(channelName, channelDescription, states.activeServer?.id || 1);
-    // res === 201 && handleActiveChannel()
+    if (e.target.id !== activeChannel?.id) {
+      const server = await fetchServerChannels();
+      const channel =
+        server?.channels?.find(
+          (item: ChannelItem) =>
+            item.id === parseInt((e.target as HTMLLIElement).id)
+        ) || null;
+      states.setActiveChannel(channel as unknown as ChannelItem);
+    }
   };
 
   return (
     <s.Container>
-      <s.Header>
-        <h3>{activeServer?.name}</h3>
-      </s.Header>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          paddingTop: "16px",
-          paddingLeft: "16px",
-          paddingRight: "8px",
-        }}
-      >
-        <Paragraph
-          editStyle={{ fontSize: "14px", fontWeight: "500" }}
-          color="lightGrey"
-        >
-          {"Text Channels".toUpperCase()}
-        </Paragraph>
-        {user.servers?.map((server, index) => {
-          if (activeServer?.name === server.name && server?.role === "admin")
-            return (
-              <span key={index} onClick={addChannel}>
-                +
-              </span>
-            );
-        })}
-      </div>
-      <s.StyledChanneList style={{ minWidth: "64px" }}>
+      <ChannelHeader
+        isAdmin={isAdmin}
+        serverId={activeServer?.id || 0}
+        setState={states.setActiveChannel}
+        modifyChannelList={dispatch}
+      />
+      <s.StyledChanneList>
         {channels.map((channel) => {
           return (
             <s.StyledChannelItem
               key={channel.id}
               id={`${channel.id}`}
               onClick={handleOnClick}
+              className={
+                channel.id === states.activeChannel?.id ? "active" : ""
+              }
             >
-              # {channel.name}{" "}
+              <img src="/tag.svg" alt="hashtag icon" /> {channel.name}
             </s.StyledChannelItem>
           );
         })}

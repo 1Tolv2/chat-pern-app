@@ -6,10 +6,11 @@ import routes from "./routes/index";
 import { runSocketServer, SocketServer } from "./controllers/socket";
 import { CORS_ORIGINS } from "./config/config";
 import dotenv from "dotenv";
+import { createPool } from "slonik";
 dotenv.config();
 
-const app: Express = express(); // sätter upp en express server
-const server = http.createServer(app); // skapar en http server
+const app: Express = express();
+const server = http.createServer(app);
 const io = new Server<SocketServer>(server, {
   cors: { origin: CORS_ORIGINS, credentials: true },
 });
@@ -20,7 +21,6 @@ if (!process.env.NODE_ENV) {
 
 app.use(cors({ origin: CORS_ORIGINS, credentials: true }));
 app.use(json());
-// app.use(cookieParser());
 
 io.use(runSocketServer);
 app.use("/", routes);

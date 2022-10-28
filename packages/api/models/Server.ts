@@ -35,7 +35,6 @@ class Server implements ServerItem, TimeStamps {
     { name, description }: ServerItem,
     user_id: number | null
   ): Promise<ServerItem> => {
-    await this.setupTable();
     try {
       const newServer = (await (
         await pool
@@ -72,7 +71,7 @@ export const createServer = async (
   user_id?: number | null
 ): Promise<ServerItem | void> => {
   try {
-    const newServer = Server.addToDatabase(server, user_id || null);
+    const newServer = await Server.addToDatabase(server, user_id || null);
     return newServer;
   } catch (err) {
     if (err instanceof Error) {
@@ -103,6 +102,19 @@ export const findServersByUser = async (
 SELECT su.user_id, su.role, su.server_id as id, s.name, s.description as server_description FROM serverusers as su
 JOIN servers as s ON s.id = su.server_id
 WHERE user_id = ${userId};`)) as unknown as ServerItem[];
+};
+
+export const findServerUsers = async () => {
+  return await (await pool).any(sql`SELECT * FROM serverusers;`);
+};
+
+export const addToServerUsers = async (serverId: number, userId: number) => {
+  return await (
+    await pool
+  ).any(sql`
+  INSERT INTO serverusers (user_id, server_id, role)
+  VALUES (${userId}, ${serverId}, 'member');
+  `);
 };
 
 // export const updateServer = async () => {};

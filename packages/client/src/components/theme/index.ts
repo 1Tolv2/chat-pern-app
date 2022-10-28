@@ -11,6 +11,8 @@ type ThemeColors = {
   blue: string;
   purple: string;
   red: string;
+  accentGrey: string;
+  green: string
 };
 
 const colors: ThemeColors = {
@@ -19,6 +21,7 @@ const colors: ThemeColors = {
     darkerGrey: "#2f3136",
     darkGrey: "#36393f",
     grey: "#42464d",
+    accentGrey: "#4f545c",
     lightGrey: "#96989d",
     lighterGrey: "#b9bbbe",
     lightestGrey: "#dcddde",
@@ -26,6 +29,7 @@ const colors: ThemeColors = {
     blue: "#3498db",
     purple: "#5865F2",
     red: "#ED4245",
+    green: "#3ba55d"
 }
 
 const size = {

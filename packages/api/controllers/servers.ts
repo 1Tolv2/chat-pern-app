@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 import { ServerItem } from "@chat-app-typescript/shared";
-import { createServer, findAllServers, findServerById } from "../models/Server";
+import {
+  addToServerUsers,
+  createServer,
+  findAllServers,
+  findServerById,
+} from "../models/Server";
 import { requiredFieldsCheck } from ".";
 import { findChannelsByServer } from "../models/Channel";
 
@@ -57,4 +62,20 @@ export const deleteServer = async (
   res: Response
 ): Promise<void> => {
   res.json({ message: "Server deleted" });
+};
+
+export const addMemberToServer = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  console.log("BODY", req.params.id);
+  console.log("USER", req.body);
+  try {
+    await addToServerUsers(parseInt(req.params.id), req.body.userId);
+    res.json({ message: "Member added to server" });
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(409).json({ error: err.message });
+    }
+  }
 };

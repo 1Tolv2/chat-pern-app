@@ -1,6 +1,3 @@
-// import { Request, Response, NextFunction } from "express";
-// import { UserItem } from "@chat-app-typescript/shared";
-// import User from "../models/User";
 import { JwtPayload } from "jsonwebtoken";
 import { PostItem } from "@chat-app-typescript/shared";
 import { io } from "../app";
@@ -8,12 +5,18 @@ import { createPost, findAllPostsByChannel } from "../models/Post";
 import { verifyToken } from "./auth";
 import { Socket } from "socket.io";
 
+type OnlineUser = {
+  user: string;
+  userId: string;
+};
+
 interface ServerToClientEvents {
   noArg: () => void;
   basicEmit: (a: number, b: string, c: Buffer) => void;
   withAck: (d: string, callback: (e: number) => void) => void;
   message: (a: PostItem) => void;
   messages: (a: PostItem[]) => void;
+  online: (a: OnlineUser[]) => void;
 }
 
 interface ClientToServerEvents {
@@ -35,6 +38,8 @@ export interface SocketServer
     InterServerEvents,
     SocketData {}
 
+const onlineUsers: OnlineUser[] = [];
+
 export const runSocketServer = async (
   socket: Socket,
   next: () => void
@@ -50,11 +55,14 @@ export const runSocketServer = async (
       }
     }
     if (user) {
-      console.log("A client connected to server");
+      console.log("USER", user);
+      console.info("A client connected to server");
+      onlineUsers.push({ user: user.username, userId: user.userId });
       const posts = await findAllPostsByChannel(
         parseInt((socket.handshake.query?.channel_id as string) || "0")
       );
-      socket.emit("messages", posts); // skicka alla meddelande när de kopplar upp sig
+      socket.emit("online", onlineUsers);
+      socket.emit("messages", posts);
 
       socket.on("message", async (message: PostItem): Promise<void> => {
         const { text, channel_id } = message;
@@ -66,11 +74,16 @@ export const runSocketServer = async (
         io.emit("message", {
           ...newPost,
           user: user?.username || "",
-        } as PostItem); // skicka meddelandet när nytt dykt upp
+        } as PostItem);
       });
 
       socket.on("disconnect", (reason: string) => {
-        console.log("A client disconnected from the server due to: " + reason);
+        const userIndex = onlineUsers.findIndex((onlineUser) => {
+          user?.id === onlineUser.userId;
+        });
+        onlineUsers.splice(userIndex, 1);
+        io.emit("online", onlineUsers);
+        console.info("A client disconnected from the server due to: " + reason);
       });
     }
   }

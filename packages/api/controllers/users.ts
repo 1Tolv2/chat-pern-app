@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import { UserItem } from "@chat-app-typescript/shared";
 import { createUser, findAllUsers, findUserById } from "../models/User";
 import { requiredFieldsCheck } from ".";
-import { findServersByUser } from "../models/Server";
+import { findServersByUser, findServerUsers } from "../models/Server";
+import { UniqueIntegrityConstraintViolationError } from "slonik";
 
 export const handleNewUser = async (
   req: Request<UserItem>,
@@ -18,8 +19,10 @@ export const handleNewUser = async (
       await createUser(req.body);
       res.sendStatus(201);
     } catch (err) {
-      if (err instanceof Error) {
-        res.status(409).json({ error: err.message });
+      if (err instanceof UniqueIntegrityConstraintViolationError) {
+        res.status(409).json({ error: "Username or email already exists" });
+      } else if (err instanceof Error) {
+        res.status(400).json({ error: err.message });
       }
     }
   } else {
@@ -36,8 +39,22 @@ export const getAllUsers = async (
 ): Promise<void> => {
   try {
     const users = await findAllUsers();
-    res.json(users);
+
+    const serverUsers = await findServerUsers();
+    const userWithServers = users.map((user: any) => {
+      const filteredArray = serverUsers?.filter((serverUser: any) => {
+        return user.id == serverUser.user_id
+          ? { server_id: serverUser.server_id, role: serverUser.role }
+          : false;
+      });
+      return {
+        ...user,
+        servers: filteredArray,
+      };
+    });
+    res.json(userWithServers);
   } catch (err) {
+    console.error(err);
     res.sendStatus(400);
   }
 };
@@ -50,7 +67,7 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     user.servers = await findServersByUser(parseInt(req.user?.userId));
     res.json(user);
   } catch (err) {
-    console.log(err);
+    console.error(err);
 
     res.sendStatus(400);
   }

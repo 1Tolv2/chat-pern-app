@@ -16,10 +16,9 @@ class Channel implements ChannelItem, TimeStamps {
     this.server_id = _server_id;
     this.created_at = new Date();
     this.updated_at = null;
-    this.#addToDatabase();
   }
 
-  #setupTable = async () => {
+  static setupTable = async () => {
     await (
       await pool
     ).query(sql`
@@ -36,22 +35,20 @@ class Channel implements ChannelItem, TimeStamps {
       `);
   };
 
-  #addToDatabase = async () => {
-    await this.#setupTable();
+  static addToDatabase = async ({ name, server_id }: ChannelItem) => {
     const newChannel = await (
       await pool
     ).one(sql`
-          INSERT INTO channels (name, description, server_id)
-          VALUES (${this.name}, ${this.description}, ${this.server_id})
+          INSERT INTO channels (name, server_id)
+          VALUES (${name}, ${server_id})
           RETURNING *;
           `);
-    // Call on to create default channel general
     return newChannel;
   };
 }
 
 export const createChannel = async (channel: ChannelItem) => {
-  return new Channel(channel.name, channel.description, channel.server_id);
+  return Channel.addToDatabase(channel) as unknown as ChannelItem;
 };
 
 export const findAllChannels = async (): Promise<ChannelItem[]> => {
@@ -68,7 +65,7 @@ export const findChannelById = async (id: number): Promise<ChannelItem> => {
   ).one(sql`
   SELECT * from channels WHERE id = ${id}`)) as unknown as ChannelItem;
   return channel;
-}; // with posts with users'
+};
 
 export const findChannelsByServer = async (
   id: number
