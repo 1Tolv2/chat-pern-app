@@ -2,8 +2,8 @@ import React, { useState, useContext } from "react";
 import { ModalContext } from "../../Layout";
 import * as s from "./styles";
 import Paragraph from "../../atoms/Paragraph";
-import SignForm from "../../molecules/SignForm";
 import { theme } from "../../theme";
+import SignForm from "../../molecules/SignForm";
 
 const { colors } = theme;
 

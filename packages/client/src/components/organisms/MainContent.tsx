@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import ServerList from "./ServerList";
-import ChannelList from "../molecules/ChannelList";
 import { ChannelItem, ServerItem } from "@chat-app-typescript/shared";
 import ChannelContent from "./ChannelContent";
 import { UserContext } from "../Layout";
