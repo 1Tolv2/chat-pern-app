@@ -1,15 +1,8 @@
 import React, { Dispatch } from "react";
-import { screen, render, fireEvent, waitFor, act } from "@testing-library/react";
+import { screen, render, fireEvent, waitFor } from "@testing-library/react";
 import ServerList from "../../../components/organisms/ServerList";
 import { ServerItem, UserItem } from "@chat-app-typescript/shared";
 import * as api from "../../api";
-
-/*
-ChannelSideBar
-MemberSideBar
-
-*/
-
 
 const mockUser: UserItem = {
   id: 1,
@@ -113,7 +106,7 @@ describe("Testing ServerList", () => {
     expect(listItems[2]).not.toHaveAttribute("id", "active");
   });
 
-  test("OnClick should change active server", async () => {
+  test("OnClick should change active server/ call handleOnClick", async () => {
     const getServerSpy = jest.spyOn(api, "getServer").mockResolvedValue({
         user_id: 1,
         role: "member",
