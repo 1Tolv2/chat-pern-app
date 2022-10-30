@@ -17,46 +17,47 @@ const Heading = styled.div`
 `;
 
 type Props = {
-    type?: {
-      formType: "login" | "register";
-      setFormType: (type: "login" | "register") => void;
-    };
-    children?: ReactNode;
+  type?: {
+    formType: "login" | "register";
+    setFormType: (type: "login" | "register") => void;
   };
+  children?: ReactNode;
+};
 
-const SignForm = ({type, children}: Props) => {
+const SignForm = ({ type, children }: Props) => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const { setModalVisible } = useContext(ModalContext);
+  const { setUser } = useContext(UserContext);
 
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-    const [username, setUsername] = useState<string>("");
-    const { setModalVisible } = useContext(ModalContext);
-    const { setUser } = useContext(UserContext);
-  
-    const handleOnClick = async (e:any) => {
-      e.preventDefault()
-      if (type?.formType === "register") {
-        const res = await registerUser(email, username, password);
-        res && type?.setFormType("login");
-      } else if (type?.formType === "login") {
-        try {
-          const user = await loginUser(username, password);
-            setModalVisible(false)
-            setUser(user)
-        } catch (err) {
-          if (err instanceof CustomError) {
-            console.error(err.data);
-          }
+  const handleOnClick = async (e: any) => {
+    e.preventDefault();
+    if (type?.formType === "register") {
+      const res = await registerUser(email, username, password);
+      res && type?.setFormType("login");
+    } else if (type?.formType === "login") {
+      try {
+        const user = await loginUser(username, password);
+        setModalVisible(false);
+        setUser(user);
+      } catch (err) {
+        if (err instanceof CustomError) {
+          console.error(err.data);
         }
       }
-    };
-  
-    const disableClass = () => {
-      if (type?.formType === "register") {
-        return (username === "" || email === "" || password === "") ? "disabled" : ""
-      } else if (type?.formType === "login") {
-        return (username === "" || password === "") ? "disabled" : ""
-      }
     }
+  };
+
+  const disableClass = () => {
+    if (type?.formType === "register") {
+      return username === "" || email === "" || password === ""
+        ? "disabled"
+        : "";
+    } else if (type?.formType === "login") {
+      return username === "" || password === "" ? "disabled" : "";
+    }
+  };
   return (
     <>
       <Heading>
@@ -69,7 +70,7 @@ const SignForm = ({type, children}: Props) => {
             <t.H1 fontSize="27px" fontWeight="700" color="white" mb="8px">
               Welcome back!
             </t.H1>
-            <Paragraph>We're so excited to see you again!</Paragraph>
+            <Paragraph>{"We're so excited to see you again!"}</Paragraph>
           </>
         )}
       </Heading>
@@ -114,7 +115,11 @@ const SignForm = ({type, children}: Props) => {
             Forgot your password?
           </Paragraph>
         )}
-        <Button className={disableClass()} onClick={handleOnClick} disabled={disableClass() === "disabled"}>
+        <Button
+          className={disableClass()}
+          onClick={handleOnClick}
+          disabled={disableClass() === "disabled"}
+        >
           {type?.formType === "register" ? "Register" : "Login"}
         </Button>
         {children}
