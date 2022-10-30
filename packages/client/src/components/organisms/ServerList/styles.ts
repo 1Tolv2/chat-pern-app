@@ -47,6 +47,7 @@ const ListItem = styled.li`
       width: 8px;
       margin-top: 4px;
       left: 0;
+      color: white;
     }
     & > [id^="channel_"] {
       border-radius: 30%;

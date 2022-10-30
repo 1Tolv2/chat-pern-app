@@ -8,4 +8,6 @@ export interface ServerItem {
   channels?: ChannelItem[];
   users?: number[];
   user_id?: number;
+  created_at?: Date;
+  updated_at?: Date | null;
 }

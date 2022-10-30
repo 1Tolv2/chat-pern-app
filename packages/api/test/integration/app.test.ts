@@ -1,7 +1,7 @@
 import { UserItem } from "@chat-app-typescript/shared";
 import request from "supertest";
 import { server } from "../../app";
-import User, { createUser, findAllUsers } from "../../models/User";
+import User from "../../models/User";
 
 const defaultUser = {
   id: 1,

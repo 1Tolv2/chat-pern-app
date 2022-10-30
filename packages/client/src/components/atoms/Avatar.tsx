@@ -51,7 +51,7 @@ type Props = {
 
 const Avatar = ({ bgColor, size, text, hover, onClick, id}: Props) => {
   return (
-    <Container id={id} bgColor={bgColor} size={size} hover={hover} onClick={onClick}>
+    <Container data-testid={id} id={id} bgColor={bgColor} size={size} hover={hover} onClick={onClick}>
       <IconContainer>
         {text ? (
           <span>{text}</span>

@@ -2,7 +2,7 @@ import React, { Dispatch } from "react";
 import { screen, render, fireEvent, waitFor } from "@testing-library/react";
 import SignForm from "../../../components/molecules/SignForm";
 
-jest.mock("../../../global/api", () => {
+jest.mock("../../api", () => {
   const mockUser = {
     id: 1,
     email: "tolv@test.com",
@@ -13,7 +13,7 @@ jest.mock("../../../global/api", () => {
   };
   return {
     __esModule: true,
-    ...jest.requireActual("../../../global/api"),
+    ...jest.requireActual("../../api"),
     registerUser: () => Promise.resolve(200),
     loginUser: () => Promise.resolve(mockUser),
   };
@@ -120,24 +120,24 @@ describe("Testing SignForm", () => {
     });
   });
 
-  //   describe("Testing form type login", () => {
-  // test("Should render login form on type login", () => {
-  //   render(<SignForm type={{ formType: "login", setFormType: () => {} }}/>);
+    describe("Testing form type login", () => {
+  test("Should render login form on type login", () => {
+    render(<SignForm type={{ formType: "login", setFormType: () => {} }}/>);
 
-  //   expect(screen.getByRole("heading")).toHaveTextContent("Welcome back!");
-  //   expect(screen.getByRole("button")).toHaveTextContent("Login");
-  //   expect(screen.getByRole("textbox")).toBeInTheDocument();
-  // });
+    expect(screen.getByRole("heading")).toHaveTextContent("Welcome back!");
+    expect(screen.getByRole("button")).toHaveTextContent("Login");
+    expect(screen.getByRole("textbox")).toBeInTheDocument();
+  });
 
-  // test("Should have username and password inputs", () => {
-  //   render(<SignForm type={{ formType: "login", setFormType: () => {} }}/>);
-  //   const inputs = screen.queryAllByDisplayValue("");
+  test("Should have username and password inputs", () => {
+    render(<SignForm type={{ formType: "login", setFormType: () => {} }}/>);
+    const inputs = screen.queryAllByDisplayValue("");
 
-  //   expect(inputs[0]).toHaveAttribute("type", "text");
-  //   expect(inputs[0]).toHaveAttribute("id", "username");
+    expect(inputs[0]).toHaveAttribute("type", "text");
+    expect(inputs[0]).toHaveAttribute("id", "username");
 
-  //   expect(inputs[1]).toHaveAttribute("type", "password");
-  //   expect(inputs[1]).toHaveAttribute("id", "password");
-  // });
-  //   });
+    expect(inputs[1]).toHaveAttribute("type", "password");
+    expect(inputs[1]).toHaveAttribute("id", "password");
+  });
+    });
 });
