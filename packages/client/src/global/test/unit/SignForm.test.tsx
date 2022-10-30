@@ -1,6 +1,7 @@
 import React, { Dispatch } from "react";
 import { screen, render, fireEvent, waitFor } from "@testing-library/react";
 import SignForm from "../../../components/molecules/SignForm";
+import * as api from '../../api';
 
 jest.mock("../../api", () => {
   const mockUser = {
@@ -19,11 +20,7 @@ jest.mock("../../api", () => {
   };
 });
 
-
-
 describe("Testing SignForm", () => {
-
-
   describe("Testing form type register", () => {
     test("Should render register form on type register", () => {
       render(
@@ -68,12 +65,12 @@ describe("Testing SignForm", () => {
     });
 
     test("When all values are entered form can be submitted", async () => {
-        const setState = jest.fn();
-        const useStateSpy = jest.spyOn(React, "useState");
-        useStateSpy.mockImplementation(((initialState: any) => [
-          initialState,
-          setState,
-        ]) as unknown as (() => [unknown, Dispatch<unknown>]) | undefined);
+      const setState = jest.fn();
+      const useStateSpy = jest.spyOn(React, "useState");
+      useStateSpy.mockImplementation(((initialState: any) => [
+        initialState,
+        setState,
+      ]) as unknown as (() => [unknown, Dispatch<unknown>]) | undefined);
       render(
         <SignForm
           type={{
@@ -98,17 +95,19 @@ describe("Testing SignForm", () => {
     });
 
     test("When not all values are entered button is disabled", async () => {
-        const setState = jest.fn();
-        const useStateSpy = jest.spyOn(React, "useState");
-        useStateSpy.mockImplementation(((initialState: any) => [
-          initialState,
-          setState,
-        ]) as unknown as (() => [unknown, Dispatch<unknown>]) | undefined);
+      const setState = jest.fn();
+      const useStateSpy = jest.spyOn(React, "useState");
+      useStateSpy.mockImplementation(((initialState: any) => [
+        initialState,
+        setState,
+      ]) as unknown as (() => [unknown, Dispatch<unknown>]) | undefined);
       render(
-        <SignForm type={{
+        <SignForm
+          type={{
             formType: "register",
             setFormType: setState as (type: "login" | "register") => void,
-          }}/>
+          }}
+        />
       );
 
       const inputs = screen.getAllByRole("textbox");
@@ -120,24 +119,44 @@ describe("Testing SignForm", () => {
     });
   });
 
-    describe("Testing form type login", () => {
-  test("Should render login form on type login", () => {
-    render(<SignForm type={{ formType: "login", setFormType: () => {} }}/>);
+  describe("Testing form type login", () => {
+    test("Should render login form on type login", () => {
+      render(<SignForm type={{ formType: "login", setFormType: () => {} }} />);
 
-    expect(screen.getByRole("heading")).toHaveTextContent("Welcome back!");
-    expect(screen.getByRole("button")).toHaveTextContent("Login");
-    expect(screen.getByRole("textbox")).toBeInTheDocument();
-  });
-
-  test("Should have username and password inputs", () => {
-    render(<SignForm type={{ formType: "login", setFormType: () => {} }}/>);
-    const inputs = screen.queryAllByDisplayValue("");
-
-    expect(inputs[0]).toHaveAttribute("type", "text");
-    expect(inputs[0]).toHaveAttribute("id", "username");
-
-    expect(inputs[1]).toHaveAttribute("type", "password");
-    expect(inputs[1]).toHaveAttribute("id", "password");
-  });
+      expect(screen.getByRole("heading")).toHaveTextContent("Welcome back!");
+      expect(screen.getByRole("button")).toHaveTextContent("Login");
+      expect(screen.getByRole("textbox")).toBeInTheDocument();
     });
+
+    test("Should have username and password inputs", () => {
+      render(<SignForm type={{ formType: "login", setFormType: () => {} }} />);
+      const inputs = screen.queryAllByDisplayValue("");
+
+      expect(inputs[0]).toHaveAttribute("type", "text");
+      expect(inputs[0]).toHaveAttribute("id", "username");
+
+      expect(inputs[1]).toHaveAttribute("type", "password");
+      expect(inputs[1]).toHaveAttribute("id", "password");
+    });
+
+    test("OnSubmit login function should be called", async () => {
+      const loginUserSpy = jest.spyOn(api, "loginUser").mockResolvedValue({
+        id: 1,
+        email: "tolv@test.com",
+        username: "tolv2",
+        password: "lol"
+      });
+      render(<SignForm type={{ formType: "login", setFormType: () => {} }} />);
+      const inputs = screen.queryAllByDisplayValue("");
+      fireEvent.change(inputs[0], { target: { value: "email" } });
+      fireEvent.change(inputs[1], { target: { value: "password" } });
+      const button = screen.getByRole("button");
+      expect(button).not.toBeDisabled();
+
+      fireEvent.click(button);
+      expect(loginUserSpy).toHaveBeenCalled();
+      expect(loginUserSpy).toHaveBeenCalledWith("email", "password");
+
+    })
+  });
 });
