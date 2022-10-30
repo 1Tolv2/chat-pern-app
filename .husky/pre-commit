@@ -3,3 +3,4 @@
 
 echo Running ESlint
 npm run eslint -w packages/api
+# npm run eslint -w packages/client
