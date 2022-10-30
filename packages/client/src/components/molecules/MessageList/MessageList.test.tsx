@@ -18,7 +18,7 @@ const mockListData: PostItem[] = [
     user: "test user 2",
     channel_id: 1,
     text: "test",
-    created_at: new Date(2022, 10, 15, 12, 0),
+    created_at: new Date(2020, 10, 15, 12, 0),
   },
 ];
 
@@ -52,8 +52,21 @@ describe("Testing MessageList", () => {
     });
 
     test("Should render formatted date and time", () => {
+      const renderDateString = (date: Date): string => {
+        const day = date.getDate();
+        const month = date.getMonth();
+        const year = date.getFullYear();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        return `${day < 10 ? "0" + day : day}/${
+          month < 9 ? "0" + (month + 1) : month + 1
+        }/${year} - ${hours < 10 ? "0" + hours : hours}.${
+          minutes < 10 ? "0" + minutes : minutes
+        }`;
+      };
         render(<MessageList data={mockListData} />);
-        expect(screen.getByText("23/10/2022 - 00.00")).toBeInTheDocument();
+        const dateItems = screen.queryAllByText(/^(\d{2}\/){2}2022/)
+        expect(dateItems[0]).toHaveTextContent(renderDateString(new Date(2022, 9, 22, 24, 0)))
     })
   });
 
