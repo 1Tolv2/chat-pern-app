@@ -1,8 +1,8 @@
 import React, { Dispatch } from "react";
 import { screen, render, fireEvent, waitFor } from "@testing-library/react";
-import ChannelList from "../../../components/molecules/ChannelList";
+import ChannelList from ".";
 import { ChannelItem, ServerItem } from "@chat-app-typescript/shared";
-import * as api from "../../api";
+import * as api from "../../../global/api";
 
 const mockActiveServer: ServerItem = {
   user_id: 1,
@@ -26,7 +26,7 @@ useStateSpy.mockImplementation(((initialState: any) => [
   setState,
 ]) as unknown as (() => [unknown, Dispatch<unknown>]) | undefined);
 
-jest.mock("../../api", () => {
+jest.mock("../../../global/api", () => {
   const mockChannel = {
     id: 10,
     server_id: 1,
@@ -62,7 +62,7 @@ jest.mock("../../api", () => {
   };
   return {
     __esModule: true,
-    ...jest.requireActual("../../api"),
+    ...jest.requireActual("../../../global/api"),
     getServer: () => Promise.resolve(mockServerWithChannels),
   };
 });

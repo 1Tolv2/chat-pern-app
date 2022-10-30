@@ -1,8 +1,8 @@
 import React, { Dispatch } from "react";
 import { screen, render, fireEvent, waitFor } from "@testing-library/react";
-import ServerList from "../../../components/organisms/ServerList";
+import ServerList from ".";
 import { ServerItem, UserItem } from "@chat-app-typescript/shared";
-import * as api from "../../api";
+import * as api from "../../../global/api";
 
 const mockUser: UserItem = {
   id: 1,
@@ -42,7 +42,7 @@ useStateSpy.mockImplementation(((initialState: any) => [
   setState,
 ]) as unknown as (() => [unknown, Dispatch<unknown>]) | undefined);
 
-jest.mock("../../api", () => {
+jest.mock("../../../global/api", () => {
     const mockServers: ServerItem[] = [
         {
           user_id: 1,
@@ -61,7 +61,7 @@ jest.mock("../../api", () => {
       ];
     return {
       __esModule: true,
-      ...jest.requireActual("../../api"),
+      ...jest.requireActual("../../../global/api"),
       getServers: () => Promise.resolve(mockServers),
       getServer: () => Promise.resolve(mockServers[1]),
     };

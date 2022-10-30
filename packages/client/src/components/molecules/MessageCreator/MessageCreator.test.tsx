@@ -1,6 +1,6 @@
 import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
-import MessageCreator from "../../../components/molecules/MessageCreator";
+import MessageCreator from ".";
 
 const testServerItem = {
   channel_id: 1,

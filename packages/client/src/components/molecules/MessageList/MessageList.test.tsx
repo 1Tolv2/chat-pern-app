@@ -1,6 +1,6 @@
 import React from "react";
 import { screen, render } from "@testing-library/react";
-import MessageList from "../../../components/molecules/MessageList";
+import MessageList from ".";
 import { PostItem } from "@chat-app-typescript/shared";
 
 const mockListData: PostItem[] = [

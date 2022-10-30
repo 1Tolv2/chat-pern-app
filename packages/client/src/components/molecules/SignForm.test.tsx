@@ -1,9 +1,9 @@
 import React, { Dispatch } from "react";
 import { screen, render, fireEvent, waitFor } from "@testing-library/react";
-import SignForm from "../../../components/molecules/SignForm";
-import * as api from '../../api';
+import SignForm from "./SignForm";
+import * as api from '../../global/api';
 
-jest.mock("../../api", () => {
+jest.mock("../../global/api", () => {
   const mockUser = {
     id: 1,
     email: "tolv@test.com",
@@ -14,7 +14,7 @@ jest.mock("../../api", () => {
   };
   return {
     __esModule: true,
-    ...jest.requireActual("../../api"),
+    ...jest.requireActual("../../global/api"),
     registerUser: () => Promise.resolve(200),
     loginUser: () => Promise.resolve(mockUser),
   };
