@@ -12,25 +12,25 @@ type ThemeColors = {
   purple: string;
   red: string;
   accentGrey: string;
-  green: string
+  green: string;
 };
 
 const colors: ThemeColors = {
-    black: "#000",
-    darkestGrey: "#202225",
-    darkerGrey: "#2f3136",
-    darkGrey: "#36393f",
-    grey: "#42464d",
-    accentGrey: "#4f545c",
-    lightGrey: "#96989d",
-    lighterGrey: "#b9bbbe",
-    lightestGrey: "#dcddde",
-    white: "#fff",
-    blue: "#3498db",
-    purple: "#5865F2",
-    red: "#ED4245",
-    green: "#3ba55d"
-}
+  black: "#000",
+  darkestGrey: "#202225",
+  darkerGrey: "#2f3136",
+  darkGrey: "#36393f",
+  grey: "#42464d",
+  accentGrey: "#4f545c",
+  lightGrey: "#96989d",
+  lighterGrey: "#b9bbbe",
+  lightestGrey: "#dcddde",
+  white: "#fff",
+  blue: "#3498db",
+  purple: "#5865F2",
+  red: "#ED4245",
+  green: "#3ba55d",
+};
 
 const size = {
   mobileS: "320px",

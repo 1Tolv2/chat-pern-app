@@ -9,7 +9,7 @@ const MessageStart = ({ activeChannel }: Props) => {
   return (
     <s.Container>
       <s.IconContainer>
-      <img src="/tag-white.svg" alt="hashtag icon"/>
+        <img src="/tag-white.svg" alt="hashtag icon" />
       </s.IconContainer>
       <s.Header>{`Welcome to #${activeChannel?.name || ""}`}</s.Header>
       <Paragraph color="lighterGrey">{`This is the start of the #${

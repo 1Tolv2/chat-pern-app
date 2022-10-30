@@ -1,7 +1,7 @@
 import React, { Dispatch } from "react";
 import { screen, render, fireEvent, waitFor } from "@testing-library/react";
 import SignForm from "./SignForm";
-import * as api from '../../global/api';
+import * as api from "../../global/api";
 
 jest.mock("../../global/api", () => {
   const mockUser = {
@@ -144,7 +144,7 @@ describe("Testing SignForm", () => {
         id: 1,
         email: "tolv@test.com",
         username: "tolv2",
-        password: "lol"
+        password: "lol",
       });
       render(<SignForm type={{ formType: "login", setFormType: () => {} }} />);
       const inputs = screen.queryAllByDisplayValue("");
@@ -156,7 +156,6 @@ describe("Testing SignForm", () => {
       fireEvent.click(button);
       expect(loginUserSpy).toHaveBeenCalled();
       expect(loginUserSpy).toHaveBeenCalledWith("email", "password");
-
-    })
+    });
   });
 });

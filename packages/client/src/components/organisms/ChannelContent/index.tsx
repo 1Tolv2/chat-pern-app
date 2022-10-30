@@ -12,11 +12,15 @@ type Props = {
 const ChannelContent = ({ activeChannel }: Props) => {
   return (
     <div style={{ height: "100%" }}>
-      {activeChannel && (<><Header activeChannel={activeChannel} />
-      <s.Container>
-        <MessageBoard activeChannel={activeChannel} />
-        {/* <MemberSidebar /> */}
-      </s.Container></>)}
+      {activeChannel && (
+        <>
+          <Header activeChannel={activeChannel} />
+          <s.Container>
+            <MessageBoard activeChannel={activeChannel} />
+            {/* <MemberSidebar /> */}
+          </s.Container>
+        </>
+      )}
     </div>
   );
 };

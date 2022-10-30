@@ -8,7 +8,9 @@ type Props = {
   type: string;
   id: string;
   value: string;
-  setValue: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
+  setValue:
+    | React.Dispatch<React.SetStateAction<string>>
+    | ((value: string) => void);
   placeholder?: string;
   label?: string;
   required?: boolean;

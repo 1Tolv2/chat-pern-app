@@ -15,13 +15,19 @@ const MessageCreator = ({ activeChannel, socket, setSocket }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    socket?.emit("message", {text: message, channel_id: activeChannel?.id || 1});
+    socket?.emit("message", {
+      text: message,
+      channel_id: activeChannel?.id || 1,
+    });
     setMessage("");
   };
 
   return (
     <s.Container>
-      <form onSubmit={message ? handleSubmit : () => {}} style={{ width: "100%" }}>
+      <form
+        onSubmit={message ? handleSubmit : () => {}}
+        style={{ width: "100%" }}
+      >
         <Textarea
           id="Message"
           type="text"
@@ -29,7 +35,7 @@ const MessageCreator = ({ activeChannel, socket, setSocket }: Props) => {
           value={message}
           placeholder="Message..."
         />
-        <input type="submit" hidden title="submit"/>
+        <input type="submit" hidden title="submit" />
       </form>
     </s.Container>
   );

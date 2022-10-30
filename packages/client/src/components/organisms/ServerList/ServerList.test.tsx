@@ -43,32 +43,31 @@ useStateSpy.mockImplementation(((initialState: any) => [
 ]) as unknown as (() => [unknown, Dispatch<unknown>]) | undefined);
 
 jest.mock("../../../global/api", () => {
-    const mockServers: ServerItem[] = [
-        {
-          user_id: 1,
-          role: "admin",
-          id: 1,
-          name: "tolv's server",
-          description: "Hello World!",
-        },
-        {
-          user_id: 1,
-          role: "member",
-          id: 3,
-          name: "ey's server",
-          description: "Hello World!",
-        },
-      ];
-    return {
-      __esModule: true,
-      ...jest.requireActual("../../../global/api"),
-      getServers: () => Promise.resolve(mockServers),
-      getServer: () => Promise.resolve(mockServers[1]),
-    };
-  });
+  const mockServers: ServerItem[] = [
+    {
+      user_id: 1,
+      role: "admin",
+      id: 1,
+      name: "tolv's server",
+      description: "Hello World!",
+    },
+    {
+      user_id: 1,
+      role: "member",
+      id: 3,
+      name: "ey's server",
+      description: "Hello World!",
+    },
+  ];
+  return {
+    __esModule: true,
+    ...jest.requireActual("../../../global/api"),
+    getServers: () => Promise.resolve(mockServers),
+    getServer: () => Promise.resolve(mockServers[1]),
+  };
+});
 
 describe("Testing ServerList", () => {
-    
   test("Should render list", async () => {
     render(
       <ServerList
@@ -90,7 +89,7 @@ describe("Testing ServerList", () => {
     const listItems = await screen.findAllByRole("listitem");
     expect(listItems).toHaveLength(3);
   });
-  
+
   test("Should render one item as active", async () => {
     render(
       <ServerList
@@ -108,13 +107,13 @@ describe("Testing ServerList", () => {
 
   test("OnClick should change active server/ call handleOnClick", async () => {
     const getServerSpy = jest.spyOn(api, "getServer").mockResolvedValue({
-        user_id: 1,
-        role: "member",
-        id: 3,
-        name: "ey's server",
-        description: "Hello World!",
-      });
-      render(
+      user_id: 1,
+      role: "member",
+      id: 3,
+      name: "ey's server",
+      description: "Hello World!",
+    });
+    render(
       <ServerList
         user={mockUser}
         states={{ activeServer: mockActiveServer, setActiveServer: setState }}
@@ -123,12 +122,14 @@ describe("Testing ServerList", () => {
     const target = await screen.findByTestId("channel_3");
     fireEvent.click(target);
     await waitFor(() => expect(getServerSpy).toHaveBeenCalledWith("3"));
-    await waitFor(() => expect(setState).toHaveBeenCalledWith({
+    await waitFor(() =>
+      expect(setState).toHaveBeenCalledWith({
         user_id: 1,
         role: "member",
         id: 3,
         name: "ey's server",
         description: "Hello World!",
-      }));
+      })
+    );
   });
 });

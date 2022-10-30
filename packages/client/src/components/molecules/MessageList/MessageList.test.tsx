@@ -23,7 +23,6 @@ const mockListData: PostItem[] = [
 ];
 
 describe("Testing MessageList", () => {
-    
   test("Should render list with list items", () => {
     render(<MessageList data={mockListData} />);
     expect(screen.getByRole("list")).toBeInTheDocument();
@@ -64,10 +63,14 @@ describe("Testing MessageList", () => {
           minutes < 10 ? "0" + minutes : minutes
         }`;
       };
-        render(<MessageList data={mockListData} />);
-        const dateItems = screen.queryAllByText(/^(\d{2}\/){2}2022...\d{2}\.\d{2}/)
-        expect(dateItems[0]).toHaveTextContent(renderDateString(new Date(2022, 9, 22, 24, 0)));
-    })
+      render(<MessageList data={mockListData} />);
+      const dateItems = screen.queryAllByText(
+        /^(\d{2}\/){2}2022...\d{2}\.\d{2}/
+      );
+      expect(dateItems[0]).toHaveTextContent(
+        renderDateString(new Date(2022, 9, 22, 24, 0))
+      );
+    });
   });
 
   test("Should not render list if data array is empty", () => {

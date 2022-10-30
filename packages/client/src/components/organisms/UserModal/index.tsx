@@ -7,9 +7,7 @@ import SignForm from "../../molecules/SignForm";
 
 const { colors } = theme;
 
-type Props = {};
-
-const UserModal = (props: Props) => {
+const UserModal = () => {
   const [formType, setFormType] = useState<"login" | "register">("login");
   const { modalVisible } = useContext(ModalContext);
 
@@ -22,7 +20,7 @@ const UserModal = (props: Props) => {
       {modalVisible && (
         <s.Wrapper>
           <s.Container>
-            <SignForm type={{formType, setFormType}}>
+            <SignForm type={{ formType, setFormType }}>
               <Paragraph
                 color="lightGrey"
                 editStyle={{ fontSize: "14px", mt: "4px", fontWeight: "700" }}

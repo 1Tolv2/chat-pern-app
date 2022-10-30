@@ -2,7 +2,8 @@ import { ChannelItem, ServerItem, UserItem } from "@chat-app-typescript/shared";
 import axios from "axios";
 import { ActivityData } from "./types";
 
-axios.defaults.baseURL = process.env.REACT_APP_API_URL || "http://localhost:8800";
+axios.defaults.baseURL =
+  process.env.REACT_APP_API_URL || "http://localhost:8800";
 axios.interceptors.request.use((config) => {
   if (!config?.headers) {
     config.headers = {};
@@ -68,10 +69,7 @@ export const getServer = async (serverId: number): Promise<ServerItem> => {
   return res.data;
 };
 
-export const createChannel = async (
-  name: string,
-  server_id: number
-)=> {
+export const createChannel = async (name: string, server_id: number) => {
   const res = await axios.post("/channels", { name, server_id });
   return res;
 };
@@ -88,4 +86,4 @@ export const getUser = async () => {
 
 export const addMemberToServer = async (serverId: number, userId: number) => {
   return axios.post(`/servers/${serverId}/member`, { userId });
-}
+};
