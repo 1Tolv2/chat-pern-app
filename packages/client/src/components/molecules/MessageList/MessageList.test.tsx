@@ -10,7 +10,7 @@ const mockListData: PostItem[] = [
     user: "test user 1",
     channel_id: 1,
     text: "Hello World!",
-    created_at: new Date("2022-10-22T22:00:00.000Z"),
+    created_at: new Date(2022, 9, 22, 24, 0),
   },
   {
     id: 2,
@@ -18,7 +18,7 @@ const mockListData: PostItem[] = [
     user: "test user 2",
     channel_id: 1,
     text: "test",
-    created_at: new Date("2022-10-25T22:00:00.000Z"),
+    created_at: new Date(2022, 10, 15, 12, 0),
   },
 ];
 
