@@ -39,5 +39,9 @@ jobs:
   test: 
     runs-on: ubuntu-latest
     steps: 
+      - name: Running client unit tests
+        run:  | 
+          cd packages/client
+          npm run test
       - run: echo "${{job.name}} job status ${{ job.status }}."
     
