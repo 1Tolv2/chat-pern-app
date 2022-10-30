@@ -6,7 +6,6 @@ import routes from "./routes/index";
 import { runSocketServer, SocketServer } from "./controllers/socket";
 import { CORS_ORIGINS } from "./config/config";
 import dotenv from "dotenv";
-import { createPool } from "slonik";
 dotenv.config();
 
 const app: Express = express();

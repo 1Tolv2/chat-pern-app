@@ -39,14 +39,22 @@ export const getAllUsers = async (
 ): Promise<void> => {
   try {
     const users = await findAllUsers();
-
-    const serverUsers = await findServerUsers();
-    const userWithServers = users.map((user: any) => {
-      const filteredArray = serverUsers?.filter((serverUser: any) => {
-        return user.id == serverUser.user_id
-          ? { server_id: serverUser.server_id, role: serverUser.role }
-          : false;
-      });
+    type serverUsersOutput = {
+      id: number;
+      user_id: number;
+      server_id: number;
+      role: "admin" | "member";
+    };
+    const serverUsers = (await findServerUsers()) as serverUsersOutput[];
+    console.log(serverUsers);
+    const userWithServers = users.map((user: UserItem) => {
+      const filteredArray = serverUsers?.filter(
+        (serverUser: serverUsersOutput) => {
+          return user.id == serverUser.user_id
+            ? { server_id: serverUser.server_id, role: serverUser.role }
+            : false;
+        }
+      );
       return {
         ...user,
         servers: filteredArray,

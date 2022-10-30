@@ -1,4 +1,3 @@
-import { UserItem } from "@chat-app-typescript/shared";
 import request from "supertest";
 import { server } from "../../app";
 import User from "../../models/User";

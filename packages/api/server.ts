@@ -1,5 +1,5 @@
 import { server } from "./app";
-import { PORT, POSTGRES_URL } from "./config/config";
+import { PORT } from "./config/config";
 import { handleDBSetup } from "./controllers/db";
 
 server.listen(PORT, async () => {
