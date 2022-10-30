@@ -54,8 +54,10 @@ export const getAllUsers = async (
     });
     res.json(userWithServers);
   } catch (err) {
-    console.error(err);
-    res.sendStatus(400);
+    if (err instanceof Error) {
+      console.error("B", err);
+      res.sendStatus(400);
+    }
   }
 };
 
@@ -67,8 +69,7 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     user.servers = await findServersByUser(parseInt(req.user?.userId));
     res.json(user);
   } catch (err) {
-    console.error(err);
-
+    console.error("A", err);
     res.sendStatus(400);
   }
 };

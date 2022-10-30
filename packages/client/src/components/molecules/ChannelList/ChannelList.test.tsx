@@ -27,12 +27,6 @@ useStateSpy.mockImplementation(((initialState: any) => [
 ]) as unknown as (() => [unknown, Dispatch<unknown>]) | undefined);
 
 jest.mock("../../../global/api", () => {
-  const mockChannel = {
-    id: 10,
-    server_id: 1,
-    name: "general",
-    description: "",
-  };
   const mockServerWithChannels: ServerItem = {
     id: 1,
     name: "tolv's server",

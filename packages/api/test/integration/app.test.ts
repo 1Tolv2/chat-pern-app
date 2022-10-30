@@ -1,5 +1,6 @@
 import request from "supertest";
 import { server } from "../../app";
+import Server from "../../models/Server";
 import User from "../../models/User";
 
 const defaultUser = {
@@ -26,6 +27,19 @@ jest.mock("../../models/User", () => {
     findAllUsers: () => Promise.resolve([mockUser, mockUser]),
   };
 });
+
+jest.mock("../../models/Server", () => {
+  const mockServerUsers = [
+    { id: 1, user_id: 1, server_id: 1, role: "admin" },
+    { id: 2, user_id: 3, server_id: 2, role: "admin" },
+    { id: 3, user_id: 1, server_id: 2, role: "member" },
+  ];
+  return {
+    __esModule: true,
+    findServerUsers: () => Promise.resolve(mockServerUsers),
+  };
+});
+
 describe("GET /users", () => {
   User.authorizeUser = jest.fn().mockReturnValueOnce(defaultUser);
   let token = "";
