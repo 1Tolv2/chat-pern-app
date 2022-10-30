@@ -65,8 +65,8 @@ describe("Testing MessageList", () => {
         }`;
       };
         render(<MessageList data={mockListData} />);
-        const dateItems = screen.queryAllByText(/^(\d{2}\/){2}2022/)
-        expect(dateItems[0]).toHaveTextContent(renderDateString(new Date(2022, 9, 22, 24, 0)))
+        const dateItems = screen.queryAllByText(/^(\d{2}\/){2}2022...\d{2}\.\d{2}/)
+        expect(dateItems[0]).toHaveTextContent(renderDateString(new Date(2022, 9, 22, 24, 0)));
     })
   });
 
