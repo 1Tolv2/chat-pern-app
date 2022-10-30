@@ -25,23 +25,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Installing dependencies
-      run: npm install
-    - name: Running ESLint on Server
-      run:  | 
-        cd packages/api
-        npm run eslint
-    - name: Running ESLint on Client
-      run: echo "Running ESLint on Client"
-    - run: echo "${{job.name}} job status ${{ job.status }}."
+      - uses: actions/checkout@v2
+      - name: Installing dependencies
+        run: npm install
+      - name: Running ESLint on Server
+        run:  | 
+          cd packages/api
+          npm run eslint
+      - name: Running ESLint on Client
+        run: echo "Running ESLint on Client"
+      - run: echo "${{job.name}} job status ${{ job.status }}."
   
   test: 
     runs-on: ubuntu-latest
     steps: 
-      - name: Running client unit tests
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm run build --if-present
+      - name: Running Client unit tests
         run:  | 
           cd packages/client
           npm run test
-      - run: echo "${{job.name}} job status ${{ job.status }}."
     
