@@ -37,8 +37,6 @@ jest.mock("../../../global/api", () => {
     id: 1,
     name: "tolv's server",
     description: "Hello World!",
-    created_at: new Date(1666606917837),
-    updated_at: null,
     channels: [
       {
         id: 10,
@@ -111,8 +109,6 @@ describe("Testing ChannelList", () => {
             id: 1,
             name: "tolv's server",
             description: "Hello World!",
-            created_at: new Date(1666606917837),
-            updated_at: null,
             channels: [
               {
                 id: 10,
