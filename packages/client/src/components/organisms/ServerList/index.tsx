@@ -16,6 +16,7 @@ const ServerList = ({ states, user }: Props) => {
   const [serverList, setServerList] = useState<ServerItem[]>([]);
 
   const fetchServers = async (): Promise<void> => {
+
     const servers = (await getServers()).filter((server) => {
       return user?.servers?.find((userServer) => {
         return userServer.id === server.id
@@ -23,6 +24,7 @@ const ServerList = ({ states, user }: Props) => {
     });
     setServerList(servers);
     states.setActiveServer(servers[0]);
+
   };
   useEffect(() => {
     if (user) {
@@ -59,7 +61,6 @@ const ServerList = ({ states, user }: Props) => {
           return (
             <s.ListItem
               key={server?.id}
-              style={{ color: "white" }}
               id={server.id === states.activeServer?.id ? "active" : ""}
             >
               <s.Pill className="pill"/>

@@ -1,14 +1,13 @@
-import React, { useContext } from "react";
-import Button from "../../atoms/Button";
-import Paragraph from "../../atoms/Paragraph";
-import InputWithLabel from "../InputWithLabel";
-import * as t from "../../theme/typography";
-import { theme } from "../../theme";
+import React, { useContext, useState, ReactNode } from "react";
+import Button from "../atoms/Button";
+import Paragraph from "../atoms/Paragraph";
+import InputWithLabel from "./InputWithLabel";
+import * as t from "../theme/typography";
+import { theme } from "../theme";
 import styled from "styled-components";
-import { loginUser, registerUser } from "../../../global/api";
-import { ModalContext } from "../../Layout";
-import { CustomError } from "../../../global/types";
-import { UserContext } from "../../Layout";
+import { ModalContext, UserContext } from "../Layout";
+import { loginUser, registerUser } from "../../global/api";
+import { CustomError } from "../../global/types";
 
 const { colors } = theme;
 
@@ -18,46 +17,46 @@ const Heading = styled.div`
 `;
 
 type Props = {
-  type?: {
-    formType: "login" | "register";
-    setFormType: (type: "login" | "register") => void;
+    type?: {
+      formType: "login" | "register";
+      setFormType: (type: "login" | "register") => void;
+    };
+    children?: ReactNode;
   };
-  children?: React.ReactNode;
-};
 
-const SignForm = ({ type, children }: Props) => {
-  const [email, setEmail] = React.useState<string>("");
-  const [password, setPassword] = React.useState<string>("");
-  const [username, setUsername] = React.useState<string>("");
-  const { setModalVisible } = useContext(ModalContext);
-  const { setUser } = useContext(UserContext);
+const SignForm = ({type, children}: Props) => {
 
-  const handleOnClick = async (e:any) => {
-    e.preventDefault()
-    if (type?.formType === "register") {
-      const res = await registerUser(email, username, password);
-      res && type?.setFormType("login");
-    } else if (type?.formType === "login") {
-      try {
-        const user = await loginUser(username, password);
-          setModalVisible(false)
-          setUser(user)
-      } catch (err) {
-        if (err instanceof CustomError) {
-          console.error(err.data);
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [username, setUsername] = useState<string>("");
+    const { setModalVisible } = useContext(ModalContext);
+    const { setUser } = useContext(UserContext);
+  
+    const handleOnClick = async (e:any) => {
+      e.preventDefault()
+      if (type?.formType === "register") {
+        const res = await registerUser(email, username, password);
+        res && type?.setFormType("login");
+      } else if (type?.formType === "login") {
+        try {
+          const user = await loginUser(username, password);
+            setModalVisible(false)
+            setUser(user)
+        } catch (err) {
+          if (err instanceof CustomError) {
+            console.error(err.data);
+          }
         }
       }
+    };
+  
+    const disableClass = () => {
+      if (type?.formType === "register") {
+        return (username === "" || email === "" || password === "") ? "disabled" : ""
+      } else if (type?.formType === "login") {
+        return (username === "" || password === "") ? "disabled" : ""
+      }
     }
-  };
-
-  const disableClass = () => {
-    if (type?.formType === "register") {
-      return (username === "" || email === "" || password === "") ? "disabled" : ""
-    } else if (type?.formType === "login") {
-      return (username === "" || password === "") ? "disabled" : ""
-
-    }
-  }
   return (
     <>
       <Heading>
@@ -110,12 +109,12 @@ const SignForm = ({ type, children }: Props) => {
           textColor="lighterGrey"
           required
         />
-        {type?.formType === "register" && (
+        {type?.formType === "login" && (
           <Paragraph editStyle={{ fontSize: "14px", mb: "20px", mt: "4px" }}>
             Forgot your password?
           </Paragraph>
         )}
-        <Button onClick={handleOnClick} className={disableClass()}>
+        <Button className={disableClass()} onClick={handleOnClick} disabled={disableClass() === "disabled"}>
           {type?.formType === "register" ? "Register" : "Login"}
         </Button>
         {children}

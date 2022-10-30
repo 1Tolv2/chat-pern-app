@@ -21,7 +21,7 @@ const MessageCreator = ({ activeChannel, socket, setSocket }: Props) => {
 
   return (
     <s.Container>
-      <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+      <form onSubmit={message ? handleSubmit : () => {}} style={{ width: "100%" }}>
         <Textarea
           id="Message"
           type="text"
@@ -29,7 +29,7 @@ const MessageCreator = ({ activeChannel, socket, setSocket }: Props) => {
           value={message}
           placeholder="Message..."
         />
-        <input type="submit" hidden />
+        <input type="submit" hidden title="submit"/>
       </form>
     </s.Container>
   );

@@ -69,11 +69,12 @@ type Props = {
   fontSize?: string;
   id?: string;
   className?: string;
+  disabled?: boolean;
 };
 
-const Button = ({ className, id, fontSize, height, type, children, onClick, bgColor, color, width }: Props & StyledProps) => {
+const Button = ({ className, id, fontSize, height, type, children, onClick, bgColor, color, width, disabled }: Props & StyledProps) => {
   return (
-    <StyledButton className={className} id={id} fontSize={fontSize} buttonType={type || "filled"} onClick={onClick} bgColor={bgColor} color={color} width={width} height={height}>
+    <StyledButton className={className} id={id} fontSize={fontSize} buttonType={type || "filled"} onClick={onClick} bgColor={bgColor} color={color} width={width} height={height} disabled={disabled}>
       {children}
     </StyledButton>
   );

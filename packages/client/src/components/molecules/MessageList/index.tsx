@@ -26,33 +26,37 @@ const MessageList = ({ data }: Props) => {
     }`;
   };
   return (
-    <ul>
-      {data?.map((post: PostItem, index) => {
-        return (
-          <s.Container key={index}>
-            <s.MessageWrapper>
-              <s.ProfileImage src={logo} alt="avatar" />
-              <div>
-                <div>
-                  <s.Heading>
-                    {firstLetterToUppercase(post?.user || "")}
-                  </s.Heading>
-                  <Paragraph
-                    editStyle={{ fontSize: "0.75rem" }}
-                    color="lighterGrey"
-                  >
-                    {renderDateString(
-                      new Date(post?.created_at || "11/10/2022")
-                    )}
-                  </Paragraph>
-                </div>
-                <Paragraph>{post?.text}</Paragraph>
-              </div>
-            </s.MessageWrapper>
-          </s.Container>
-        );
-      })}
-    </ul>
+    <>
+      {data.length > 0 && (
+        <ul>
+          {data?.map((post: PostItem, index) => {
+            return (
+              <s.Container key={index}>
+                <s.MessageWrapper>
+                  <s.ProfileImage src={logo} alt="avatar" />
+                  <div>
+                    <div>
+                      <s.Heading>
+                        {firstLetterToUppercase(post?.user || "")}
+                      </s.Heading>
+                      <Paragraph
+                        editStyle={{ fontSize: "0.75rem" }}
+                        color="lighterGrey"
+                      >
+                        {renderDateString(
+                          new Date(post?.created_at || "11/10/2022")
+                        )}
+                      </Paragraph>
+                    </div>
+                    <Paragraph>{post?.text}</Paragraph>
+                  </div>
+                </s.MessageWrapper>
+              </s.Container>
+            );
+          })}
+        </ul>
+      )}
+    </>
   );
 };
 
