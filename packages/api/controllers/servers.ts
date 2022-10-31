@@ -8,6 +8,7 @@ import {
 } from "../models/Server";
 import { requiredFieldsCheck } from ".";
 import { findChannelsByServer } from "../models/Channel";
+import { UniqueIntegrityConstraintViolationError } from "slonik";
 
 export const handleNewServer = async (
   req: Request<ServerItem>,
@@ -17,11 +18,19 @@ export const handleNewServer = async (
 
   if (missingFields.length === 0) {
     try {
-      const server = await createServer(req.body, req?.user?.id);
+      const server = await createServer(
+        req.body.name,
+        req.body.description || "",
+        req?.user?.id
+      );
       res.status(201).json(server);
     } catch (err) {
-      if (err instanceof Error) {
-        res.status(409).json({ error: err.message });
+      if (err instanceof UniqueIntegrityConstraintViolationError) {
+        res
+          .status(400)
+          .json({ message: "A server with that name already exists." });
+      } else {
+        res.status(500).json({ message: "Something went wrong." });
       }
     }
   } else {
@@ -44,34 +53,18 @@ export const getServerById = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const id = parseInt(req.params.id);
+  const id = req.params.id;
   const server = await findServerById(id);
   server.channels = await findChannelsByServer(id);
   res.json(server);
-};
-
-export const editServer = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  res.json({ Server: { message: "Server updated" } });
-};
-
-export const deleteServer = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  res.json({ message: "Server deleted" });
 };
 
 export const addMemberToServer = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  console.log("BODY", req.params.id);
-  console.log("USER", req.body);
   try {
-    await addToServerUsers(parseInt(req.params.id), req.body.userId);
+    await addToServerUsers(req.params.id, req.body.userId);
     res.json({ message: "Member added to server" });
   } catch (err) {
     if (err instanceof Error) {

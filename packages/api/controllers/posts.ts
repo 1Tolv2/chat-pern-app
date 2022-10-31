@@ -12,10 +12,11 @@ export const handleNewPost = async (
   );
   if (missingFields.length === 0) {
     try {
-      const post = await createPost({
-        ...req.body,
-        user_id: parseInt(req.user?.userId),
-      });
+      const post = await createPost(
+        req.body.text,
+        req.user?.userId,
+        req.body.channel_id
+      );
       res.status(201).json(post);
     } catch (err) {
       if (err instanceof Error) {
@@ -42,17 +43,6 @@ export const getPostById = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const post = await findPostById(parseInt(req.params.id));
+  const post = await findPostById(req.params.id);
   res.json(post);
-};
-
-export const editPost = async (req: Request, res: Response): Promise<void> => {
-  res.json({ post: { message: "Post updated" } });
-};
-
-export const deletePost = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  res.json({ message: "Post deleted" });
 };

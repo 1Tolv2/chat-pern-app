@@ -59,21 +59,17 @@ export const runSocketServer = async (
       console.info("A client connected to server");
       onlineUsers.push({ user: user.username, userId: user.userId });
       const posts = await findAllPostsByChannel(
-        parseInt((socket.handshake.query?.channel_id as string) || "0")
+        (socket.handshake.query?.channel_id as string) || ""
       );
       socket.emit("online", onlineUsers);
       socket.emit("messages", posts);
 
       socket.on("message", async (message: PostItem): Promise<void> => {
         const { text, channel_id } = message;
-        const newPost = await createPost({
-          text,
-          user_id: user?.userId,
-          channel_id,
-        });
+        const newPost = await createPost(text, user?.userId, channel_id);
         io.emit("message", {
           ...newPost,
-          user: user?.username || "",
+          user: user?.username,
         } as PostItem);
       });
 

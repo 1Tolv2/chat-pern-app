@@ -1,6 +1,5 @@
 import request from "supertest";
 import { server } from "../../app";
-import Server from "../../models/Server";
 import User from "../../models/User";
 
 const defaultUser = {

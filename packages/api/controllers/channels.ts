@@ -17,10 +17,11 @@ export const handleNewChannel = async (
     let channel: ChannelItem | null = null;
     try {
       const { name, server_id } = req.body;
-      channel = await createChannel({
-        name: name.toLowerCase(),
+      channel = await createChannel(
         server_id,
-      } as ChannelItem);
+        name.toLowerCase(),
+        req.body.description || ""
+      );
     } catch (err) {
       console.error(err);
     }
@@ -51,21 +52,7 @@ export const getChannelById = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const channel = await findChannelById(parseInt(req.params.id));
-  channel.posts = await findAllPostsByChannel(parseInt(req.params.id));
+  const channel = await findChannelById(req.params.id);
+  channel.posts = await findAllPostsByChannel(req.params.id);
   res.json(channel);
-};
-
-export const editChannel = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  res.json({ channel: { message: "Channel updated" } });
-};
-
-export const deleteChannel = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  res.json({ message: "Channel deleted" });
 };

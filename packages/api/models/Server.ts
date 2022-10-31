@@ -1,18 +1,29 @@
-import { sql, UniqueIntegrityConstraintViolationError } from "slonik";
+import { sql } from "slonik";
 import { pool } from ".";
 import { TimeStamps } from "../global/types";
 import { createChannel } from "./Channel";
-import { ServerItem } from "@chat-app-typescript/shared";
+import {
+  NestedChannelItem,
+  ServerItem,
+  ServerUserItem,
+} from "@chat-app-typescript/shared";
+import { NestedUserItem } from "@chat-app-typescript/shared/src/UserItem";
 
 class Server implements ServerItem, TimeStamps {
+  id: string;
   name: string;
   description: string;
+  channels: NestedChannelItem[];
+  users: NestedUserItem[];
   created_at: Date;
   updated_at: Date | null;
 
-  constructor(_name: string, _description: string) {
+  constructor(_id: string, _name: string, _description: string) {
+    this.id = _id;
     this.name = _name;
     this.description = _description;
+    this.channels = [];
+    this.users = [];
     this.created_at = new Date();
     this.updated_at = null;
   }
@@ -21,8 +32,8 @@ class Server implements ServerItem, TimeStamps {
     await (
       await pool
     ).query(sql`
-        CREATE TABLE IF NOT EXISTS servers (
-          id SERIAL PRIMARY KEY,
+        CREATE TABLE IF NOT EXISTS server (
+          id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
           name VARCHAR(60) NOT NULL UNIQUE,
           description VARCHAR,
           created_at TIMESTAMP DEFAULT current_timestamp,
@@ -32,46 +43,36 @@ class Server implements ServerItem, TimeStamps {
   };
 
   static addToDatabase = async (
-    { name, description }: ServerItem,
-    user_id: number | null
+    name: string,
+    description: string,
+    user_id: string
   ): Promise<ServerItem> => {
-    try {
-      const newServer = (await (
-        await pool
-      ).one(sql`
-          INSERT INTO servers (name, description)
+    const newServer = (await (
+      await pool
+    ).one(sql`
+          INSERT INTO server (name, description)
           VALUES (${name}, ${description})
           RETURNING *;
           `)) as unknown as ServerItem;
-      await (
-        await pool
-      ).one(sql`
-            SELECT addusertoserver('admin', ${newServer.id || 1}, ${
-        user_id || 1
-      });
+    await (
+      await pool
+    ).one(sql`
+            SELECT addusertoserver('admin', ${newServer.id}, ${user_id || 1});
             `);
-      if (newServer) {
-        createChannel({
-          name: "general",
-          description: "General chat",
-          server_id: newServer.id || 1,
-        });
-      }
-    } catch (err) {
-      if (err instanceof UniqueIntegrityConstraintViolationError) {
-        throw new Error("A server with that name already exists");
-      }
+    if (newServer) {
+      createChannel(newServer.id, "general", "General chat");
     }
-    return new Server(name, description);
+    return new Server(newServer?.id || "", name, description);
   };
 }
 
 export const createServer = async (
-  server: ServerItem,
-  user_id?: number | null
+  name: string,
+  description: string,
+  user_id: string
 ): Promise<ServerItem | void> => {
   try {
-    const newServer = await Server.addToDatabase(server, user_id || null);
+    const newServer = await Server.addToDatabase(name, description, user_id);
     return newServer;
   } catch (err) {
     if (err instanceof Error) {
@@ -83,41 +84,43 @@ export const createServer = async (
 export const findAllServers = async (): Promise<ServerItem[]> => {
   return (await (
     await pool
-  ).any(sql`SELECT * FROM servers;`)) as unknown as ServerItem[];
+  ).any(sql`SELECT * FROM server;`)) as unknown as ServerItem[];
 };
 
-export const findServerById = async (id: number): Promise<ServerItem> => {
+export const findServerById = async (id: string): Promise<ServerItem> => {
   return (await (
     await pool
-  ).one(sql`SELECT * FROM servers
+  ).one(sql`SELECT * FROM server
   WHERE id = ${id};`)) as unknown as ServerItem;
 };
 
 export const findServersByUser = async (
-  userId: number
+  user_id: string
 ): Promise<ServerItem[]> => {
   return (await (
     await pool
   ).any(sql`
-SELECT su.user_id, su.role, su.server_id as id, s.name, s.description as server_description FROM serverusers as su
-JOIN servers as s ON s.id = su.server_id
-WHERE user_id = ${userId};`)) as unknown as ServerItem[];
+SELECT su.user_id, su.role, su.server_id as id, s.name, s.description as server_description FROM serveruser as su
+JOIN server as s ON s.id = su.server_id
+WHERE user_id = ${user_id};`)) as unknown as ServerItem[];
 };
 
 export const findServerUsers = async () => {
-  return await (await pool).any(sql`SELECT * FROM serverusers;`);
-};
-
-export const addToServerUsers = async (serverId: number, userId: number) => {
   return await (
     await pool
-  ).any(sql`
-  INSERT INTO serverusers (user_id, server_id, role)
-  VALUES (${userId}, ${serverId}, 'member');
-  `);
+  ).any(sql`SELECT user_id, server_id, role FROM serveruser;`);
 };
 
-// export const updateServer = async () => {};
-// export const deleteServer = async () => {};
+export const addToServerUsers = async (
+  server_id: string,
+  user_id: string
+): Promise<ServerUserItem> => {
+  return (await (
+    await pool
+  ).any(sql`
+  INSERT INTO serveruser (user_id, server_id, role)
+  VALUES (${user_id}, ${server_id}, 'member');
+  `)) as unknown as ServerUserItem;
+};
 
 export default Server;

@@ -39,16 +39,14 @@ export const handleToken = async (
 };
 
 export const logInUser = async (req: Request, res: Response): Promise<void> => {
-  console.log("LOGIN", req.body);
   const missingFields = requiredFieldsCheck(req.body, ["username", "password"]);
+
   if (missingFields.length === 0) {
     const username = req.body.username.toLowerCase();
     let user: UserItem | null = null;
+
     try {
-      user = await User.authorizeUser({
-        username,
-        password: req.body.password,
-      });
+      user = await User.authorizeUser(username, req.body.password);
     } catch (err) {
       if (err instanceof Error) {
         console.error(err);
