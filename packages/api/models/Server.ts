@@ -4,6 +4,7 @@ import { TimeStamps } from "../global/types";
 import { createChannel } from "./Channel";
 import {
   NestedChannelItem,
+  NestedServerItem,
   ServerItem,
   ServerUserItem,
 } from "@chat-app-typescript/shared";
@@ -94,21 +95,23 @@ export const findServerById = async (id: string): Promise<ServerItem> => {
   WHERE id = ${id};`)) as unknown as ServerItem;
 };
 
-export const findServersByUser = async (
+export const findServerUser = async (
   user_id: string
-): Promise<ServerItem[]> => {
+): Promise<NestedServerItem[]> => {
   return (await (
     await pool
   ).any(sql`
-SELECT su.user_id, su.role, su.server_id as id, s.name, s.description as server_description FROM serveruser as su
+SELECT su.role, su.server_id, s.name, s.description FROM serveruser as su
 JOIN server as s ON s.id = su.server_id
-WHERE user_id = ${user_id};`)) as unknown as ServerItem[];
+WHERE user_id = ${user_id};`)) as unknown as NestedServerItem[];
 };
 
-export const findServerUsers = async () => {
-  return await (
+export const findAllServerUsers = async (): Promise<NestedServerItem[]> => {
+  return (await (
     await pool
-  ).any(sql`SELECT user_id, server_id, role FROM serveruser;`);
+  )
+    .any(sql`SELECT su.role, su.server_id, s.name, s.description, user_id FROM serveruser as su
+  JOIN server as s ON s.id = su.server_id;`)) as unknown as NestedServerItem[];
 };
 
 export const addToServerUsers = async (

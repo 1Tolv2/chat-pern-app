@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
-import { ServerUserItem, UserItem } from "@chat-app-typescript/shared";
+import {
+  UserItem,
+  NestedUserItem,
+  NestedServerItem,
+} from "@chat-app-typescript/shared";
 import { createUser, findAllUsers, findUserById } from "../models/User";
 import { requiredFieldsCheck } from ".";
-import { findServersByUser, findServerUsers } from "../models/Server";
+import { findServerUser, findAllServerUsers } from "../models/Server";
 import { UniqueIntegrityConstraintViolationError } from "slonik";
 
 export const handleNewUser = async (
@@ -41,17 +45,21 @@ export const getAllUsers = async (
 ): Promise<void> => {
   try {
     const users = await findAllUsers();
-    const serverUsers =
-      (await findServerUsers()) as unknown as ServerUserItem[];
+    const serverUsers: NestedServerItem[] = await findAllServerUsers();
 
     const userWithServers = users.map((user: UserItem) => {
-      const filteredArray = serverUsers?.filter(
-        (serverUser: ServerUserItem) => {
-          return user.id == serverUser.user_id
-            ? { server_id: serverUser.server_id, role: serverUser.role }
-            : false;
+      const filteredArray: NestedServerItem[] = [];
+      serverUsers?.map((serverUser) => {
+        if (user.id == serverUser.user_id) {
+          filteredArray.push({
+            server_id: serverUser.server_id,
+            role: serverUser.role,
+            name: serverUser.name,
+            description: serverUser.description,
+          });
         }
-      );
+      });
+
       return {
         ...user,
         servers: filteredArray,
@@ -69,7 +77,7 @@ export const getAllUsers = async (
 export const getUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const user = await findUserById(req.user?.userId);
-    user.servers = await findServersByUser(req.user?.userId);
+    user.servers = await findServerUser(req.user?.userId);
     res.json(user);
   } catch (err) {
     console.error(err);

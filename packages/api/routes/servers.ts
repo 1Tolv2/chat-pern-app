@@ -1,4 +1,5 @@
 import express, { Router } from "express";
+import { requireLogin } from "../controllers/auth";
 import {
   getAllServers,
   getServerById,
@@ -8,9 +9,9 @@ import {
 
 const router: Router = express.Router();
 
-router.get("/", getAllServers); // Get all servers
-router.post("/", handleNewServer); // Create a new server
-router.get("/:id", getServerById); // Get Server by id with channels and users
-router.post("/:id/member", addMemberToServer); // Add member to server
+router.get("/", requireLogin, getAllServers); // Get all servers
+router.post("/", requireLogin, handleNewServer); // Create a new server
+router.get("/:id", requireLogin, getServerById); // Get Server by id with channels and users
+router.post("/:id/member", requireLogin, addMemberToServer); // Add member to server
 
 export default router;

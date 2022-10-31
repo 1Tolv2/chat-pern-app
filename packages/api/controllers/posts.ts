@@ -17,7 +17,7 @@ export const handleNewPost = async (
         req.user?.userId,
         req.body.channel_id
       );
-      res.status(201).json(post);
+      res.status(201).json({ post, message: "New post created" });
     } catch (err) {
       if (err instanceof Error) {
         res.status(409).json({ error: err.message });

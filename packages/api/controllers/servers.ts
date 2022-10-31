@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { ServerItem } from "@chat-app-typescript/shared";
 import {
   addToServerUsers,
   createServer,
@@ -9,27 +8,32 @@ import {
 import { requiredFieldsCheck } from ".";
 import { findChannelsByServer } from "../models/Channel";
 import { UniqueIntegrityConstraintViolationError } from "slonik";
+import { findUsersByServerId } from "../models/User";
 
 export const handleNewServer = async (
-  req: Request<ServerItem>,
+  req: Request,
   res: Response
 ): Promise<void> => {
   const missingFields = requiredFieldsCheck(req.body, ["name", "description"]);
-
+  console.log(req.user);
   if (missingFields.length === 0) {
     try {
       const server = await createServer(
         req.body.name,
         req.body.description || "",
-        req?.user?.id
+        req?.user?.userId
       );
-      res.status(201).json(server);
+      res.status(201).json({
+        server,
+        message: "New server created",
+      });
     } catch (err) {
       if (err instanceof UniqueIntegrityConstraintViolationError) {
         res
           .status(400)
           .json({ message: "A server with that name already exists." });
       } else {
+        console.log(err);
         res.status(500).json({ message: "Something went wrong." });
       }
     }
@@ -53,10 +57,14 @@ export const getServerById = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const id = req.params.id;
-  const server = await findServerById(id);
-  server.channels = await findChannelsByServer(id);
-  res.json(server);
+  try {
+    const server = await findServerById(req.params.id);
+    server.channels = await findChannelsByServer(req.params.id);
+    server.users = await findUsersByServerId(server.id);
+    res.json(server);
+  } catch (er) {
+    res.status(404).json({ message: "Server not found." });
+  }
 };
 
 export const addMemberToServer = async (

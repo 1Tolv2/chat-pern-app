@@ -64,7 +64,7 @@ export const logInUser = async (req: Request, res: Response): Promise<void> => {
         }
       );
       res.json({
-        user: { userId: user.id?.toString(), username: username },
+        user: { user_id: user.id?.toString(), username: username },
         token,
       });
     }

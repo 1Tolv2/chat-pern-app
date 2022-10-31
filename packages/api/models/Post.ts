@@ -77,8 +77,11 @@ export const createPost = async (
 export const findAllPosts = async () => {
   return (await (
     await pool
-  ).any(sql`SELECT * FROM post
-  ORDER BY created_at DESC;`)) as unknown as PostItem[];
+  )
+    .any(sql`  SELECT p.id, text, u.username AS user, user_id, c.name AS channel_name, channel_id, p.created_at, p.updated_at FROM post AS p
+  JOIN channel AS c ON channel_id = c.id
+  JOIN app_user AS u ON user_id = u.id
+  ORDER BY p.created_at DESC;`)) as unknown as PostItem[];
 };
 
 export const findAllPostsByUser = async (user_id: string) => {
@@ -94,7 +97,7 @@ export const findPostById = async (id: string): Promise<PostItem> => {
   ).one(sql`
   SELECT p.id, text, u.username AS user, user_id, c.name AS channel_name, channel_id, p.created_at, p.updated_at FROM post AS p
   JOIN channel AS c ON channel_id = c.id
-  JOIN user AS u ON user_id = u.id
+  JOIN app_user AS u ON user_id = u.id
   WHERE p.id = ${id};`)) as unknown as PostItem;
 };
 
@@ -105,7 +108,7 @@ export const findAllPostsByChannel = async (
     await pool
   )
     .any(sql`SELECT p.id as post_id, text, u.username AS user, user_id, p.created_at, p.updated_at FROM post AS p
-  JOIN user AS u ON user_id = u.id
+  JOIN app_user AS u ON user_id = u.id
   WHERE channel_id = ${channel_id}
   ORDER BY created_at ASC;`)) as unknown as NestedPostItem[];
 };

@@ -36,7 +36,7 @@ export const handleNewChannel = async (
       missingFields,
     });
   } else {
-    res.status(500).json({ error: { message: "Something went wrong" } });
+    res.status(500).json({ error: "Something went wrong" });
   }
 };
 
@@ -44,15 +44,25 @@ export const getAllChannels = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const channels = await findAllChannels();
-  res.json(channels);
+  try {
+    const channels = await findAllChannels();
+    res.json(channels);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Something went wrong" });
+  }
 };
 
 export const getChannelById = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const channel = await findChannelById(req.params.id);
-  channel.posts = await findAllPostsByChannel(req.params.id);
-  res.json(channel);
+  try {
+    const channel = await findChannelById(req.params.id);
+    channel.posts = await findAllPostsByChannel(req.params.id);
+    res.json(channel);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Something went wrong" });
+  }
 };
