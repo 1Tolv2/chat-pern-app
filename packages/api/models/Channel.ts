@@ -1,18 +1,14 @@
 import { sql } from "slonik";
 import { pool } from ".";
 import { TimeStamps } from "../global/types";
-import {
-  ChannelItem,
-  NestedChannelItem,
-  NestedPostItem,
-} from "@chat-app-typescript/shared";
+import { ChannelItem, PostItem } from "@chat-app-typescript/shared";
 
 class Channel implements ChannelItem, TimeStamps {
   id: string;
   name: string;
   description: string;
-  server_id: string;
-  posts: NestedPostItem[];
+  server_id?: string;
+  posts: PostItem[];
   created_at: Date;
   updated_at: Date | null;
 
@@ -48,11 +44,11 @@ class Channel implements ChannelItem, TimeStamps {
       `);
   };
 
-  static addToDatabase = async (
-    server_id: string,
-    name: string,
-    description: string
-  ) => {
+  static addToDatabase = async (channel: Partial<ChannelItem>) => {
+    const name = channel.name || "";
+    const description = channel.description || "";
+    const server_id = channel.server_id || "";
+
     const newChannel = (await (
       await pool
     ).one(sql`
@@ -63,18 +59,16 @@ class Channel implements ChannelItem, TimeStamps {
     return new Channel(
       newChannel.id,
       newChannel.name,
-      "",
-      newChannel.server_id
+      newChannel.description,
+      newChannel.server_id || ""
     );
   };
 }
 
 export const createChannel = async (
-  server_id: string,
-  name: string,
-  description: string
+  channel: Partial<ChannelItem>
 ): Promise<ChannelItem> => {
-  return Channel.addToDatabase(server_id, name, description);
+  return Channel.addToDatabase(channel);
 };
 
 export const findAllChannels = async (): Promise<ChannelItem[]> => {
@@ -95,11 +89,11 @@ export const findChannelById = async (id: string): Promise<ChannelItem> => {
 
 export const findChannelsByServer = async (
   id: string
-): Promise<NestedChannelItem[]> => {
+): Promise<ChannelItem[]> => {
   return (await (
     await pool
   ).any(sql`
-  SELECT id AS channel_id, name AS channel_name, description FROM channel WHERE server_id = ${id}`)) as unknown as NestedChannelItem[];
+  SELECT id, name, description, created_at, updated_at FROM channel WHERE server_id = ${id}`)) as unknown as ChannelItem[];
 };
 
 export default Channel;

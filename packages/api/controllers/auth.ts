@@ -56,7 +56,7 @@ export const logInUser = async (req: Request, res: Response): Promise<void> => {
 
     if (user) {
       const token = jwt.sign(
-        { userId: user.id?.toString(), username: username },
+        { user_id: user.id?.toString(), username: username },
         process.env.JWT_SECRET as string,
         {
           expiresIn: "2h",
@@ -64,7 +64,7 @@ export const logInUser = async (req: Request, res: Response): Promise<void> => {
         }
       );
       res.json({
-        user: { user_id: user.id?.toString(), username: username },
+        user: { id: user.id?.toString(), username: username },
         token,
       });
     }

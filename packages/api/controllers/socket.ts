@@ -7,7 +7,7 @@ import { Socket } from "socket.io";
 
 type OnlineUser = {
   user: string;
-  userId: string;
+  user_id: string;
 };
 
 interface ServerToClientEvents {
@@ -57,7 +57,7 @@ export const runSocketServer = async (
     if (user) {
       console.log("USER", user);
       console.info("A client connected to server");
-      onlineUsers.push({ user: user.username, userId: user.userId });
+      onlineUsers.push({ user: user.username, user_id: user.user_id });
       const posts = await findAllPostsByChannel(
         (socket.handshake.query?.channel_id as string) || ""
       );
@@ -66,7 +66,12 @@ export const runSocketServer = async (
 
       socket.on("message", async (message: PostItem): Promise<void> => {
         const { text, channel_id } = message;
-        const newPost = await createPost(text, user?.userId, channel_id);
+        const newPost = await createPost({
+          text,
+          username: user?.username,
+          user_id: user?.user_id,
+          channel_id,
+        });
         io.emit("message", {
           ...newPost,
           user: user?.username,
@@ -75,7 +80,7 @@ export const runSocketServer = async (
 
       socket.on("disconnect", (reason: string) => {
         const userIndex = onlineUsers.findIndex((onlineUser) => {
-          user?.id === onlineUser.userId;
+          user?.id === onlineUser.user_id;
         });
         onlineUsers.splice(userIndex, 1);
         io.emit("online", onlineUsers);

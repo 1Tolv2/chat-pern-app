@@ -1,12 +1,8 @@
 import { Request, Response } from "express";
-import {
-  UserItem,
-  NestedUserItem,
-  NestedServerItem,
-} from "@chat-app-typescript/shared";
+import { MemberItem, UserItem } from "@chat-app-typescript/shared";
 import { createUser, findAllUsers, findUserById } from "../models/User";
 import { requiredFieldsCheck } from ".";
-import { findServerUser, findAllServerUsers } from "../models/Server";
+import { findUserServers, findAllUsersServers } from "../models/Server";
 import { UniqueIntegrityConstraintViolationError } from "slonik";
 
 export const handleNewUser = async (
@@ -22,7 +18,7 @@ export const handleNewUser = async (
   const { username, email, password } = req.body;
   if (missingFields.length === 0) {
     try {
-      await createUser(username, email, password);
+      await createUser({ username, email, password });
       res.sendStatus(201);
     } catch (err) {
       if (err instanceof UniqueIntegrityConstraintViolationError) {
@@ -45,27 +41,46 @@ export const getAllUsers = async (
 ): Promise<void> => {
   try {
     const users = await findAllUsers();
-    const serverUsers: NestedServerItem[] = await findAllServerUsers();
+    const usersServers: MemberItem[] = await findAllUsersServers();
 
-    const userWithServers = users.map((user: UserItem) => {
-      const filteredArray: NestedServerItem[] = [];
-      serverUsers?.map((serverUser) => {
-        if (user.id == serverUser.user_id) {
-          filteredArray.push({
-            server_id: serverUser.server_id,
-            role: serverUser.role,
-            name: serverUser.name,
-            description: serverUser.description,
+    const usersWithServers = users.map((user) => {
+      const memberOfServers: MemberItem[] = [];
+
+      usersServers.map((server) => {
+        if (user.id === server.user_id) {
+          memberOfServers.push({
+            id: server.id,
+            name: server.name,
+            description: server.description,
+            role: server.role,
           });
         }
       });
-
       return {
         ...user,
-        servers: filteredArray,
+        servers: memberOfServers,
       };
     });
-    res.json(userWithServers);
+
+    // const userWithServers = users.map((user: UserItem) => {
+    //   const filteredArray: MemberItem[] = [];
+    //   usersServers?.map((usersServer) => {
+    //     if (user.id == usersServer.id) {
+    //       filteredArray.push({
+    //         server_id: usersServer.server_id,
+    //         role: usersServer.role,
+    //         name: usersServer.name,
+    //         description: usersServer.description,
+    //       });
+    //     }
+    //   });
+
+    //   return {
+    //     ...user,
+    //     servers: filteredArray,
+    //   };
+    // });
+    res.json(usersWithServers);
   } catch (err) {
     if (err instanceof Error) {
       console.error(err);
@@ -76,8 +91,8 @@ export const getAllUsers = async (
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const user = await findUserById(req.user?.userId);
-    user.servers = await findServerUser(req.user?.userId);
+    const user = await findUserById(req.user?.user_id);
+    user.servers = await findUserServers(req.user?.user_id);
     res.json(user);
   } catch (err) {
     console.error(err);

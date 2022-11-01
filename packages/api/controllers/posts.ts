@@ -7,16 +7,17 @@ export const handleNewPost = async (
   res: Response
 ): Promise<void> => {
   const missingFields = requiredFieldsCheck(
-    { ...req.body, user_id: req.user?.userId },
+    { ...req.body, user_id: req.user?.user_id },
     ["channel_id", "text", "user_id"]
   );
   if (missingFields.length === 0) {
     try {
-      const post = await createPost(
-        req.body.text,
-        req.user?.userId,
-        req.body.channel_id
-      );
+      const post = await createPost({
+        text: req.body.text,
+        username: req.user?.username,
+        user_id: req.user?.user_id,
+        channel_id: req.body.channel_id,
+      });
       res.status(201).json({ post, message: "New post created" });
     } catch (err) {
       if (err instanceof Error) {

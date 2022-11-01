@@ -1,4 +1,3 @@
-import { ChannelItem } from "@chat-app-typescript/shared";
 import { Request, Response } from "express";
 import { requiredFieldsCheck } from ".";
 import {
@@ -12,25 +11,28 @@ export const handleNewChannel = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const missingFields = requiredFieldsCheck(req.body, ["name", "serverId"]);
-  if (missingFields.length > 0) {
-    let channel: ChannelItem | null = null;
+  const missingFields = requiredFieldsCheck(req.body, [
+    "name",
+    "serverId",
+    "description",
+  ]);
+  if (missingFields.length === 0) {
     try {
-      const { name, server_id } = req.body;
-      channel = await createChannel(
+      const { name, server_id, description } = req.body;
+      const channel = await createChannel({
         server_id,
-        name.toLowerCase(),
-        req.body.description || ""
-      );
+        name: name.toLowerCase(),
+        description,
+      });
+      res.status(201).json({
+        channel,
+        message: "New channel created",
+      });
     } catch (err) {
       console.error(err);
+      res.status(500).json({ error: "Something went wrong" });
     }
-
-    res.status(201).json({
-      channel,
-      message: "New channel created",
-    });
-  } else if (missingFields.length === 0) {
+  } else if (missingFields.length > 0) {
     res.status(400).json({
       error: "Missing required fields",
       missingFields,

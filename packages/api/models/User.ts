@@ -1,7 +1,7 @@
 import { sql } from "slonik";
 import { pool } from ".";
 import bcrypt from "bcryptjs";
-import { ServerItem, UserItem } from "@chat-app-typescript/shared";
+import { MemberItem, UserItem } from "@chat-app-typescript/shared";
 import { createServer } from "./Server";
 
 class User implements UserItem {
@@ -9,7 +9,7 @@ class User implements UserItem {
   username: string;
   email: string;
   password?: string;
-  servers: ServerItem[];
+  servers: MemberItem[];
   created_at?: Date;
   updated_at?: Date | null;
 
@@ -46,12 +46,12 @@ class User implements UserItem {
       console.error(err);
     }
   };
-  static addToDatabase = async (
-    username: string,
-    password: string,
-    email: string
-  ): Promise<UserItem | void> => {
-    password = await bcrypt.hash(password, 10);
+  static addToDatabase = async (user: Partial<UserItem>): Promise<UserItem> => {
+    const username = user.username || "";
+    const email = user.email || "";
+    let password = user.password || "";
+
+    password = await bcrypt.hash(password || "", 10);
     const newUser = (await (
       await pool
     ).one(sql`
@@ -60,12 +60,16 @@ class User implements UserItem {
         RETURNING id, username, email, created_at, updated_at;
         `)) as unknown as UserItem;
 
-    await createServer(`${username}'s server`, "Hello World", newUser?.id);
+    await createServer({
+      name: `${username}'s server`,
+      description: "Hello World",
+      admin_id: newUser?.id,
+    });
 
     return new User(
       newUser.id,
-      username,
-      email,
+      username || "",
+      email || "",
       password,
       newUser.created_at || new Date()
     );
@@ -92,37 +96,34 @@ class User implements UserItem {
   };
 }
 
-export const createUser = async (
-  username: string,
-  password: string,
-  email: string
-): Promise<void> => {
-  const newUser = await User.addToDatabase(username, email, password);
+export const createUser = async (user: Partial<UserItem>): Promise<void> => {
+  const newUser = await User.addToDatabase(user);
   delete newUser?.password;
 };
 
-export const findAllUsers = async (): Promise<UserItem[]> => {
+export const findAllUsers = async (): Promise<Partial<UserItem>[]> => {
   return (await (
     await pool
   ).any(
-    sql`SELECT id, username, email, created_at FROM app_user;`
-  )) as unknown as UserItem[];
+    sql`SELECT id, username, email, created_at, updated_at FROM app_user;`
+  )) as unknown as Partial<UserItem>[];
 };
 
-export const findUserById = async (id: string): Promise<UserItem> => {
+export const findUserById = async (id: string): Promise<Partial<UserItem>> => {
   return (await (
     await pool
   ).one(sql`SELECT id, username, email, created_at, updated_at FROM app_user
-  WHERE id = ${id};`)) as unknown as UserItem;
+  WHERE id = ${id};`)) as unknown as Partial<UserItem>;
 };
 
-export const findUserByUsername = async (
-  username: string
-): Promise<UserItem> => {
+export const findUsersByServerId = async (
+  server_id: string
+): Promise<MemberItem[]> => {
   return (await (
     await pool
-  ).one(sql`SELECT id, username, email FROM app_user
-  WHERE username = ${username};`)) as unknown as UserItem;
+  ).any(sql`SELECT u.id, u.username, su.role FROM serveruser AS su
+  JOIN app_user AS u ON su.user_id = u.id
+  WHERE server_id = ${server_id};`)) as unknown as MemberItem[];
 };
 
 export default User;

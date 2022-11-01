@@ -2,11 +2,11 @@ import { sql } from "slonik";
 import { pool } from ".";
 import { TimeStamps } from "../global/types";
 import { PostItem } from "@chat-app-typescript/shared";
-import { NestedPostItem } from "@chat-app-typescript/shared/src/PostItem";
 
 class Post implements PostItem, TimeStamps {
   id: string;
   text: string;
+  username: string;
   user_id: string;
   channel_id: string;
   created_at: Date;
@@ -15,12 +15,14 @@ class Post implements PostItem, TimeStamps {
   constructor(
     _id: string,
     _text: string,
+    _username: string,
     _user_id: string,
     _channel_id: string,
     _created_at: Date
   ) {
     this.id = _id;
     this.text = _text;
+    this.username = _username;
     this.user_id = _user_id;
     this.channel_id = _channel_id;
     this.created_at = _created_at;
@@ -44,12 +46,12 @@ class Post implements PostItem, TimeStamps {
     `);
   };
 
-  static addToDatabase = async (
-    text: string,
-    user_id: string,
-    channel_id: string
-  ): Promise<PostItem> => {
-    this.setupTable();
+  static addToDatabase = async (post: Partial<PostItem>): Promise<PostItem> => {
+    const text = post.text || "";
+    const channel_id = post.channel_id || "";
+    const user_id = post.user_id || "";
+    const username = post.username || "";
+
     const newPost = (await (
       await pool
     ).one(sql`
@@ -57,24 +59,25 @@ class Post implements PostItem, TimeStamps {
     VALUES (${text}, ${user_id}, ${channel_id})
     RETURNING *;
         `)) as unknown as PostItem;
-    return new Post(newPost.id, text, user_id, channel_id, newPost.created_at);
+    return new Post(
+      newPost.id,
+      text,
+      username,
+      user_id,
+      channel_id,
+      newPost.created_at
+    );
   };
 }
 
 export const createPost = async (
-  text: string,
-  user_id: string,
-  channel_id: string
+  post: Partial<PostItem>
 ): Promise<PostItem | void> => {
-  const newPost = (await Post.addToDatabase(
-    text,
-    user_id,
-    channel_id
-  )) as PostItem;
+  const newPost = (await Post.addToDatabase(post)) as PostItem;
   return newPost;
 };
 
-export const findAllPosts = async () => {
+export const findAllPosts = async (): Promise<PostItem[]> => {
   return (await (
     await pool
   )
@@ -84,7 +87,9 @@ export const findAllPosts = async () => {
   ORDER BY p.created_at DESC;`)) as unknown as PostItem[];
 };
 
-export const findAllPostsByUser = async (user_id: string) => {
+export const findAllPostsByUser = async (
+  user_id: string
+): Promise<PostItem[]> => {
   return (await (
     await pool
   ).any(sql`SELECT * FROM post
@@ -103,14 +108,14 @@ export const findPostById = async (id: string): Promise<PostItem> => {
 
 export const findAllPostsByChannel = async (
   channel_id: string
-): Promise<NestedPostItem[]> => {
+): Promise<PostItem[]> => {
   return (await (
     await pool
   )
     .any(sql`SELECT p.id as post_id, text, u.username AS user, user_id, p.created_at, p.updated_at FROM post AS p
   JOIN app_user AS u ON user_id = u.id
   WHERE channel_id = ${channel_id}
-  ORDER BY created_at ASC;`)) as unknown as NestedPostItem[];
+  ORDER BY created_at ASC;`)) as unknown as PostItem[];
 };
 
 export default Post;

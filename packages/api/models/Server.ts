@@ -3,28 +3,33 @@ import { pool } from ".";
 import { TimeStamps } from "../global/types";
 import { createChannel } from "./Channel";
 import {
-  NestedChannelItem,
-  NestedServerItem,
+  ChannelItem,
+  MemberItem,
   ServerItem,
-  ServerUserItem,
 } from "@chat-app-typescript/shared";
-import { NestedUserItem } from "@chat-app-typescript/shared/src/UserItem";
 
 class Server implements ServerItem, TimeStamps {
   id: string;
   name: string;
   description: string;
-  channels: NestedChannelItem[];
-  users: NestedUserItem[];
+  admin_id: string;
+  channels: ChannelItem[];
+  members: MemberItem[];
   created_at: Date;
   updated_at: Date | null;
 
-  constructor(_id: string, _name: string, _description: string) {
+  constructor(
+    _id: string,
+    _name: string,
+    _description: string,
+    _admin_id: string
+  ) {
     this.id = _id;
     this.name = _name;
     this.description = _description;
+    this.admin_id = _admin_id;
     this.channels = [];
-    this.users = [];
+    this.members = [];
     this.created_at = new Date();
     this.updated_at = null;
   }
@@ -44,10 +49,12 @@ class Server implements ServerItem, TimeStamps {
   };
 
   static addToDatabase = async (
-    name: string,
-    description: string,
-    user_id: string
+    server: Partial<ServerItem>
   ): Promise<ServerItem> => {
+    const description = server.description || "";
+    const name = server.name || "";
+    const admin_id = server.admin_id || "";
+
     const newServer = (await (
       await pool
     ).one(sql`
@@ -58,22 +65,24 @@ class Server implements ServerItem, TimeStamps {
     await (
       await pool
     ).one(sql`
-            SELECT addusertoserver('admin', ${newServer.id}, ${user_id || 1});
+            SELECT addusertoserver('admin', ${newServer.id}, ${admin_id});
             `);
     if (newServer) {
-      createChannel(newServer.id, "general", "General chat");
+      createChannel({
+        server_id: newServer.id,
+        name: "general",
+        description: "General chat",
+      });
     }
-    return new Server(newServer?.id || "", name, description);
+    return new Server(newServer?.id, name, description, admin_id);
   };
 }
 
 export const createServer = async (
-  name: string,
-  description: string,
-  user_id: string
+  server: Partial<ServerItem>
 ): Promise<ServerItem | void> => {
   try {
-    const newServer = await Server.addToDatabase(name, description, user_id);
+    const newServer = await Server.addToDatabase(server);
     return newServer;
   } catch (err) {
     if (err instanceof Error) {
@@ -95,35 +104,42 @@ export const findServerById = async (id: string): Promise<ServerItem> => {
   WHERE id = ${id};`)) as unknown as ServerItem;
 };
 
-export const findServerUser = async (
+export const findUserServers = async (
   user_id: string
-): Promise<NestedServerItem[]> => {
+): Promise<MemberItem[]> => {
   return (await (
     await pool
   ).any(sql`
-SELECT su.role, su.server_id, s.name, s.description FROM serveruser as su
-JOIN server as s ON s.id = su.server_id
-WHERE user_id = ${user_id};`)) as unknown as NestedServerItem[];
+SELECT su.server_id AS id, s.name, s.description, su.role FROM serveruser AS su
+JOIN server AS s ON s.id = su.server_id
+WHERE user_id = ${user_id};`)) as unknown as MemberItem[];
 };
 
-export const findAllServerUsers = async (): Promise<NestedServerItem[]> => {
+export const findAllUsersServers = async (): Promise<MemberItem[]> => {
   return (await (
     await pool
   )
-    .any(sql`SELECT su.role, su.server_id, s.name, s.description, user_id FROM serveruser as su
-  JOIN server as s ON s.id = su.server_id;`)) as unknown as NestedServerItem[];
+    .any(sql`SELECT su.user_id, su.server_id AS id, s.name, s.description, su.role FROM serveruser as su
+  JOIN server as s ON s.id = su.server_id;`)) as unknown as MemberItem[];
 };
 
 export const addToServerUsers = async (
   server_id: string,
   user_id: string
-): Promise<ServerUserItem> => {
-  return (await (
+): Promise<void> => {
+  await (
     await pool
   ).any(sql`
   INSERT INTO serveruser (user_id, server_id, role)
   VALUES (${user_id}, ${server_id}, 'member');
-  `)) as unknown as ServerUserItem;
+  `);
 };
 
+export const findServerAdmins = async (): Promise<any> => {
+  return (await (
+    await pool
+  ).any(
+    sql`SELECT server_id, user_id AS admin_id FROM serveruser WHERE role = 'admin';`
+  )) as unknown as any[];
+};
 export default Server;
