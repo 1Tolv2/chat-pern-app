@@ -25,11 +25,7 @@ const MessageBoard = ({ activeChannel }: Props) => {
           />
         </s.ScrollContainer>
       </s.Wrapper>
-      <MessageCreator
-        activeChannel={activeChannel}
-        socket={socket}
-        setSocket={setSocket}
-      />
+      <MessageCreator activeChannel={activeChannel} socket={socket} />
     </s.Container>
   );
 };

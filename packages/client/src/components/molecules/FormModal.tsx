@@ -18,7 +18,6 @@ const ModalContainer = styled.div`
   box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.5);
   z-index: 10;
   h3 {
-    /*  */
     position: relative;
     padding: 16px;
     color: ${colors.white};
@@ -50,17 +49,17 @@ const CloseIcon = styled.img`
 `;
 
 type Props = {
-  exitModal: () => void;
-  handleOnSubmit: () => void;
+  exitModal: (e: any) => Promise<void>;
+  handleOnSubmit: (e: any) => Promise<void>;
   title: string;
-  serverId?: number | null;
+  serverId?: string | null;
   input: {
     labelText?: string;
     textColor?: string;
     id: string;
     type: "input" | "search";
-    value: any | any[];
-    setValue: (e: any) => void;
+    value?: any | any[];
+    setValue?: React.Dispatch<React.SetStateAction<any | any[]>>;
     bgColor?: string;
     placeholder?: string;
   };
@@ -87,8 +86,8 @@ const FormModal = ({
             textColor={input.textColor}
             id={input.id}
             type="text"
-            value={input.value}
-            setValue={input.setValue}
+            value={input.value || null}
+            setValue={input.setValue || null}
             bgColor={input?.bgColor || ""}
           />
           <ButtonContainer>

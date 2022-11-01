@@ -31,11 +31,10 @@ const ServerList = ({ states, user }: Props) => {
   }, [user]);
 
   const handleOnClick = async (e: any): Promise<void> => {
-    if (
-      parseInt(e.target.id.replace("channel_", "")) !== states?.activeServer?.id
-    ) {
+    const target = e.target;
+    if (target?.id.replace("channel_", "") !== states?.activeServer?.id) {
       states.setActiveServer(
-        await getServer(e.target.id.replace("channel_", ""))
+        await getServer(target?.id.replace("channel_", ""))
       );
     }
   };

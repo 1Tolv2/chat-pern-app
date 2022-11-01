@@ -1,14 +1,14 @@
-import React, { SyntheticEvent } from "react";
+import React from "react";
 import Label from "../atoms/Label";
 import InputField from "../atoms/InputField";
 
 type Props = {
   type: string;
   id: string;
-  value: string;
+  value: string | null;
   setValue:
-    | React.Dispatch<React.SetStateAction<string>>
-    | ((e: string) => void);
+    | (React.Dispatch<React.SetStateAction<string>> | ((e: string) => void))
+    | null;
   placeholder?: string;
   labelText?: string;
   required?: boolean;

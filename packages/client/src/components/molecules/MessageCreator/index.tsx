@@ -7,27 +7,25 @@ import * as s from "./styles";
 type Props = {
   activeChannel: ChannelItem | null;
   socket?: Socket;
-  setSocket?: React.Dispatch<React.SetStateAction<Socket | undefined>>;
 };
 
-const MessageCreator = ({ activeChannel, socket, setSocket }: Props) => {
+const MessageCreator = ({ activeChannel, socket }: Props) => {
   const [message, setMessage] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    socket?.emit("message", {
-      text: message,
-      channel_id: activeChannel?.id || 1,
-    });
-    setMessage("");
+    if (message) {
+      socket?.emit("message", {
+        text: message,
+        channel_id: activeChannel?.id || "",
+      });
+      setMessage("");
+    }
   };
 
   return (
     <s.Container>
-      <form
-        onSubmit={message ? handleSubmit : () => {}}
-        style={{ width: "100%" }}
-      >
+      <form onSubmit={handleSubmit} style={{ width: "100%" }}>
         <Textarea
           id="Message"
           type="text"

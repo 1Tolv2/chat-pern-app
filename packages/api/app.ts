@@ -13,6 +13,7 @@ const app: Express = express();
 const server = http.createServer(app);
 const io = new Server<SocketServer>(server, {
   cors: { origin: CORS_ORIGINS, credentials: true },
+  cookie: true,
 });
 
 if (!process.env.NODE_ENV) {

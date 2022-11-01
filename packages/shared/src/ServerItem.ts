@@ -1,13 +1,14 @@
 import { ChannelItem } from "./ChannelItem";
+import { MemberItem } from "./MemberItem";
+import { UserItem } from "./UserItem";
 
 export interface ServerItem {
-  id?: number;
+  id: string;
   name: string;
   description: string;
-  role?: "admin" | "member";
-  channels?: ChannelItem[];
-  users?: number[];
-  user_id?: number;
-  created_at?: Date;
-  updated_at?: Date | null;
+  admin_id: string;
+  channels: ChannelItem[];
+  members: MemberItem[];
+  created_at: Date;
+  updated_at: Date | null;
 }

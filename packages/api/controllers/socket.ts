@@ -4,6 +4,7 @@ import { io } from "../app";
 import { createPost, findAllPostsByChannel } from "../models/Post";
 import { verifyToken } from "./auth";
 import { Socket } from "socket.io";
+import cookie from "cookie";
 
 type OnlineUser = {
   user: string;
@@ -44,11 +45,13 @@ export const runSocketServer = async (
   socket: Socket,
   next: () => void
 ): Promise<void> => {
-  const token = socket.handshake.auth.token;
-  if (token) {
+  console.log("COOKIE", socket.handshake);
+  const JwtCookie = cookie.parse(socket.handshake.headers.cookie || "");
+  console.log("SOCKET COOKIE", JwtCookie);
+  if (JwtCookie) {
     let user: JwtPayload | null = null;
     try {
-      user = verifyToken(token);
+      user = verifyToken(JwtCookie.cookie);
     } catch (err) {
       if (err instanceof Error) {
         console.error("ERROR", err);

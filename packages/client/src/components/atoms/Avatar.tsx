@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEvent } from "react";
 import styled, { css } from "styled-components";
 import { theme, ThemeColors } from "../theme";
 const { colors } = theme;

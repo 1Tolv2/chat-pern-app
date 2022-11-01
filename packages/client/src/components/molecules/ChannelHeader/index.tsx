@@ -1,38 +1,28 @@
 import { ChannelItem } from "@chat-app-typescript/shared";
-import React, { useState } from "react";
+import { AxiosResponse } from "axios";
+import React, { useState, Dispatch } from "react";
 import { createChannel } from "../../../global/api";
 import Paragraph from "../../atoms/Paragraph";
 import FormModal from "../FormModal";
 import * as s from "./styles";
 
-type ChannelAction = {
-  type: "add" | "remove" | "replace";
-  input: ChannelItem | ChannelItem[];
-};
-
 type Props = {
   isAdmin: boolean;
-  serverId: number;
-  setState: React.Dispatch<React.SetStateAction<ChannelItem | null>>;
-  modifyChannelList: React.Dispatch<ChannelAction>;
+  serverId: string;
+  modifyChannelList: Dispatch<any>;
 };
 
-const ChannelHeader = ({
-  isAdmin,
-  serverId,
-  setState,
-  modifyChannelList,
-}: Props) => {
+const ChannelHeader = ({ isAdmin, serverId, modifyChannelList }: Props) => {
   const [name, setName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const clearModal = () => {
+  const clearModal = async (): Promise<void> => {
     setName("");
     setIsModalOpen(false);
   };
 
   const addChannel = async () => {
-    const res: any = await createChannel(name, serverId || 0);
+    const res: AxiosResponse = await createChannel(name, serverId);
     if (res.status === 201 && res.data.channel) {
       modifyChannelList({
         type: "add",

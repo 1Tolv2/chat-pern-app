@@ -5,20 +5,20 @@ import { PostItem } from "@chat-app-typescript/shared";
 
 const mockListData: PostItem[] = [
   {
-    id: 1,
-    user_id: 1,
-    user: "test user 1",
-    channel_id: 1,
+    id: "38ecee2c-8022-48e4-b277-5173d4683105",
     text: "Hello World!",
-    created_at: new Date(2022, 9, 22, 24, 0),
+    username: "tolv",
+    user_id: "bc426c44-75d7-46fe-99f9-10793ed1adbb",
+    created_at: new Date(1667255359083),
+    updated_at: null,
   },
   {
-    id: 2,
-    user_id: 2,
-    user: "test user 2",
-    channel_id: 1,
-    text: "test",
-    created_at: new Date(2020, 10, 15, 12, 0),
+    id: "38ecee2c-8022-48e4-b277-5173d4683555",
+    text: "Second post",
+    username: "tolv",
+    user_id: "bc426c44-75d7-46fe-99f9-10793ed1adbb",
+    created_at: new Date(1667255359083),
+    updated_at: null,
   },
 ];
 

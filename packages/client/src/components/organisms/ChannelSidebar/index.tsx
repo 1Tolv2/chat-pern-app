@@ -17,7 +17,6 @@ type Props = {
 const ChannelSidebar = ({ states, user }: Props) => {
   const { activeServer, activeChannel, setActiveChannel } = states;
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [usersToAdd, setUsersToAdd] = React.useState<number[]>([]);
 
   const isServerAdmin = () => {
     return (
@@ -26,12 +25,13 @@ const ChannelSidebar = ({ states, user }: Props) => {
     );
   };
 
-  const clearModal = () => {
+  const clearModal = async (): Promise<void> => {
     setIsModalOpen(false);
   };
 
-  const handleOnChange = (value: number): void => {
-    console.log("Changed", value);
+  const handleOnSubmit = async (e: any): Promise<void> => {
+    e.preventDefault();
+    console.log("Submitted", e.target.id);
   };
 
   return (
@@ -53,12 +53,10 @@ const ChannelSidebar = ({ states, user }: Props) => {
             input={{
               type: "search",
               id: "name",
-              value: usersToAdd,
-              setValue: handleOnChange,
               bgColor: "darkestGrey",
             }}
             exitModal={clearModal}
-            handleOnSubmit={() => {}}
+            handleOnSubmit={handleOnSubmit}
           />
         )}
       </s.Header>

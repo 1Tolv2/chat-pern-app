@@ -1,5 +1,3 @@
-import { AxiosError } from "axios";
-
 export type Post = {
   id: number;
   user: string;
@@ -22,7 +20,3 @@ export type ActivityData = {
   title: string;
   users: Member[];
 };
-
-export class CustomError extends AxiosError {
-  data: any;
-}

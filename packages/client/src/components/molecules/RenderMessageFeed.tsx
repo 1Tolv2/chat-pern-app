@@ -35,7 +35,7 @@ const RenderMessageFeed = ({ activeChannel, setSocket }: Props) => {
   const [posts, dispatch] = useReducer(postReducer, []);
 
   const socketListeners = (socket: Socket) => {
-    socket.on("online", (onlineUsers: { user: string; userId: string }) => {
+    socket.on("online", (onlineUsers: { user: string; user_id: string }) => {
       console.log(onlineUsers);
     });
     socket.on("message", (message: PostItem) => {

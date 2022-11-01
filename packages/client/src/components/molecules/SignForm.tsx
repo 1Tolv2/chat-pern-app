@@ -7,7 +7,7 @@ import { theme } from "../theme";
 import styled from "styled-components";
 import { ModalContext, UserContext } from "../Layout";
 import { loginUser, registerUser } from "../../global/api";
-import { CustomError } from "../../global/types";
+import { AxiosError } from "axios";
 
 const { colors } = theme;
 
@@ -31,7 +31,7 @@ const SignForm = ({ type, children }: Props) => {
   const { setModalVisible } = useContext(ModalContext);
   const { setUser } = useContext(UserContext);
 
-  const handleOnClick = async (e: any) => {
+  const handleOnClick = async (e: any): Promise<void> => {
     e.preventDefault();
     if (type?.formType === "register") {
       const res = await registerUser(email, username, password);
@@ -39,11 +39,13 @@ const SignForm = ({ type, children }: Props) => {
     } else if (type?.formType === "login") {
       try {
         const user = await loginUser(username, password);
-        setModalVisible(false);
-        setUser(user);
+        if (user) {
+          setModalVisible(false);
+          setUser(user);
+        }
       } catch (err) {
-        if (err instanceof CustomError) {
-          console.error(err.data);
+        if (err instanceof AxiosError) {
+          console.error(err.message);
         }
       }
     }

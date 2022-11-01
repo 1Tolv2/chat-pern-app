@@ -1,6 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import React, { createContext, useState, useEffect } from "react";
-import styled from "styled-components";
-import Header from "./Header";
 import { UserItem } from "@chat-app-typescript/shared";
 import { getUser } from "../../global/api";
 import * as s from "./styles";

@@ -1,5 +1,4 @@
-import { typeImplementation } from "@testing-library/user-event/dist/type/typeImplementation";
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import styled, { css } from "styled-components";
 import { theme, ThemeColors } from "../theme";
 
@@ -66,7 +65,7 @@ const StyledButton = styled.button`
 
 type Props = {
   children?: React.ReactNode;
-  onClick?: (() => void) | ((e: any) => void);
+  onClick: (e: any) => Promise<void>;
   width?: string;
   type?: "outlined" | "filled";
   height?: string;
