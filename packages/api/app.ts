@@ -6,6 +6,7 @@ import routes from "./routes/index";
 import { runSocketServer, SocketServer } from "./controllers/socket";
 import { CORS_ORIGINS } from "./config/config";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 dotenv.config();
 
 const app: Express = express();
@@ -20,6 +21,7 @@ if (!process.env.NODE_ENV) {
 
 app.use(cors({ origin: CORS_ORIGINS, credentials: true }));
 app.use(json());
+app.use(cookieParser());
 
 io.use(runSocketServer);
 app.use("/", routes);

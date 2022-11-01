@@ -23,11 +23,11 @@ export const handleToken = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const authHeader = req.header("Authorization");
-  if (authHeader && authHeader.split(" ")[0] === "Bearer") {
-    const token = authHeader.split(" ")[1];
+  const jwt = req.cookies.jwt;
+  console.log("COOKIE RECIEVED?", jwt);
+  if (jwt) {
     try {
-      req.user = verifyToken(token);
+      req.user = verifyToken(jwt);
     } catch (err) {
       if (err instanceof Error) {
         err.message === "invalid token" &&
@@ -63,10 +63,9 @@ export const logInUser = async (req: Request, res: Response): Promise<void> => {
           subject: user.id?.toString(),
         }
       );
-      res.json({
-        user: { id: user.id?.toString(), username: username },
-        token,
-      });
+      res
+        .cookie("jwt", token, { maxAge: 7200000, httpOnly: true })
+        .json({ user: { id: user.id?.toString(), username: username } });
     }
   } else {
     res.status(400).json({
