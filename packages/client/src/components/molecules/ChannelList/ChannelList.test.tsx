@@ -80,10 +80,11 @@ describe("Testing ChannelList", () => {
       expect(list).toBeInTheDocument();
       await waitFor(() =>
         expect(setState).toHaveBeenCalledWith({
-          description: "",
-          id: 10,
+          id: "89bc123e-7e63-41dc-9b7f-b4412c20afe3",
           name: "general",
-          server_id: 1,
+          description: "General chat",
+          created_at: new Date(1667252156912),
+          updated_at: null,
         })
       );
     });
@@ -98,7 +99,7 @@ describe("Testing ChannelList", () => {
           isAdmin={false}
         />
       );
-      expect(await screen.findAllByRole("listitem")).toHaveLength(3);
+      expect(await screen.findAllByRole("listitem")).toHaveLength(2);
       expect(await screen.findByText("general")).toHaveClass("active");
     });
 
@@ -138,17 +139,22 @@ describe("Testing ChannelList", () => {
           isAdmin={false}
         />
       );
-      const target = await screen.findByText("min-andra-kanal");
+      const target = await screen.findByText("secondchannel");
       fireEvent.click(target);
       await waitFor(() =>
         expect(setState).toHaveBeenCalledWith({
-          channelId: "c2e897f3-7401-4014-bf69-3c16787cd368",
-          channel_name: "secondchannel",
+          id: "c2e897f3-7401-4014-bf69-3c16787cd368",
+          name: "secondchannel",
           description: "",
-          serverId: "4b2f5de9-e898-4e33-aa42-53430995614f",
+          created_at: new Date(1667252156912),
+          updated_at: null,
         })
       );
-      await waitFor(() => expect(getServerSpy).toHaveBeenCalledWith(1));
+      await waitFor(() =>
+        expect(getServerSpy).toHaveBeenCalledWith(
+          "4b2f5de9-e898-4e33-aa42-53430995614f"
+        )
+      );
     });
   });
 });

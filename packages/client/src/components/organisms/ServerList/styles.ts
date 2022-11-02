@@ -36,7 +36,7 @@ const ListItem = styled.li`
       margin-top: 14px;
       left: 0;
     }
-    & > [id^="channel_"] {
+    & > [id^="server_"] {
       border-radius: 30%;
       background-color: ${colors.purple};
     }
@@ -49,13 +49,13 @@ const ListItem = styled.li`
       left: 0;
       color: white;
     }
-    & > [id^="channel_"] {
+    & > [id^="server_"] {
       border-radius: 30%;
       background-color: ${colors.purple};
     }
   }
 
-  & > [id^="channel_"] {
+  & > [id^="server_"] {
     margin: auto;
   }
 `;

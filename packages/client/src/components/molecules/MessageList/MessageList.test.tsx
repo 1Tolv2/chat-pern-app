@@ -34,7 +34,7 @@ describe("Testing MessageList", () => {
       render(<MessageList data={mockListData} />);
       const headings = screen.queryAllByRole("heading");
       expect(headings).toHaveLength(2);
-      expect(headings[0]).toHaveTextContent("Test user 1");
+      expect(headings[0]).toHaveTextContent("Tolv");
     });
 
     test("Should have image with alt text", () => {
@@ -68,7 +68,7 @@ describe("Testing MessageList", () => {
         /^(\d{2}\/){2}2022...\d{2}\.\d{2}/
       );
       expect(dateItems[0]).toHaveTextContent(
-        renderDateString(new Date(2022, 9, 22, 24, 0))
+        renderDateString(new Date(2022, 9, 31, 23, 29))
       );
     });
   });
