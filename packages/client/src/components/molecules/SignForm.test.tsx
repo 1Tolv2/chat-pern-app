@@ -2,7 +2,6 @@
 import React, { Dispatch } from "react";
 import { screen, render, fireEvent, waitFor } from "@testing-library/react";
 import SignForm from "./SignForm";
-import * as api from "../../global/api";
 import { UserItem } from "@chat-app-typescript/shared";
 
 type LoginResponse = {
