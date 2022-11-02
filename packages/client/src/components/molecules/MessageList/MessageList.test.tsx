@@ -9,7 +9,7 @@ const mockListData: PostItem[] = [
     text: "Hello World!",
     username: "tolv",
     user_id: "bc426c44-75d7-46fe-99f9-10793ed1adbb",
-    created_at: new Date(1667255359083),
+    created_at: new Date(2022, 9, 31, 23, 29),
     updated_at: null,
   },
   {
@@ -17,7 +17,7 @@ const mockListData: PostItem[] = [
     text: "Second post",
     username: "tolv",
     user_id: "bc426c44-75d7-46fe-99f9-10793ed1adbb",
-    created_at: new Date(1667255359083),
+    created_at: new Date(2022, 9, 31, 23, 29),
     updated_at: null,
   },
 ];
