@@ -19,8 +19,7 @@ plugins:
   - '@typescript-eslint'
   - prettier
 rules: {
-  quotes: ['error', 'double'],
-
+  quotes: ['error', 'double']
   }
 
 
