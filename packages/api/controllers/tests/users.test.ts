@@ -210,45 +210,45 @@ describe("Testing user controllers", () => {
         },
       ]);
     });
-    describe("When getting user", () => {
-      test("Should call .json() with user", async () => {
-        await users.getUser(mockRequest as Request, mockResponse as Response);
+  });
+  describe("When getting user", () => {
+    test("Should call .json() with user", async () => {
+      await users.getUser(mockRequest as Request, mockResponse as Response);
 
-        expect(mockResponse.json).toBeCalledWith({
-          id: "bc426c44-75d7-46fe-99f9-10793ed1adbb",
-          username: "tolv",
-          email: "test@test.com",
-          created_at: 1667252156899,
-          updated_at: null,
-          servers: [
-            {
-              id: "4b2f5de9-e898-4e33-aa42-53430995614f",
-              name: "tolv's server",
-              description: "Hello World",
-              role: "admin",
-            },
-          ],
-        });
+      expect(mockResponse.json).toBeCalledWith({
+        id: "bc426c44-75d7-46fe-99f9-10793ed1adbb",
+        username: "tolv",
+        email: "test@test.com",
+        created_at: 1667252156899,
+        updated_at: null,
+        servers: [
+          {
+            id: "4b2f5de9-e898-4e33-aa42-53430995614f",
+            name: "tolv's server",
+            description: "Hello World",
+            role: "admin",
+          },
+        ],
       });
-      /* res.user must be fixed */
-      //   test("Should call .status() with 400 and error message", async () => {
-      //     const mockErrorMessage = "My test error message";
-      //     const findUserByIdSpy = jest.spyOn(User, "findUserById");
-      //     findUserByIdSpy.mockImplementation(() => {
-      //       throw new Error(mockErrorMessage);
-      //     });
-
-      //     mockResponse.status = jest.fn();
-      //     mockResponse.json = jest.fn();
-
-      //     await users.handleNewUser(
-      //       mockRequest as Request<Partial<UserItem>>,
-      //       mockResponse as Response
-      //     );
-
-      //     expect(mockResponse.status).toBeCalledWith(401);
-      //     expect(mockResponse.json).toBeCalledWith({ error: mockErrorMessage });
-      //   });
     });
+    /* res.user must be fixed */
+    //   test("Should call .status() with 400 and error message", async () => {
+    //     const mockErrorMessage = "My test error message";
+    //     const findUserByIdSpy = jest.spyOn(User, "findUserById");
+    //     findUserByIdSpy.mockImplementation(() => {
+    //       throw new Error(mockErrorMessage);
+    //     });
+
+    //     mockResponse.status = jest.fn();
+    //     mockResponse.json = jest.fn();
+
+    //     await users.handleNewUser(
+    //       mockRequest as Request<Partial<UserItem>>,
+    //       mockResponse as Response
+    //     );
+
+    //     expect(mockResponse.status).toBeCalledWith(401);
+    //     expect(mockResponse.json).toBeCalledWith({ error: mockErrorMessage });
+    //   });
   });
 });
