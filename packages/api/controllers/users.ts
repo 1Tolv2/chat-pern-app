@@ -56,6 +56,7 @@ export const getAllUsers = async (
           });
         }
       });
+
       return {
         ...user,
         servers: memberOfServers,
