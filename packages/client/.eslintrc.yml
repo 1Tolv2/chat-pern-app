@@ -19,7 +19,8 @@ plugins:
   - '@typescript-eslint'
   - prettier
 rules: {
-  quotes: ['error', 'double']
+  quotes: ['error', 'double'],
+  'react/react-in-jsx-scope': 'off'
   }
 
 
