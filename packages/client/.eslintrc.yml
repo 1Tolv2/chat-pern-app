@@ -1,9 +1,11 @@
 env:
   browser: true
   es2021: true
+  node: true
+  jest: true
 extends:
-  - eslint:recommended
   - plugin:react/recommended
+  - eslint:recommended
   - plugin:@typescript-eslint/recommended
   - plugin:prettier/recommended
 parser: '@typescript-eslint/parser'
@@ -17,6 +19,9 @@ plugins:
   - '@typescript-eslint'
   - prettier
 rules: {
-  no-prototype-builtins: 0,
-  react/react-in-jsx-scope: "off"
-}
+  quotes: ['error', 'double'],
+
+  }
+
+
+

@@ -3,7 +3,7 @@ import { server } from "../../app";
 import User from "../../models/User";
 
 const defaultUser = {
-  id: 1,
+  id: "bc426c44-75d7-46fe-99f9-10793ed1adbb",
   email: "tolv@test.com",
   username: "tolv",
   password: "lol",
@@ -12,8 +12,8 @@ const defaultUser = {
 };
 jest.mock("../../models/User", () => {
   const mockUser = {
-    id: 1,
-    email: "tolv@test.com",
+    id: "bc426c44-75d7-46fe-99f9-10793ed1adbb",
+    email: "tolv2@test.com",
     username: "tolv2",
     password: "lol",
     createdAt: new Date(),
