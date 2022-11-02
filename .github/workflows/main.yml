@@ -1,5 +1,5 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing GitHub Actions 🚀
+name: Chat app build and tests
+run-name: ${{ github.actor }} is running actions 🚀
 on: 
   push:
     branches: ["main"]
@@ -7,47 +7,42 @@ on:
     branches: ["main"]
     
 jobs:
-  Explore-GitHub-Actions:
+  build_job:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - run: echo "${{job.name}} job status ${{ job.status }}."
       
-  build:
+  eslint_job:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checking out repository code
+        uses: actions/checkout@v3
       - name: Installing dependencies
         run: npm install
-      - name: Running ESLint on Server
+      - name: Running ESLint on Server🔎
         run:  | 
           cd packages/api
           npm run eslint
-      - name: Running ESLint on Client
+      - name: Running ESLint on Client 🔎
         run: echo "Running ESLint on Client"
       - run: echo "${{job.name}} job status ${{ job.status }}."
   
-  test: 
+  test_job: 
     runs-on: ubuntu-latest
     steps: 
-      - uses: actions/checkout@v3
+      - name: Checking out repository code
+        uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npm run build --if-present
-      - name: Running Client unit tests
+      - name: Running client tests 🔎
         run:  | 
           cd packages/client
-          ls ${{ github.workspace }}
+          npm run test
+      - name: Running server tests 🔎
+        run:  | 
+          cd packages/api
           npm run test
