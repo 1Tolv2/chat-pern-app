@@ -4,10 +4,11 @@ import { io } from "../app";
 import { createPost, findAllPostsByChannel } from "../models/Post";
 import { verifyToken } from "./auth";
 import { Socket } from "socket.io";
+import cookie from "cookie";
 
 type OnlineUser = {
   user: string;
-  userId: string;
+  user_id: string;
 };
 
 interface ServerToClientEvents {
@@ -44,11 +45,13 @@ export const runSocketServer = async (
   socket: Socket,
   next: () => void
 ): Promise<void> => {
-  const token = socket.handshake.auth.token;
-  if (token) {
+  console.log("COOKIE", socket.handshake);
+  const JwtCookie = cookie.parse(socket.handshake.headers.cookie || "");
+  console.log("SOCKET COOKIE", JwtCookie);
+  if (JwtCookie) {
     let user: JwtPayload | null = null;
     try {
-      user = verifyToken(token);
+      user = verifyToken(JwtCookie.cookie);
     } catch (err) {
       if (err instanceof Error) {
         console.error("ERROR", err);
@@ -57,9 +60,9 @@ export const runSocketServer = async (
     if (user) {
       console.log("USER", user);
       console.info("A client connected to server");
-      onlineUsers.push({ user: user.username, userId: user.userId });
+      onlineUsers.push({ user: user.username, user_id: user.user_id });
       const posts = await findAllPostsByChannel(
-        parseInt((socket.handshake.query?.channel_id as string) || "0")
+        (socket.handshake.query?.channel_id as string) || ""
       );
       socket.emit("online", onlineUsers);
       socket.emit("messages", posts);
@@ -68,18 +71,19 @@ export const runSocketServer = async (
         const { text, channel_id } = message;
         const newPost = await createPost({
           text,
-          user_id: user?.userId,
+          username: user?.username,
+          user_id: user?.user_id,
           channel_id,
         });
         io.emit("message", {
           ...newPost,
-          user: user?.username || "",
+          user: user?.username,
         } as PostItem);
       });
 
       socket.on("disconnect", (reason: string) => {
         const userIndex = onlineUsers.findIndex((onlineUser) => {
-          user?.id === onlineUser.userId;
+          user?.id === onlineUser.user_id;
         });
         onlineUsers.splice(userIndex, 1);
         io.emit("online", onlineUsers);

@@ -7,16 +7,18 @@ export const handleNewPost = async (
   res: Response
 ): Promise<void> => {
   const missingFields = requiredFieldsCheck(
-    { ...req.body, user_id: req.user?.userId },
+    { ...req.body, user_id: req.user?.user_id },
     ["channel_id", "text", "user_id"]
   );
   if (missingFields.length === 0) {
     try {
       const post = await createPost({
-        ...req.body,
-        user_id: parseInt(req.user?.userId),
+        text: req.body.text,
+        username: req.user?.username,
+        user_id: req.user?.user_id,
+        channel_id: req.body.channel_id,
       });
-      res.status(201).json(post);
+      res.status(201).json({ post, message: "New post created" });
     } catch (err) {
       if (err instanceof Error) {
         res.status(409).json({ error: err.message });
@@ -42,17 +44,6 @@ export const getPostById = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const post = await findPostById(parseInt(req.params.id));
+  const post = await findPostById(req.params.id);
   res.json(post);
-};
-
-export const editPost = async (req: Request, res: Response): Promise<void> => {
-  res.json({ post: { message: "Post updated" } });
-};
-
-export const deletePost = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  res.json({ message: "Post deleted" });
 };

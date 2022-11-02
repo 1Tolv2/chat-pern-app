@@ -28,7 +28,7 @@ const ListItem = styled.li`
     height: 2px;
     border: none;
     border-radius: 1px;
-  } 
+  }
   &:hover {
     & > .pill {
       height: 20px;
@@ -55,11 +55,9 @@ const ListItem = styled.li`
     }
   }
 
-
   & > [id^="channel_"] {
     margin: auto;
   }
- 
 `;
 const Pill = styled.div`
   position: absolute;

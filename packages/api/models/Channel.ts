@@ -1,19 +1,28 @@
 import { sql } from "slonik";
 import { pool } from ".";
 import { TimeStamps } from "../global/types";
-import { ChannelItem } from "@chat-app-typescript/shared";
+import { ChannelItem, PostItem } from "@chat-app-typescript/shared";
 
 class Channel implements ChannelItem, TimeStamps {
+  id: string;
   name: string;
   description: string;
-  server_id: number;
+  server_id?: string;
+  posts: PostItem[];
   created_at: Date;
   updated_at: Date | null;
 
-  constructor(_name: string, _description: string, _server_id: number) {
+  constructor(
+    _id: string,
+    _name: string,
+    _description: string,
+    _server_id: string
+  ) {
+    this.id = _id;
     this.name = _name;
     this.description = _description;
     this.server_id = _server_id;
+    this.posts = [];
     this.created_at = new Date();
     this.updated_at = null;
   }
@@ -22,12 +31,12 @@ class Channel implements ChannelItem, TimeStamps {
     await (
       await pool
     ).query(sql`
-        CREATE TABLE IF NOT EXISTS channels (
-          id SERIAL PRIMARY KEY,
+        CREATE TABLE IF NOT EXISTS channel (
+          id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
           name VARCHAR(60) NOT NULL,
           description VARCHAR,
-          server_id SERIAL NOT NULL,
-          FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE,
+          server_id UUID NOT NULL,
+          FOREIGN KEY (server_id) REFERENCES server(id) ON DELETE CASCADE,
           created_at TIMESTAMP DEFAULT current_timestamp,
           updated_at TIMESTAMP,
           UNIQUE (name, server_id)
@@ -35,48 +44,56 @@ class Channel implements ChannelItem, TimeStamps {
       `);
   };
 
-  static addToDatabase = async ({ name, server_id }: ChannelItem) => {
-    const newChannel = await (
+  static addToDatabase = async (channel: Partial<ChannelItem>) => {
+    const name = channel.name || "";
+    const description = channel.description || "";
+    const server_id = channel.server_id || "";
+
+    const newChannel = (await (
       await pool
     ).one(sql`
-          INSERT INTO channels (name, server_id)
-          VALUES (${name}, ${server_id})
+          INSERT INTO channel (name, server_id, description)
+          VALUES (${name}, ${server_id}, ${description})
           RETURNING *;
-          `);
-    return newChannel;
+          `)) as unknown as ChannelItem;
+    return new Channel(
+      newChannel.id,
+      newChannel.name,
+      newChannel.description,
+      newChannel.server_id || ""
+    );
   };
 }
 
-export const createChannel = async (channel: ChannelItem) => {
-  return Channel.addToDatabase(channel) as unknown as ChannelItem;
+export const createChannel = async (
+  channel: Partial<ChannelItem>
+): Promise<ChannelItem> => {
+  return Channel.addToDatabase(channel);
 };
 
 export const findAllChannels = async (): Promise<ChannelItem[]> => {
   const channels = (await (
     await pool
   ).any(sql`
-  SELECT * from channels;`)) as unknown as ChannelItem[];
+  SELECT * from channel;`)) as unknown as ChannelItem[];
   return channels;
 };
 
-export const findChannelById = async (id: number): Promise<ChannelItem> => {
+export const findChannelById = async (id: string): Promise<ChannelItem> => {
   const channel = (await (
     await pool
   ).one(sql`
-  SELECT * from channels WHERE id = ${id}`)) as unknown as ChannelItem;
+  SELECT * from channel WHERE id = ${id}`)) as unknown as ChannelItem;
   return channel;
 };
 
 export const findChannelsByServer = async (
-  id: number
+  id: string
 ): Promise<ChannelItem[]> => {
   return (await (
     await pool
   ).any(sql`
-  SELECT id, name, description FROM channels WHERE server_id = ${id}`)) as unknown as ChannelItem[];
+  SELECT id, name, description, created_at, updated_at FROM channel WHERE server_id = ${id}`)) as unknown as ChannelItem[];
 };
-
-// export const updateChannel = async () => {};
-// export const deleteChannel = async () => {};
 
 export default Channel;

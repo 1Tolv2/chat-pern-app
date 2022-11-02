@@ -3,7 +3,7 @@ import { server } from "../../app";
 import User from "../../models/User";
 
 const defaultUser = {
-  id: 1,
+  id: "bc426c44-75d7-46fe-99f9-10793ed1adbb",
   email: "tolv@test.com",
   username: "tolv",
   password: "lol",
@@ -12,8 +12,8 @@ const defaultUser = {
 };
 jest.mock("../../models/User", () => {
   const mockUser = {
-    id: 1,
-    email: "tolv@test.com",
+    id: "bc426c44-75d7-46fe-99f9-10793ed1adbb",
+    email: "tolv2@test.com",
     username: "tolv2",
     password: "lol",
     createdAt: new Date(),
@@ -26,6 +26,19 @@ jest.mock("../../models/User", () => {
     findAllUsers: () => Promise.resolve([mockUser, mockUser]),
   };
 });
+
+jest.mock("../../models/Server", () => {
+  const mockServerUsers = [
+    { id: 1, user_id: 1, server_id: 1, role: "admin" },
+    { id: 2, user_id: 3, server_id: 2, role: "admin" },
+    { id: 3, user_id: 1, server_id: 2, role: "member" },
+  ];
+  return {
+    __esModule: true,
+    findServerUsers: () => Promise.resolve(mockServerUsers),
+  };
+});
+
 describe("GET /users", () => {
   User.authorizeUser = jest.fn().mockReturnValueOnce(defaultUser);
   let token = "";

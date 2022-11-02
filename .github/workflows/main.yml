@@ -24,7 +24,9 @@ jobs:
           cd packages/api
           npm run eslint
       - name: Running ESLint on Client 🔎
-        run: echo "Running ESLint on Client"
+        run:  | 
+          cd packages/client
+          npm run eslint
       - run: echo "${{job.name}} job status ${{ job.status }}."
   
   test_job: 

@@ -23,11 +23,11 @@ export const handleToken = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const authHeader = req.header("Authorization");
-  if (authHeader && authHeader.split(" ")[0] === "Bearer") {
-    const token = authHeader.split(" ")[1];
+  const jwt = req.cookies.jwt;
+  console.log("COOKIE RECIEVED?", jwt);
+  if (jwt) {
     try {
-      req.user = verifyToken(token);
+      req.user = verifyToken(jwt);
     } catch (err) {
       if (err instanceof Error) {
         err.message === "invalid token" &&
@@ -39,16 +39,14 @@ export const handleToken = async (
 };
 
 export const logInUser = async (req: Request, res: Response): Promise<void> => {
-  console.log("LOGIN", req.body);
   const missingFields = requiredFieldsCheck(req.body, ["username", "password"]);
+
   if (missingFields.length === 0) {
     const username = req.body.username.toLowerCase();
     let user: UserItem | null = null;
+
     try {
-      user = await User.authorizeUser({
-        username,
-        password: req.body.password,
-      });
+      user = await User.authorizeUser(username, req.body.password);
     } catch (err) {
       if (err instanceof Error) {
         console.error(err);
@@ -58,17 +56,16 @@ export const logInUser = async (req: Request, res: Response): Promise<void> => {
 
     if (user) {
       const token = jwt.sign(
-        { userId: user.id?.toString(), username: username },
+        { user_id: user.id?.toString(), username: username },
         process.env.JWT_SECRET as string,
         {
           expiresIn: "2h",
           subject: user.id?.toString(),
         }
       );
-      res.json({
-        user: { userId: user.id?.toString(), username: username },
-        token,
-      });
+      res
+        .cookie("jwt", token, { maxAge: 7200000, httpOnly: true })
+        .json({ user: { id: user.id?.toString(), username: username } });
     }
   } else {
     res.status(400).json({

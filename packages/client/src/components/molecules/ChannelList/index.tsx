@@ -40,7 +40,7 @@ const ChannelList = ({ states, isAdmin }: Props) => {
   const { activeChannel, activeServer, setActiveChannel } = states;
 
   const fetchServerChannels = async (): Promise<ServerItem> => {
-    const res = await getServer(activeServer?.id || 1);
+    const res = await getServer(activeServer?.id || "");
     dispatch({ type: "replace", input: res.channels || [] });
     return res;
   };
@@ -58,10 +58,7 @@ const ChannelList = ({ states, isAdmin }: Props) => {
     if (e.target.id !== activeChannel?.id) {
       const server = await fetchServerChannels();
       const channel =
-        server?.channels?.find(
-          (item: ChannelItem) =>
-            item.id === parseInt((e.target as HTMLLIElement).id)
-        ) || null;
+        server?.channels?.find((item) => item.id === e.target.id) || null;
       states.setActiveChannel(channel as unknown as ChannelItem);
     }
   };
@@ -70,8 +67,7 @@ const ChannelList = ({ states, isAdmin }: Props) => {
     <s.Container>
       <ChannelHeader
         isAdmin={isAdmin}
-        serverId={activeServer?.id || 0}
-        setState={states.setActiveChannel}
+        serverId={activeServer?.id || ""}
         modifyChannelList={dispatch}
       />
       <s.StyledChanneList>

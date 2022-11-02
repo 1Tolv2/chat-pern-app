@@ -23,9 +23,8 @@ type Props = {
 };
 
 const Label = ({ id, required, text, color }: Props) => {
-  //TODO: add htmlFor, but issues with intrinsicAttributes
   return (
-    <StyledLabel color={color}>
+    <StyledLabel color={color} htmlFor={id}>
       {text} {required && <span style={{ color: colors.red }}>*</span>}
     </StyledLabel>
   );

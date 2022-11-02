@@ -5,9 +5,7 @@ import ChannelContent from "./ChannelContent";
 import { UserContext } from "../Layout";
 import ChannelSidebar from "./ChannelSidebar";
 
-type Props = {};
-
-const MainContent = (props: Props) => {
+const MainContent = () => {
   const [activeChannel, setActiveChannel] = useState<ChannelItem | null>(null);
   const [activeServer, setActiveServer] = useState<ServerItem | null>(null);
   const { user } = useContext(UserContext);
@@ -16,7 +14,8 @@ const MainContent = (props: Props) => {
     user && (
       <>
         <ServerList user={user} states={{ activeServer, setActiveServer }} />
-        <ChannelSidebar user={user}
+        <ChannelSidebar
+          user={user}
           states={{ activeChannel, setActiveChannel, activeServer }}
         />
         <ChannelContent activeChannel={activeChannel} />

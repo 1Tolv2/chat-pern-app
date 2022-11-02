@@ -50,9 +50,4 @@ const ListLabelWrapper = styled.div`
   margin-bottom: 5px;
 `;
 
-export {
-  Container,
-  StyledChanneList,
-  StyledChannelItem,
-  ListLabelWrapper,
-};
+export { Container, StyledChanneList, StyledChannelItem, ListLabelWrapper };

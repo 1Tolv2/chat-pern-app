@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEvent } from "react";
 import styled, { css } from "styled-components";
 import { theme, ThemeColors } from "../theme";
 const { colors } = theme;
@@ -13,14 +13,17 @@ const Container = styled.div`
   width: ${(props: StyleProps) => (props.size ? props.size : "32px")};
   height: ${(props: StyleProps) => (props.size ? props.size : "32px")};
   border-radius: 50%;
-  background-color: ${(props: StyleProps) => colors[props.bgColor as keyof ThemeColors] || colors.purple};
-  ${(props: StyleProps) => props.hover && css`
-  transition: all 0.2s ease-in-out;
-  & > * {
-    pointer-events: none;
-  }
-  cursor: pointer;
-  `}
+  background-color: ${(props: StyleProps) =>
+    colors[props.bgColor as keyof ThemeColors] || colors.purple};
+  ${(props: StyleProps) =>
+    props.hover &&
+    css`
+      transition: all 0.2s ease-in-out;
+      & > * {
+        pointer-events: none;
+      }
+      cursor: pointer;
+    `}
   img {
     width: 100%;
     margin-top: 2px;
@@ -49,9 +52,16 @@ type Props = {
   id?: string;
 };
 
-const Avatar = ({ bgColor, size, text, hover, onClick, id}: Props) => {
+const Avatar = ({ bgColor, size, text, hover, onClick, id }: Props) => {
   return (
-    <Container data-testid={id} id={id} bgColor={bgColor} size={size} hover={hover} onClick={onClick}>
+    <Container
+      data-testid={id}
+      id={id}
+      bgColor={bgColor}
+      size={size}
+      hover={hover}
+      onClick={onClick}
+    >
       <IconContainer>
         {text ? (
           <span>{text}</span>

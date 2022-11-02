@@ -5,25 +5,24 @@ import { PostItem } from "@chat-app-typescript/shared";
 
 const mockListData: PostItem[] = [
   {
-    id: 1,
-    user_id: 1,
-    user: "test user 1",
-    channel_id: 1,
+    id: "38ecee2c-8022-48e4-b277-5173d4683105",
     text: "Hello World!",
-    created_at: new Date(2022, 9, 22, 24, 0),
+    username: "tolv",
+    user_id: "bc426c44-75d7-46fe-99f9-10793ed1adbb",
+    created_at: new Date(1667255359083),
+    updated_at: null,
   },
   {
-    id: 2,
-    user_id: 2,
-    user: "test user 2",
-    channel_id: 1,
-    text: "test",
-    created_at: new Date(2020, 10, 15, 12, 0),
+    id: "38ecee2c-8022-48e4-b277-5173d4683555",
+    text: "Second post",
+    username: "tolv",
+    user_id: "bc426c44-75d7-46fe-99f9-10793ed1adbb",
+    created_at: new Date(1667255359083),
+    updated_at: null,
   },
 ];
 
 describe("Testing MessageList", () => {
-    
   test("Should render list with list items", () => {
     render(<MessageList data={mockListData} />);
     expect(screen.getByRole("list")).toBeInTheDocument();
@@ -64,10 +63,14 @@ describe("Testing MessageList", () => {
           minutes < 10 ? "0" + minutes : minutes
         }`;
       };
-        render(<MessageList data={mockListData} />);
-        const dateItems = screen.queryAllByText(/^(\d{2}\/){2}2022...\d{2}\.\d{2}/)
-        expect(dateItems[0]).toHaveTextContent(renderDateString(new Date(2022, 9, 22, 24, 0)));
-    })
+      render(<MessageList data={mockListData} />);
+      const dateItems = screen.queryAllByText(
+        /^(\d{2}\/){2}2022...\d{2}\.\d{2}/
+      );
+      expect(dateItems[0]).toHaveTextContent(
+        renderDateString(new Date(2022, 9, 22, 24, 0))
+      );
+    });
   });
 
   test("Should not render list if data array is empty", () => {

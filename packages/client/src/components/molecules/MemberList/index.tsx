@@ -9,13 +9,15 @@ type Props = {
 };
 
 const MemberList = ({ data }: Props) => {
-    const firstLetterToUppercase = (str: string) => {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-      };
+  const firstLetterToUppercase = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
   return (
     <s.Container>
       <s.SectionTitle>
-        <t.H3 color="lightGrey">{`${data.title.toUpperCase()} - ${data.users.length}`}</t.H3>
+        <t.H3 color="lightGrey">{`${data.title.toUpperCase()} - ${
+          data.users.length
+        }`}</t.H3>
       </s.SectionTitle>
       <s.MemberList>
         {data.users.map((user: Member, index) => {

@@ -1,5 +1,7 @@
-CREATE TABLE IF NOT EXISTS users (
-  id SERIAL PRIMARY KEY,
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE IF NOT EXISTS app_user (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   username VARCHAR(60) NOT NULL UNIQUE,
   email VARCHAR(60) NOT NULL,
   password VARCHAR(100) NOT NULL,
@@ -7,49 +9,49 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS servers (
-  id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS server (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   name VARCHAR(60) NOT NULL UNIQUE,
   description VARCHAR,
   created_at TIMESTAMP DEFAULT current_timestamp,
   updated_at TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS channels (
-  id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS channel (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   name VARCHAR(60) NOT NULL,
   description VARCHAR,
-  server_id SERIAL NOT NULL,
-  FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE,
+  server_id UUID NOT NULL,
+  FOREIGN KEY (server_id) REFERENCES server(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT current_timestamp,
   updated_at TIMESTAMP,
   UNIQUE (name, server_id)
 );
 
-CREATE TABLE IF NOT EXISTS posts (
-  id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS post (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   text VARCHAR NOT NULL,
-  channel_id INTEGER NOT NULL,
-  FOREIGN KEY (channel_id) REFERENCES channels (id) ON DELETE CASCADE,
-  user_id INTEGER NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+  channel_id UUID NOT NULL,
+  FOREIGN KEY (channel_id) REFERENCES channel(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES app_user(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT current_timestamp,
   updated_at TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS serverusers (
-  id SERIAL PRIMARY KEY,
-  user_id INT NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-  server_id INT NOT NULL,
-  FOREIGN KEY (server_id) REFERENCES servers(id) ON DELETE CASCADE,
+CREATE TABLE IF NOT EXISTS serveruser (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES app_user(id) ON DELETE CASCADE,
+  server_id UUID NOT NULL,
+  FOREIGN KEY (server_id) REFERENCES server(id) ON DELETE CASCADE,
   role VARCHAR(60) NOT NULL CHECK (role = 'admin' OR role = 'member'),
   UNIQUE (user_id, server_id)
 );
 
-CREATE OR REPLACE FUNCTION addusertoserver(text, numeric, numeric) RETURNS void
+CREATE sOR REPLACE FUNCTION addusertoserver(text, UUID, UUID) RETURNS void
 AS $$
-  INSERT INTO serverusers (role, server_id, user_id)
+  INSERT INTO serveruser (role, server_id, user_id)
   VALUES ($1, $2, $3)
 $$
 LANGUAGE SQL;

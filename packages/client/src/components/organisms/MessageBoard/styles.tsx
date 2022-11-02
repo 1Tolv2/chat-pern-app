@@ -15,7 +15,7 @@ const Container = styled.div`
 
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   justify-content: flex-end;
   height: 100%;
   margin: 5px 5px 30px 5px;

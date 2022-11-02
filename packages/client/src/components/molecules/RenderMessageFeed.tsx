@@ -1,7 +1,7 @@
-import { ChannelItem, PostItem } from '@chat-app-typescript/shared';
-import React, { useEffect, useReducer } from 'react'
-import { io, Socket } from 'socket.io-client';
-import MessageList from './MessageList';
+import { ChannelItem, PostItem } from "@chat-app-typescript/shared";
+import React, { useEffect, useReducer } from "react";
+import { io, Socket } from "socket.io-client";
+import MessageList from "./MessageList";
 
 type Props = {
   activeChannel: ChannelItem | null;
@@ -35,12 +35,9 @@ const RenderMessageFeed = ({ activeChannel, setSocket }: Props) => {
   const [posts, dispatch] = useReducer(postReducer, []);
 
   const socketListeners = (socket: Socket) => {
-    socket.on("online", (onlineUsers: {
-      user: string;
-      userId: string;
-    }) => {
+    socket.on("online", (onlineUsers: { user: string; user_id: string }) => {
       console.log(onlineUsers);
-    })
+    });
     socket.on("message", (message: PostItem) => {
       if (message.channel_id === activeChannel?.id) {
         dispatch({ type: "add", input: message });
@@ -49,7 +46,7 @@ const RenderMessageFeed = ({ activeChannel, setSocket }: Props) => {
     socket.on("messages", (messages: PostItem[]) => {
       dispatch({ type: "replace", input: messages });
     });
-  }
+  };
 
   const handleSocketConnection = (token: string) => {
     const socket = io(
@@ -64,13 +61,13 @@ const RenderMessageFeed = ({ activeChannel, setSocket }: Props) => {
     );
     socket.connect();
     setSocket && setSocket(socket);
-    socketListeners(socket)
+    socketListeners(socket);
     return () => {
       socket.off("message");
       socket.off("messages");
       socket.disconnect();
     };
-  }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("jwt_token");
@@ -79,10 +76,7 @@ const RenderMessageFeed = ({ activeChannel, setSocket }: Props) => {
     }
   }, [activeChannel]);
 
+  return <MessageList data={posts} />;
+};
 
-  return (
-    <MessageList data={posts} />
-  )
-}
-
-export default RenderMessageFeed
+export default RenderMessageFeed;

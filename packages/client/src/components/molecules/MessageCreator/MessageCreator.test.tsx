@@ -2,23 +2,25 @@ import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import MessageCreator from ".";
 
-const testServerItem = {
-  channel_id: 1,
-  name: "test channel",
-  description: "this is a test channel",
+const testChannelItem = {
+  id: "89bc123e-7e63-41dc-9b7f-b4412c20afe3",
+  name: "general",
+  description: "General chat",
+  server_id: "4b2f5de9-e898-4e33-aa42-53430995614f",
+  created_at: new Date(1667252156928),
+  updated_at: null,
   posts: [],
-  server_id: 1,
 };
 
 describe("Test MessageCreator", () => {
   test("Should render textarea", () => {
-    render(<MessageCreator activeChannel={testServerItem} />);
+    render(<MessageCreator activeChannel={testChannelItem} />);
     const textArea = screen.getByRole("textbox") as HTMLTextAreaElement;
     expect(textArea).toBeInTheDocument();
     expect(textArea).toHaveAttribute("placeholder", "Message...");
   });
   test("OnChange is called when input is changed", () => {
-    render(<MessageCreator activeChannel={testServerItem} />);
+    render(<MessageCreator activeChannel={testChannelItem} />);
     const textArea = screen.getByRole("textbox") as HTMLTextAreaElement;
     fireEvent.change(textArea, { target: { value: "test message" } });
     expect(textArea).toHaveValue("test message");
@@ -27,7 +29,7 @@ describe("Test MessageCreator", () => {
     const onSubmit = jest.fn();
     render(
       <MessageCreator
-        activeChannel={testServerItem}
+        activeChannel={testChannelItem}
         socket={{ emit: onSubmit } as any}
       />
     );
@@ -40,7 +42,7 @@ describe("Test MessageCreator", () => {
     const onSubmit = jest.fn();
     render(
       <MessageCreator
-        activeChannel={testServerItem}
+        activeChannel={testChannelItem}
         socket={{ emit: onSubmit } as any}
       />
     );

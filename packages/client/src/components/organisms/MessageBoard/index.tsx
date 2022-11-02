@@ -6,7 +6,6 @@ import { ChannelItem } from "@chat-app-typescript/shared";
 import { Socket } from "socket.io-client";
 import RenderMessageFeed from "../../molecules/RenderMessageFeed";
 
-
 type Props = {
   activeChannel: ChannelItem | null;
 };
@@ -18,11 +17,15 @@ const MessageBoard = ({ activeChannel }: Props) => {
     <s.Container>
       <s.Wrapper>
         <s.ScrollContainer>
-          <MessageStart activeChannel={activeChannel}  />
-          <RenderMessageFeed activeChannel={activeChannel} socket={socket} setSocket={setSocket}/>
+          <MessageStart activeChannel={activeChannel} />
+          <RenderMessageFeed
+            activeChannel={activeChannel}
+            socket={socket}
+            setSocket={setSocket}
+          />
         </s.ScrollContainer>
       </s.Wrapper>
-      <MessageCreator activeChannel={activeChannel} socket={socket} setSocket={setSocket}/>
+      <MessageCreator activeChannel={activeChannel} socket={socket} />
     </s.Container>
   );
 };

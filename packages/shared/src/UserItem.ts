@@ -1,11 +1,11 @@
-import { PostItem } from "./PostItem";
-import { ServerItem } from "./ServerItem";
+import { MemberItem } from "./MemberItem";
 
 export interface UserItem {
-  id?: number;
+  id: string;
   username: string;
-  email?: string;
+  email: string;
   password?: string;
-  posts?: PostItem[];
-  servers?: ServerItem[];
+  servers: MemberItem[];
+  created_at?: Date;
+  updated_at?: Date | null;
 }

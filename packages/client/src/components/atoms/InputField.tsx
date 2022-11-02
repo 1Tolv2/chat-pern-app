@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from "react";
+import React from "react";
 import styled from "styled-components";
 import { theme, ThemeColors } from "../theme";
 
@@ -7,8 +7,11 @@ const { colors } = theme;
 type Props = {
   type: string;
   id: string;
-  value: string;
-  setValue: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
+  value: string | null;
+  setValue:
+    | React.Dispatch<React.SetStateAction<string>>
+    | ((value: string) => void)
+    | null;
   placeholder?: string;
   label?: string;
   required?: boolean;
@@ -59,8 +62,9 @@ const InputField = ({
       <StyledInput
         type={type}
         id={id}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        value={value || ""}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onChange={setValue ? (e) => setValue(e.target.value) : () => {}}
         placeholder={placeholder}
         required={required}
         bgColor={bgColor}

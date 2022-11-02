@@ -37,7 +37,7 @@ const MessageList = ({ data }: Props) => {
                   <div>
                     <div>
                       <s.Heading>
-                        {firstLetterToUppercase(post?.user || "")}
+                        {firstLetterToUppercase(post?.username || "")}
                       </s.Heading>
                       <Paragraph
                         editStyle={{ fontSize: "0.75rem" }}
