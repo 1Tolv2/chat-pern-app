@@ -34,17 +34,9 @@ jobs:
     steps: 
       - name: Checking out repository code
         uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm ci
+      - run: docker compose up --build
       - run: npm run build --if-present
       - name: Running client tests 🔎
-        run:  | 
-          cd packages/client
-          npm run test
+        run:  docker exec ts-chatapp-client npm test -w packages/client
       - name: Running server tests 🔎
-        run:  | 
-          cd packages/api
-          npm run test
+        run:  docker exec ts-chatapp-api npm test -w packages/api
