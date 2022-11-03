@@ -52,4 +52,4 @@ jobs:
       - name: Running client tests 🔎
         run:  npm run test -w packages/client
       - name: Running server tests 🔎
-        run:  npm run test -w packages/client
+        run:  npm run test -w packages/api
