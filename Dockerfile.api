@@ -15,4 +15,4 @@ RUN npm run build -w packages/api
 
 EXPOSE 8800
 
-CMD [ "node", "packages/api/dist/app.js" ]
+CMD [ "node", "packages/api/dist/server.js" ]
