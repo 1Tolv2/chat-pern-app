@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS serveruser (
   UNIQUE (user_id, server_id)
 );
 
-CREATE sOR REPLACE FUNCTION addusertoserver(text, UUID, UUID) RETURNS void
+CREATE OR REPLACE FUNCTION addusertoserver(text, UUID, UUID) RETURNS void
 AS $$
   INSERT INTO serveruser (role, server_id, user_id)
   VALUES ($1, $2, $3)

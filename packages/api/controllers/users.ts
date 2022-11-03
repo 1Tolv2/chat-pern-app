@@ -6,7 +6,7 @@ import { findUserServers, findAllUsersServers } from "../models/Server";
 import { UniqueIntegrityConstraintViolationError } from "slonik";
 
 export const handleNewUser = async (
-  req: Request<UserItem>,
+  req: Request<Partial<UserItem>>,
   res: Response
 ): Promise<void> => {
   const missingFields = requiredFieldsCheck(req.body, [
@@ -22,13 +22,16 @@ export const handleNewUser = async (
       res.sendStatus(201);
     } catch (err) {
       if (err instanceof UniqueIntegrityConstraintViolationError) {
-        res.status(409).json({ error: "Username or email already exists" });
+        res.status(409);
+        res.json({ error: "Username or email already exists" });
       } else if (err instanceof Error) {
-        res.status(400).json({ error: err.message });
+        res.status(400);
+        res.json({ error: err.message });
       }
     }
   } else {
-    res.status(400).json({
+    res.status(400);
+    res.json({
       error: "Missing required fields",
       missingFields,
     });
@@ -63,29 +66,11 @@ export const getAllUsers = async (
       };
     });
 
-    // const userWithServers = users.map((user: UserItem) => {
-    //   const filteredArray: MemberItem[] = [];
-    //   usersServers?.map((usersServer) => {
-    //     if (user.id == usersServer.id) {
-    //       filteredArray.push({
-    //         server_id: usersServer.server_id,
-    //         role: usersServer.role,
-    //         name: usersServer.name,
-    //         description: usersServer.description,
-    //       });
-    //     }
-    //   });
-
-    //   return {
-    //     ...user,
-    //     servers: filteredArray,
-    //   };
-    // });
     res.json(usersWithServers);
   } catch (err) {
     if (err instanceof Error) {
-      console.error(err);
-      res.sendStatus(400);
+      res.status(400);
+      res.json({ error: err.message });
     }
   }
 };
@@ -96,7 +81,9 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     user.servers = await findUserServers(req.user?.user_id);
     res.json(user);
   } catch (err) {
-    console.error(err);
-    res.sendStatus(400);
+    if (err instanceof Error) {
+      res.status(400);
+      res.json({ error: err.message });
+    }
   }
 };

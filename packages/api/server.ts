@@ -3,7 +3,10 @@ import { PORT } from "./config/config";
 import { handleDBSetup } from "./controllers/db";
 
 server.listen(PORT, async () => {
-  await handleDBSetup();
-
+  try {
+    await handleDBSetup();
+  } catch (err) {
+    console.error("No database connection");
+  }
   console.info(`Express server running on port: ${PORT}`);
 });

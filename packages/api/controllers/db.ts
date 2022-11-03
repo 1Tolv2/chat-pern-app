@@ -28,7 +28,7 @@ const createAddUserToServerFunction = async () => {
       `);
 };
 
-const createServerUsersTable = async () => {
+const createServerUserTable = async () => {
   await (
     await pool
   ).query(sql`
@@ -51,5 +51,5 @@ export const handleDBSetup = async () => {
   await Server.setupTable();
   await Channel.setupTable();
   await Post.setupTable();
-  await createServerUsersTable();
+  await createServerUserTable();
 };

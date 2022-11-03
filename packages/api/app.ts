@@ -7,6 +7,7 @@ import { runSocketServer, SocketServer } from "./controllers/socket";
 import { CORS_ORIGINS } from "./config/config";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+
 dotenv.config();
 
 const app: Express = express();

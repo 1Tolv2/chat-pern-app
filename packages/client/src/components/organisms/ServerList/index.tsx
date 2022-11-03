@@ -32,9 +32,9 @@ const ServerList = ({ states, user }: Props) => {
 
   const handleOnClick = async (e: any): Promise<void> => {
     const target = e.target;
-    if (target?.id.replace("channel_", "") !== states?.activeServer?.id) {
+    if (target?.id.replace("server_", "") !== states?.activeServer?.id) {
       states.setActiveServer(
-        await getServer(target?.id.replace("channel_", ""))
+        await getServer(target?.id.replace("server_", ""))
       );
     }
   };
@@ -67,7 +67,7 @@ const ServerList = ({ states, user }: Props) => {
             >
               <s.Pill className="pill" />
               <Avatar
-                id={"channel_" + server?.id?.toString() || ""}
+                id={"server_" + server?.id || ""}
                 text={formatName(server.name)}
                 bgColor="darkGrey"
                 size="48px"

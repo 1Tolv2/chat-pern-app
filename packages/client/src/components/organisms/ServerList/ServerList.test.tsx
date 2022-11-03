@@ -17,6 +17,12 @@ const mockUser: UserItem = {
       name: "tolv's server",
       description: "Hello World",
     },
+    {
+      id: "4d0d9c6c-6435-4b0e-95dd-7886c3410928",
+      name: "second-server",
+      description: "",
+      role: "admin",
+    },
   ],
 };
 
@@ -32,6 +38,13 @@ const mockActiveServer: ServerItem = {
       id: "89bc123e-7e63-41dc-9b7f-b4412c20afe3",
       name: "general",
       description: "General chat",
+      created_at: new Date(1667252156912),
+      updated_at: null,
+    },
+    {
+      id: "89bc123e-7e63-41dc-9b7f-b4412c20sss8",
+      name: "general-2",
+      description: "General chat 2",
       created_at: new Date(1667252156912),
       updated_at: null,
     },
@@ -123,29 +136,7 @@ describe("Testing ServerList", () => {
       admin_id: "bc426c44-75d7-46fe-99f9-10793ed1adbb",
       created_at: new Date(1667252156912),
       updated_at: null,
-      channels: [
-        {
-          id: "89bc123e-7e63-41dc-9b7f-b4412c20afe3",
-          name: "general",
-          description: "General chat",
-          created_at: new Date(1667252156912),
-          updated_at: null,
-        },
-        {
-          id: "c2e897f3-7401-4014-bf69-3c16787cd368",
-          name: "secondchannel",
-          description: "",
-          created_at: new Date(1667252156912),
-          updated_at: null,
-        },
-        {
-          id: "89bc123e-7e63-55th-9b7f-b4412c20afe3",
-          name: "third_channel",
-          description: "",
-          created_at: new Date(1667252156912),
-          updated_at: null,
-        },
-      ],
+      channels: [],
       members: [],
     });
     render(
@@ -154,14 +145,25 @@ describe("Testing ServerList", () => {
         states={{ activeServer: mockActiveServer, setActiveServer: setState }}
       />
     );
-    const target = await screen.findByTestId("channel_3");
+    const target = await screen.findByTestId(
+      "server_4d0d9c6c-6435-4b0e-95dd-7886c3410928"
+    );
     fireEvent.click(target);
-    await waitFor(() => expect(getServerSpy).toHaveBeenCalledWith("3"));
+    await waitFor(() =>
+      expect(getServerSpy).toHaveBeenCalledWith(
+        "4d0d9c6c-6435-4b0e-95dd-7886c3410928"
+      )
+    );
     await waitFor(() =>
       expect(setState).toHaveBeenCalledWith({
-        channel_id: "89bc123e-7e63-55th-9b7f-b4412c20afe3",
-        channel_name: "third_channel",
-        description: "",
+        id: "4b2f5de9-e898-4e33-aa42-53430995614f",
+        name: "tolv's server",
+        description: "Hello World",
+        admin_id: "bc426c44-75d7-46fe-99f9-10793ed1adbb",
+        created_at: new Date("2022-10-31T21:35:56.912Z"),
+        updated_at: null,
+        channels: [],
+        members: [],
       })
     );
   });
