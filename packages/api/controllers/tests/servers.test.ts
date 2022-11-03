@@ -80,6 +80,8 @@ describe("Testing server controllers", () => {
         name: "Tolv's server",
         description: "Hello World",
       };
+      console.log(process.env.POSTGRES_DEV_URL);
+      console.log(process.env.POSTGRES_TEST_URL);
 
       await servers.handleNewServer(
         mockRequest as Request,
