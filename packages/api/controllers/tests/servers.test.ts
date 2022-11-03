@@ -72,122 +72,138 @@ jest.mock("../../models/User", () => {
     findUsersByServerId: () => Promise.resolve([]),
   };
 });
+try {
+  describe("Testing server controllers", () => {
+    describe("When creating a server", () => {
+      test("Should call .status() with 201 and .json() with server object when providing all fields", async () => {
+        mockRequest.body = {
+          name: "Tolv's server",
+          description: "Hello World",
+        };
 
-describe("Testing server controllers", () => {
-  describe("When creating a server", () => {
-    test("Should call .status() with 201 and .json() with server object when providing all fields", async () => {
-      mockRequest.body = {
-        name: "Tolv's server",
-        description: "Hello World",
-      };
-
-      await servers.handleNewServer(
-        mockRequest as Request,
-        mockResponse as Response
-      );
-
-      expect(mockResponse.status).toHaveBeenCalledWith(201);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        server: mockServer,
-        message: "New server created",
-      });
-    });
-
-    test("Should call .status() with 400 and .json() with an array of fields when missing required fields", async () => {
-      mockRequest.body = {
-        description: "Hello World",
-      };
-      mockResponse.status = jest.fn().mockReturnValue(mockResponse);
-      mockResponse.json = jest.fn();
-
-      await servers.handleNewServer(
-        mockRequest as Request,
-        mockResponse as Response
-      );
-
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        error: "Missing required fields",
-        missingFields: ["name"],
-      });
-    });
-
-    test("Should call .status() with 409 and .json() with an error message when sending in a server name that already exists", async () => {
-      jest.spyOn(Server, "createServer").mockImplementation(() => {
-        throw new UniqueIntegrityConstraintViolationError(
-          new Error("Unique error"),
-          "name"
+        await servers.handleNewServer(
+          mockRequest as Request,
+          mockResponse as Response
         );
+
+        expect(mockResponse.status).toHaveBeenCalledWith(201);
+        expect(mockResponse.json).toHaveBeenCalledWith({
+          server: mockServer,
+          message: "New server created",
+        });
       });
 
-      mockRequest.body = {
-        name: "Tolvs server",
-        description: "",
-      };
+      test("Should call .status() with 400 and .json() with an array of fields when missing required fields", async () => {
+        mockRequest.body = {
+          description: "Hello World",
+        };
+        mockResponse.status = jest.fn().mockReturnValue(mockResponse);
+        mockResponse.json = jest.fn();
 
-      await servers.handleNewServer(
-        mockRequest as Request,
-        mockResponse as Response
-      );
+        await servers.handleNewServer(
+          mockRequest as Request,
+          mockResponse as Response
+        );
 
-      expect(mockResponse.status).toBeCalledWith(409);
-      expect(mockResponse.json).toBeCalledWith({
-        error: "A server with that name already exists.",
+        expect(mockResponse.status).toHaveBeenCalledWith(400);
+        expect(mockResponse.json).toHaveBeenCalledWith({
+          error: "Missing required fields",
+          missingFields: ["name"],
+        });
+      });
+
+      test("Should call .status() with 409 and .json() with an error message when sending in a server name that already exists", async () => {
+        jest.spyOn(Server, "createServer").mockImplementation(() => {
+          throw new UniqueIntegrityConstraintViolationError(
+            new Error("Unique error"),
+            "name"
+          );
+        });
+
+        mockRequest.body = {
+          name: "Tolvs server",
+          description: "",
+        };
+
+        await servers.handleNewServer(
+          mockRequest as Request,
+          mockResponse as Response
+        );
+
+        expect(mockResponse.status).toBeCalledWith(409);
+        expect(mockResponse.json).toBeCalledWith({
+          error: "A server with that name already exists.",
+        });
+      });
+
+      test("Should call .status() with 500 and .json() with a error message when a non specific error is thrown", async () => {
+        jest.spyOn(Server, "createServer").mockImplementation(() => {
+          throw new Error("Some error");
+        });
+
+        mockRequest.body = {
+          name: "Tolvs server",
+          description: "",
+        };
+
+        await servers.handleNewServer(
+          mockRequest as Request,
+          mockResponse as Response
+        );
+
+        expect(mockResponse.status).toBeCalledWith(500);
+        expect(mockResponse.json).toBeCalledWith({
+          error: "Something went wrong.",
+        });
       });
     });
 
-    test("Should call .status() with 500 and .json() with a error message when a non specific error is thrown", async () => {
-      jest.spyOn(Server, "createServer").mockImplementation(() => {
-        throw new Error("Some error");
-      });
-
-      mockRequest.body = {
-        name: "Tolvs server",
-        description: "",
-      };
-
-      await servers.handleNewServer(
-        mockRequest as Request,
-        mockResponse as Response
-      );
-
-      expect(mockResponse.status).toBeCalledWith(500);
-      expect(mockResponse.json).toBeCalledWith({
-        error: "Something went wrong.",
-      });
-    });
-  });
-
-  describe("When getting all servers", () => {
-    test("Should call .json() with an array of servers", async () => {
-      mockResponse.json = jest.fn();
-
-      await servers.getAllServers(
-        mockRequest as Request,
-        mockResponse as Response
-      );
-
-      expect(mockResponse.json).toHaveBeenCalledWith([mockServer]);
-    });
-
-    test("Should call .status() with 500 and .json() with error message when unspecific error occurs", async () => {
-      jest.spyOn(Server, "findAllServers").mockImplementation(() => {
-        throw new Error("Some error");
-      });
-
-      await servers.getAllServers(
-        mockRequest as Request,
-        mockResponse as Response
-      );
-
-      expect(mockResponse.status).toHaveBeenCalledWith(500);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        error: "Something went wrong.",
-      });
-    });
-
-    describe("When getting server by id", () => {
+    describe("When getting all servers", () => {
       test("Should call .json() with an array of servers", async () => {
+        mockResponse.json = jest.fn();
+
+        await servers.getAllServers(
+          mockRequest as Request,
+          mockResponse as Response
+        );
+
+        expect(mockResponse.json).toHaveBeenCalledWith([mockServer]);
+      });
+
+      test("Should call .status() with 500 and .json() with error message when unspecific error occurs", async () => {
+        jest.spyOn(Server, "findAllServers").mockImplementation(() => {
+          throw new Error("Some error");
+        });
+
+        await servers.getAllServers(
+          mockRequest as Request,
+          mockResponse as Response
+        );
+
+        expect(mockResponse.status).toHaveBeenCalledWith(500);
+        expect(mockResponse.json).toHaveBeenCalledWith({
+          error: "Something went wrong.",
+        });
+      });
+
+      describe("When getting server by id", () => {
+        test("Should call .json() with an array of servers", async () => {
+          mockRequest.params = { id: mockServer.id };
+
+          await servers.getServerById(
+            mockRequest as Request,
+            mockResponse as Response
+          );
+
+          expect(mockResponse.json).toHaveBeenCalledWith(mockServer);
+        });
+      });
+
+      test("Should call .status() with 404 and .json() with error message when server is not found", async () => {
+        jest.spyOn(Server, "findServerById").mockImplementation(() => {
+          throw new NotFoundError();
+        });
+
         mockRequest.params = { id: mockServer.id };
 
         await servers.getServerById(
@@ -195,77 +211,64 @@ describe("Testing server controllers", () => {
           mockResponse as Response
         );
 
-        expect(mockResponse.json).toHaveBeenCalledWith(mockServer);
-      });
-    });
-
-    test("Should call .status() with 404 and .json() with error message when server is not found", async () => {
-      jest.spyOn(Server, "findServerById").mockImplementation(() => {
-        throw new NotFoundError();
+        expect(mockResponse.status).toHaveBeenCalledWith(404);
+        expect(mockResponse.json).toHaveBeenCalledWith({
+          error: "Server not found",
+        });
       });
 
-      mockRequest.params = { id: mockServer.id };
+      test("Should call .status() with 500 and .json() with an error message when unsepcified error occurs", async () => {
+        jest.spyOn(Server, "findServerById").mockImplementation(() => {
+          throw new Error("Some error");
+        });
 
-      await servers.getServerById(
-        mockRequest as Request,
-        mockResponse as Response
-      );
+        mockRequest.params = { id: mockServer.id };
 
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        error: "Server not found",
-      });
-    });
+        await servers.getServerById(
+          mockRequest as Request,
+          mockResponse as Response
+        );
 
-    test("Should call .status() with 500 and .json() with an error message when unsepcified error occurs", async () => {
-      jest.spyOn(Server, "findServerById").mockImplementation(() => {
-        throw new Error("Some error");
-      });
-
-      mockRequest.params = { id: mockServer.id };
-
-      await servers.getServerById(
-        mockRequest as Request,
-        mockResponse as Response
-      );
-
-      expect(mockResponse.status).toHaveBeenCalledWith(500);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        error: "Something went wrong",
-      });
-    });
-
-    test("Should call .json() with a member added message", async () => {
-      mockRequest.params = { id: mockServer.id };
-      mockRequest.body = { user_id: "bc426c44-75d7-46fe-99f9-10793ed1adbb" };
-
-      await servers.addMemberToServer(
-        mockRequest as Request,
-        mockResponse as Response
-      );
-
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: "Member added to server",
-      });
-    });
-
-    test("Should call .status() with 500 and .json() with an error message when unsepcified error occurs", async () => {
-      jest.spyOn(Server, "addToServerUsers").mockImplementation(() => {
-        throw new Error("Some error");
+        expect(mockResponse.status).toHaveBeenCalledWith(500);
+        expect(mockResponse.json).toHaveBeenCalledWith({
+          error: "Something went wrong",
+        });
       });
 
-      mockRequest.params = { id: mockServer.id };
-      mockRequest.body = { user_id: "bc426c44-75d7-46fe-99f9-10793ed1adbb" };
+      test("Should call .json() with a member added message", async () => {
+        mockRequest.params = { id: mockServer.id };
+        mockRequest.body = { user_id: "bc426c44-75d7-46fe-99f9-10793ed1adbb" };
 
-      await servers.addMemberToServer(
-        mockRequest as Request,
-        mockResponse as Response
-      );
+        await servers.addMemberToServer(
+          mockRequest as Request,
+          mockResponse as Response
+        );
 
-      expect(mockResponse.status).toHaveBeenCalledWith(500);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        error: "Something went wrong",
+        expect(mockResponse.json).toHaveBeenCalledWith({
+          message: "Member added to server",
+        });
+      });
+
+      test("Should call .status() with 500 and .json() with an error message when unsepcified error occurs", async () => {
+        jest.spyOn(Server, "addToServerUsers").mockImplementation(() => {
+          throw new Error("Some error");
+        });
+
+        mockRequest.params = { id: mockServer.id };
+        mockRequest.body = { user_id: "bc426c44-75d7-46fe-99f9-10793ed1adbb" };
+
+        await servers.addMemberToServer(
+          mockRequest as Request,
+          mockResponse as Response
+        );
+
+        expect(mockResponse.status).toHaveBeenCalledWith(500);
+        expect(mockResponse.json).toHaveBeenCalledWith({
+          error: "Something went wrong",
+        });
       });
     });
   });
-});
+} catch (err) {
+  console.error("Server Test", err);
+}
