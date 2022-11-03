@@ -99,7 +99,7 @@ describe("Testing user controllers", () => {
       expect(mockResponse.sendStatus).toBeCalledWith(201);
     });
 
-    test("Should call .status() with 400 and an array of fields when missing required fields", async () => {
+    test("Should call .status() with 400 and .json() with an array of fields when missing required fields", async () => {
       mockRequest.body = {
         username: "Tolv",
         email: "test@test.com",
@@ -119,34 +119,9 @@ describe("Testing user controllers", () => {
       });
     });
 
-    test("Should call .status() with 400 and error message", async () => {
-      const mockErrorMessage = "My test error message";
-      const createUserSpy = jest.spyOn(User, "createUser");
-      createUserSpy.mockImplementation(() => {
-        throw new Error(mockErrorMessage);
-      });
-
-      mockRequest.body = {
-        username: "Tolv",
-        email: "test@test.com",
-        password: "test",
-      };
-      mockResponse.status = jest.fn();
-      mockResponse.json = jest.fn();
-
-      await users.handleNewUser(
-        mockRequest as Request<Partial<UserItem>>,
-        mockResponse as Response
-      );
-
-      expect(mockResponse.status).toBeCalledWith(400);
-      expect(mockResponse.json).toBeCalledWith({ error: mockErrorMessage });
-    });
-
     test("Should call .status() with 409 and .json() with an error message when sending in username that already exists", async () => {
       const mockErrorMessage = "Username or email already exists";
-      const createUserSpy = jest.spyOn(User, "createUser");
-      createUserSpy.mockImplementation(() => {
+      jest.spyOn(User, "createUser").mockImplementation(() => {
         throw new UniqueIntegrityConstraintViolationError(
           new Error(mockErrorMessage),
           "username"
@@ -170,6 +145,29 @@ describe("Testing user controllers", () => {
       expect(mockResponse.json).toBeCalledWith({
         error: mockErrorMessage,
       });
+    });
+
+    test("Should call .status() with 400 and error message", async () => {
+      const mockErrorMessage = "My test error message";
+      jest.spyOn(User, "createUser").mockImplementation(() => {
+        throw new Error(mockErrorMessage);
+      });
+
+      mockRequest.body = {
+        username: "Tolv",
+        email: "test@test.com",
+        password: "test",
+      };
+      mockResponse.status = jest.fn();
+      mockResponse.json = jest.fn();
+
+      await users.handleNewUser(
+        mockRequest as Request<Partial<UserItem>>,
+        mockResponse as Response
+      );
+
+      expect(mockResponse.status).toBeCalledWith(400);
+      expect(mockResponse.json).toBeCalledWith({ error: mockErrorMessage });
     });
   });
 
@@ -210,7 +208,23 @@ describe("Testing user controllers", () => {
         },
       ]);
     });
+
+    test("Should call .status() with 400 and error message", async () => {
+      const mockErrorMessage = "My test error message";
+      jest.spyOn(User, "findAllUsers").mockImplementation(() => {
+        throw new Error(mockErrorMessage);
+      });
+
+      mockResponse.status = jest.fn();
+      mockResponse.json = jest.fn();
+
+      await users.getAllUsers(mockRequest as Request, mockResponse as Response);
+
+      expect(mockResponse.status).toBeCalledWith(400);
+      expect(mockResponse.json).toBeCalledWith({ error: mockErrorMessage });
+    });
   });
+
   describe("When getting user", () => {
     test("Should call .json() with user", async () => {
       await users.getUser(mockRequest as Request, mockResponse as Response);
@@ -231,24 +245,20 @@ describe("Testing user controllers", () => {
         ],
       });
     });
-    /* res.user must be fixed */
-    //   test("Should call .status() with 400 and error message", async () => {
-    //     const mockErrorMessage = "My test error message";
-    //     const findUserByIdSpy = jest.spyOn(User, "findUserById");
-    //     findUserByIdSpy.mockImplementation(() => {
-    //       throw new Error(mockErrorMessage);
-    //     });
 
-    //     mockResponse.status = jest.fn();
-    //     mockResponse.json = jest.fn();
+    test("Should call .status() with 400 and error message", async () => {
+      const mockErrorMessage = "My test error message";
+      jest.spyOn(User, "findUserById").mockImplementation(() => {
+        throw new Error(mockErrorMessage);
+      });
 
-    //     await users.handleNewUser(
-    //       mockRequest as Request<Partial<UserItem>>,
-    //       mockResponse as Response
-    //     );
+      mockResponse.status = jest.fn();
+      mockResponse.json = jest.fn();
 
-    //     expect(mockResponse.status).toBeCalledWith(401);
-    //     expect(mockResponse.json).toBeCalledWith({ error: mockErrorMessage });
-    //   });
+      await users.getUser(mockRequest as Request, mockResponse as Response);
+
+      expect(mockResponse.status).toBeCalledWith(400);
+      expect(mockResponse.json).toBeCalledWith({ error: mockErrorMessage });
+    });
   });
 });

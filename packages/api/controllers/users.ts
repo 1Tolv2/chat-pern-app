@@ -25,7 +25,6 @@ export const handleNewUser = async (
         res.status(409);
         res.json({ error: "Username or email already exists" });
       } else if (err instanceof Error) {
-        console.error(err);
         res.status(400);
         res.json({ error: err.message });
       }
@@ -83,7 +82,6 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     res.json(user);
   } catch (err) {
     if (err instanceof Error) {
-      console.error(err);
       res.status(400);
       res.json({ error: err.message });
     }

@@ -54,7 +54,6 @@ class Server implements ServerItem, TimeStamps {
     const description = server.description || "";
     const name = server.name || "";
     const admin_id = server.admin_id || "";
-
     const newServer = (await (
       await pool
     ).one(sql`
@@ -62,13 +61,14 @@ class Server implements ServerItem, TimeStamps {
           VALUES (${name}, ${description})
           RETURNING *;
           `)) as unknown as ServerItem;
+
     await (
       await pool
     ).one(sql`
             SELECT addusertoserver('admin', ${newServer.id}, ${admin_id});
             `);
     if (newServer) {
-      createChannel({
+      await createChannel({
         server_id: newServer.id,
         name: "general",
         description: "General chat",
