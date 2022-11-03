@@ -31,12 +31,25 @@ jobs:
   
   test_job: 
     runs-on: ubuntu-latest
+    services: 
+      postgres:
+        image: postgres:latest
+        ports:
+        - 5432:5432
+        env: 
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: chatappdb
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps: 
       - name: Checking out repository code
         uses: actions/checkout@v3
-      - run: docker compose up --build
-      - run: npm run build --if-present
+      - name: Install dependencies
+        run: npm ci
       - name: Running client tests 🔎
-        run:  docker exec ts-chatapp-client npm test -w packages/client
+        run:  npm run test -w packages/client
       - name: Running server tests 🔎
-        run:  docker exec ts-chatapp-api npm test -w packages/api
+        run:  npm run test -w packages/client
