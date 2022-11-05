@@ -18,14 +18,18 @@ export const handleNewPost = async (
         user_id: req.user?.user_id,
         channel_id: req.body.channel_id,
       });
-      res.status(201).json({ post, message: "New post created" });
+
+      res.status(201);
+      res.json({ post, message: "New post created" });
     } catch (err) {
       if (err instanceof Error) {
-        res.status(409).json({ error: err.message });
+        res.status(500);
+        res.json({ error: err.message });
       }
     }
   } else {
-    res.status(400).json({
+    res.status(400);
+    res.json({
       error: "Missing required fields",
       missingFields,
     });
@@ -36,14 +40,28 @@ export const getAllPosts = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const posts = await findAllPosts();
-  res.json(posts);
+  try {
+    const posts = await findAllPosts();
+    res.json(posts);
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(500);
+      res.json({ error: err.message });
+    }
+  }
 };
 
 export const getPostById = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const post = await findPostById(req.params.id);
-  res.json(post);
+  try {
+    const post = await findPostById(req.params.id);
+    res.json(post);
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(500);
+      res.json({ error: err.message });
+    }
+  }
 };
