@@ -1,8 +1,7 @@
-import { ServerItem } from "@chat-app-typescript/shared";
 import { Request, Response } from "express";
-import * as servers from "../servers";
-import * as Server from "../../models/Server";
 import { NotFoundError, UniqueIntegrityConstraintViolationError } from "slonik";
+import * as Server from "../../models/Server";
+import * as servers from "../servers";
 
 let mockRequest: Partial<Request>;
 let mockResponse: Partial<Response>;
@@ -136,7 +135,7 @@ describe("Testing server controllers", () => {
       });
     });
 
-    test("Should call .status() with 500 and .json() with a error message when a non specific error is thrown", async () => {
+    test("Should call .status() with 500 and .json() with an error message when a non specific error is thrown", async () => {
       jest.spyOn(Server, "createServer").mockImplementation(() => {
         throw new Error("Some error");
       });
