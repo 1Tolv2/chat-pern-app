@@ -13,7 +13,7 @@ export const handleNewChannel = async (
 ): Promise<void> => {
   const missingFields = requiredFieldsCheck(req.body, [
     "name",
-    "serverId",
+    "server_id",
     "description",
   ]);
   if (missingFields.length === 0) {
@@ -24,21 +24,24 @@ export const handleNewChannel = async (
         name: name.toLowerCase(),
         description,
       });
-      res.status(201).json({
+      res.status(201);
+      res.json({
         channel,
         message: "New channel created",
       });
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: "Something went wrong" });
+      res.status(500);
+      res.json({ error: "Something went wrong" });
     }
   } else if (missingFields.length > 0) {
-    res.status(400).json({
+    res.status(400);
+    res.json({
       error: "Missing required fields",
       missingFields,
     });
   } else {
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500);
+    res.json({ error: "Something went wrong" });
   }
 };
 
@@ -50,8 +53,8 @@ export const getAllChannels = async (
     const channels = await findAllChannels();
     res.json(channels);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500);
+    res.json({ error: "Something went wrong" });
   }
 };
 
@@ -64,7 +67,7 @@ export const getChannelById = async (
     channel.posts = await findAllPostsByChannel(req.params.id);
     res.json(channel);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500);
+    res.json({ error: "Something went wrong" });
   }
 };
