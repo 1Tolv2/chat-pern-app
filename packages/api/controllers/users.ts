@@ -18,7 +18,7 @@ export const handleNewUser = async (
   const { username, email, password } = req.body;
   if (missingFields.length === 0) {
     try {
-      await createUser({ username, email, password });
+      await createUser({ username: username.toLowerCase(), email, password });
       res.sendStatus(201);
     } catch (err) {
       if (err instanceof UniqueIntegrityConstraintViolationError) {
