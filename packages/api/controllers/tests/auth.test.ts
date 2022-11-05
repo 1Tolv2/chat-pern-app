@@ -73,4 +73,40 @@ describe("Testing auth controllers", () => {
       });
     });
   });
+
+  describe("Handling token", () => {
+    test("Should set req.user() with a token", async () => {
+      jest.spyOn(jwt, "verify").mockImplementation(() => "token");
+
+      mockRequest.cookies = { jwt: "fakeToken" };
+
+      await auth.handleToken(
+        mockRequest as Request,
+        mockResponse as Response,
+        mockNext as NextFunction
+      );
+
+      expect(mockRequest.user).toEqual("token");
+      expect(mockNext).toHaveBeenCalled();
+    });
+
+    test("Should call .status() with 401 and .json() with an error message when authorizing with an invalid token", async () => {
+      jest.spyOn(jwt, "verify").mockImplementation(() => {
+        throw new Error("invalid token");
+      });
+
+      mockRequest.cookies = { jwt: "fakeToken" };
+
+      await auth.handleToken(
+        mockRequest as Request,
+        mockResponse as Response,
+        mockNext as NextFunction
+      );
+
+      expect(mockResponse.status).toHaveBeenCalledWith(401);
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        error: "Invalid token",
+      });
+    });
+  });
 });
