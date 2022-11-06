@@ -9,6 +9,7 @@ type Props = {
 };
 
 const MessageList = ({ data }: Props) => {
+  console.log("DATA", data);
   const firstLetterToUppercase = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };

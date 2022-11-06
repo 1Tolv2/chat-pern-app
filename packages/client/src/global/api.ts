@@ -5,16 +5,6 @@ import { ActivityData } from "./types";
 axios.defaults.baseURL =
   process.env.REACT_APP_API_URL || "http://localhost:8800";
 axios.defaults.withCredentials = true;
-// axios.interceptors.request.use((config) => {
-//   if (!config?.headers) {
-//     config.headers = {};
-//   }
-// const jwt = localStorage.getItem("jwt_token");
-// if (jwt) {
-//   config.headers["authorization"] = `Bearer ${jwt}`;
-// }
-//   return config;
-// });
 
 export const registerUser = async (
   email: string,
@@ -25,21 +15,18 @@ export const registerUser = async (
   return res.status;
 };
 
-type LoginResponse = {
-  user: Partial<UserItem>;
-  token: string;
-};
 export const loginUser = async (
   username: string,
   password: string
-): Promise<UserItem | null> => {
-  const loginResponse = await axios.post<LoginResponse>("/users/auth", {
+): Promise<Partial<UserItem> | null> => {
+  const loginResponse = await axios.post<Partial<UserItem>>("/users/auth", {
     username,
     password,
   });
 
   if (loginResponse?.status === 200) {
     const res = await axios.get<UserItem>("/users/me");
+    console.log("res", res);
     return res.data;
   }
   return null;
@@ -51,9 +38,9 @@ export const getAllUsers = async (): Promise<UserItem[]> => {
 };
 
 export const getChannelPosts = async (
-  channelId: string
+  channel_id: string
 ): Promise<ChannelItem> => {
-  const res = await axios.get<ChannelItem>(`/channels/${channelId}`);
+  const res = await axios.get<ChannelItem>(`/channels/${channel_id}`);
   return res.data;
 };
 
@@ -63,24 +50,28 @@ export const getServers = async (): Promise<ServerItem[]> => {
 };
 
 export const getServerUsers = async (
-  serverId: string
+  server_id: string
 ): Promise<ActivityData> => {
-  const res = await axios.get<ActivityData>(`/servers/${serverId}`);
+  const res = await axios.get<ActivityData>(`/servers/${server_id}`);
   return { title: "online", users: res.data.users };
 };
 
-export const getServer = async (serverId: string): Promise<ServerItem> => {
-  const res = await axios.get<ServerItem>(`/servers/${serverId}`);
+export const getServer = async (server_id: string): Promise<ServerItem> => {
+  const res = await axios.get<ServerItem>(`/servers/${server_id}`);
   return res.data;
 };
 
-export const createChannel = async (name: string, serverId: string) => {
-  const res = await axios.post("/channels", { name, serverId });
+export const createChannel = async (name: string, server_id: string) => {
+  const res = await axios.post("/channels", {
+    name,
+    server_id,
+    description: "",
+  });
   return res;
 };
 
-export const createPost = async (message: string, channelId: string) => {
-  const res = await axios.post("/posts", { text: message, channelId });
+export const createPost = async (message: string, channel_id: string) => {
+  const res = await axios.post("/posts", { text: message, channel_id });
   return res;
 };
 
@@ -89,6 +80,6 @@ export const getUser = async () => {
   return res;
 };
 
-export const addMemberToServer = async (serverId: string, userId: string) => {
-  return axios.post(`/servers/${serverId}/member`, { user_id: userId });
+export const addMemberToServer = async (server_id: string, user_id: string) => {
+  return axios.post(`/servers/${server_id}/member`, { user_id });
 };

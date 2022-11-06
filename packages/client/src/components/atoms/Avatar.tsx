@@ -1,4 +1,4 @@
-import React, { MouseEvent } from "react";
+import React, { MouseEventHandler } from "react";
 import styled, { css } from "styled-components";
 import { theme, ThemeColors } from "../theme";
 const { colors } = theme;
@@ -48,7 +48,7 @@ type Props = {
   size?: string;
   text?: string;
   hover?: boolean;
-  onClick?: (e: any) => Promise<void>;
+  onClick?: MouseEventHandler<HTMLDivElement>;
   id?: string;
 };
 

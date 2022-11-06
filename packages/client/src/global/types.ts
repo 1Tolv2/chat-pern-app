@@ -1,3 +1,5 @@
+import { ChannelItem } from "@chat-app-typescript/shared";
+
 export type Post = {
   id: number;
   user: string;
@@ -19,4 +21,9 @@ export type Member = {
 export type ActivityData = {
   title: string;
   users: Member[];
+};
+
+export type ChannelAction = {
+  type: "add" | "remove" | "replace";
+  input: ChannelItem | ChannelItem[];
 };

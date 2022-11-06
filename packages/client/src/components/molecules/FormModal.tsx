@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import styled from "styled-components";
 import Button from "../atoms/Button";
 import { theme } from "../theme";
@@ -49,8 +49,8 @@ const CloseIcon = styled.img`
 `;
 
 type Props = {
-  exitModal: (e: any) => Promise<void>;
-  handleOnSubmit: (e: any) => Promise<void>;
+  exitModal: MouseEventHandler<HTMLImageElement | HTMLButtonElement>;
+  handleOnSubmit: MouseEventHandler<HTMLButtonElement>;
   title: string;
   serverId?: string | null;
   input: {
@@ -58,8 +58,10 @@ type Props = {
     textColor?: string;
     id: string;
     type: "input" | "search";
-    value?: any | any[];
-    setValue?: React.Dispatch<React.SetStateAction<any | any[]>>;
+    value?: string | null;
+    setValue?:
+      | React.Dispatch<React.SetStateAction<string | string[]>>
+      | ((value: string) => void);
     bgColor?: string;
     placeholder?: string;
   };

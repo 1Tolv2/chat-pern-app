@@ -48,13 +48,11 @@ const RenderMessageFeed = ({ activeChannel, setSocket }: Props) => {
     });
   };
 
-  const handleSocketConnection = (token: string) => {
+  const handleSocketConnection = () => {
     const socket = io(
       process.env.REACT_APP_API_URL || "http://localhost:8800",
       {
-        auth: {
-          token,
-        },
+        withCredentials: true,
         query: { channel_id: activeChannel?.id },
         autoConnect: false,
       }
@@ -70,9 +68,8 @@ const RenderMessageFeed = ({ activeChannel, setSocket }: Props) => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("jwt_token");
-    if (activeChannel && token) {
-      return handleSocketConnection(token);
+    if (activeChannel) {
+      return handleSocketConnection();
     }
   }, [activeChannel]);
 

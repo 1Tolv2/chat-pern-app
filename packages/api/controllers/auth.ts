@@ -65,7 +65,7 @@ export const logInUser = async (req: Request, res: Response): Promise<void> => {
       );
 
       res.cookie("jwt", token, { maxAge: 7200000, httpOnly: true });
-      res.json({ user: { id: user.id?.toString(), username } });
+      res.json({ id: user.id?.toString(), username });
     }
   } else {
     res.status(400);

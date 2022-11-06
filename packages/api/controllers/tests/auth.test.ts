@@ -54,7 +54,8 @@ describe("Testing auth controllers", () => {
         httpOnly: true,
       });
       expect(mockResponse.json).toHaveBeenCalledWith({
-        user: { id: expect.any(String), username: "tolv" },
+        id: expect.any(String),
+        username: "tolv",
       });
     });
 

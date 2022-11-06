@@ -1,4 +1,10 @@
-import React, { useContext, useState, ReactNode } from "react";
+import React, {
+  useContext,
+  useState,
+  ReactNode,
+  MouseEventHandler,
+  BaseSyntheticEvent,
+} from "react";
 import Button from "../atoms/Button";
 import Paragraph from "../atoms/Paragraph";
 import InputWithLabel from "./InputWithLabel";
@@ -6,7 +12,7 @@ import * as t from "../theme/typography";
 import { theme } from "../theme";
 import styled from "styled-components";
 import { ModalContext, UserContext } from "../Layout";
-import { loginUser, registerUser } from "../../global/api";
+import { getUser, loginUser, registerUser } from "../../global/api";
 import { AxiosError } from "axios";
 
 const { colors } = theme;
@@ -31,17 +37,20 @@ const SignForm = ({ type, children }: Props) => {
   const { setModalVisible } = useContext(ModalContext);
   const { setUser } = useContext(UserContext);
 
-  const handleOnClick = async (e: any): Promise<void> => {
+  const handleOnClick: MouseEventHandler<HTMLButtonElement> = async (
+    e: BaseSyntheticEvent
+  ): Promise<void> => {
     e.preventDefault();
     if (type?.formType === "register") {
       const res = await registerUser(email, username, password);
       res && type?.setFormType("login");
     } else if (type?.formType === "login") {
       try {
-        const user = await loginUser(username, password);
-        if (user) {
+        const isAuthorizedUser = await loginUser(username, password);
+        if (isAuthorizedUser) {
           setModalVisible(false);
-          setUser(user);
+          const user = await getUser();
+          setUser(user.data);
         }
       } catch (err) {
         if (err instanceof AxiosError) {
