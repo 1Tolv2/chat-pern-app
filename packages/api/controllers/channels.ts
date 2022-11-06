@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
-import { requiredFieldsCheck } from ".";
 import {
   createChannel,
   findAllChannels,
   findChannelById,
 } from "../models/Channel";
 import { findAllPostsByChannel } from "../models/Post";
+import responseMessages from "../global/responseMessages";
+import { requiredFieldsCheck } from ".";
+
+const { oops, missingReqFields } = responseMessages.errorResponse;
 
 export const handleNewChannel = async (
   req: Request,
@@ -30,18 +33,18 @@ export const handleNewChannel = async (
         message: "New channel created",
       });
     } catch (err) {
-      res.status(500);
-      res.json({ error: "Something went wrong" });
+      res.status(oops.status);
+      res.json({ error: oops.message });
     }
   } else if (missingFields.length > 0) {
-    res.status(400);
+    res.status(missingReqFields.status);
     res.json({
-      error: "Missing required fields",
+      error: missingReqFields.message,
       missingFields,
     });
   } else {
-    res.status(500);
-    res.json({ error: "Something went wrong" });
+    res.status(oops.status);
+    res.json({ error: oops.message });
   }
 };
 
@@ -53,8 +56,8 @@ export const getAllChannels = async (
     const channels = await findAllChannels();
     res.json(channels);
   } catch (err) {
-    res.status(500);
-    res.json({ error: "Something went wrong" });
+    res.status(oops.status);
+    res.json({ error: oops.message });
   }
 };
 
@@ -67,7 +70,7 @@ export const getChannelById = async (
     channel.posts = await findAllPostsByChannel(req.params.id);
     res.json(channel);
   } catch (err) {
-    res.status(500);
-    res.json({ error: "Something went wrong" });
+    res.status(oops.status);
+    res.json({ error: oops.message });
   }
 };

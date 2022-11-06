@@ -2,16 +2,22 @@ import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 import { UserItem } from "@chat-app-typescript/shared";
+import responseMessages from "../global/responseMessages";
 import User from "../models/User";
 import { requiredFieldsCheck } from ".";
 dotenv.config();
+
+const { oops, invalidToken, missingReqFields, unauthorized } =
+  responseMessages.errorResponse;
 
 export const requireLogin = (
   req: Request,
   res: Response,
   next: NextFunction
 ): void => {
-  req.user ? next() : res.status(401).json({ error: "Unauthorized" });
+  req.user
+    ? next()
+    : res.status(unauthorized.status).json({ error: unauthorized.message });
 };
 
 export const verifyToken = (token: string): JwtPayload => {
@@ -30,8 +36,8 @@ export const handleToken = async (
     } catch (err) {
       if (err instanceof Error) {
         if (err.message === "invalid token") {
-          res.status(401);
-          res.json({ error: "Invalid token" });
+          res.status(invalidToken.status);
+          res.json({ error: invalidToken.message });
         }
       }
     }
@@ -49,7 +55,7 @@ export const logInUser = async (req: Request, res: Response): Promise<void> => {
       user = await User.authorizeUser(username, req.body.password);
     } catch (err) {
       if (err instanceof Error) {
-        res.status(500);
+        res.status(oops.status);
         res.json({ error: err.message });
       }
     }
@@ -68,9 +74,9 @@ export const logInUser = async (req: Request, res: Response): Promise<void> => {
       res.json({ id: user.id?.toString(), username });
     }
   } else {
-    res.status(400);
+    res.status(missingReqFields.status);
     res.json({
-      error: "Missing required fields",
+      error: missingReqFields.message,
       missingFields,
     });
   }
