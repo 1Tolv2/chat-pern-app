@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { PostItem } from "@chat-app-typescript/shared";
 import logo from "../../../logo.svg";
 import Paragraph from "../../atoms/Paragraph";
@@ -25,10 +25,18 @@ const MessageList = ({ data }: Props) => {
       minutes < 10 ? "0" + minutes : minutes
     }`;
   };
+
+  useEffect(() => {
+    const element = document.getElementById("message_list");
+    if (element) {
+      (element.lastChild as Element).scrollIntoView();
+    }
+  }, [data]);
+
   return (
     <>
       {data.length > 0 && (
-        <ul>
+        <ul id="message_list">
           {data?.map((post: PostItem, index) => {
             return (
               <s.Container key={index}>
