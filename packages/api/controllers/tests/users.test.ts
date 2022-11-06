@@ -11,6 +11,8 @@ beforeEach(() => {
   mockRequest = {};
   mockResponse = {
     json: jest.fn(),
+    sendStatus: jest.fn(),
+    status: jest.fn(),
   };
 });
 

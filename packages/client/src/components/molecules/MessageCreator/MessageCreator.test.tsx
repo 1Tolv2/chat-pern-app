@@ -1,6 +1,7 @@
 import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import MessageCreator from ".";
+import { Socket } from "socket.io-client";
 
 const testChannelItem = {
   id: "89bc123e-7e63-41dc-9b7f-b4412c20afe3",
@@ -11,6 +12,12 @@ const testChannelItem = {
   updated_at: null,
   posts: [],
 };
+
+let mockSocket: Partial<Socket>;
+
+beforeEach(() => {
+  mockSocket = { emit: jest.fn() };
+});
 
 describe("Test MessageCreator", () => {
   test("Should render textarea", () => {
@@ -26,29 +33,27 @@ describe("Test MessageCreator", () => {
     expect(textArea).toHaveValue("test message");
   });
   test("OnSubmit is called when form is submitted", () => {
-    const onSubmit = jest.fn();
     render(
       <MessageCreator
         activeChannel={testChannelItem}
-        socket={{ emit: onSubmit } as any}
+        socket={mockSocket as Socket}
       />
     );
     const textArea = screen.getByRole("textbox") as HTMLTextAreaElement;
     fireEvent.change(textArea, { target: { value: "submitted message" } });
     fireEvent.submit(screen.getByTitle("submit"));
-    expect(onSubmit).toBeCalled();
+    expect(mockSocket.emit).toBeCalled();
   });
   test("OnSubmit is not called when message is empty", () => {
-    const onSubmit = jest.fn();
     render(
       <MessageCreator
         activeChannel={testChannelItem}
-        socket={{ emit: onSubmit } as any}
+        socket={mockSocket as Socket}
       />
     );
     const textArea = screen.getByRole("textbox") as HTMLTextAreaElement;
     fireEvent.change(textArea, { target: { value: "" } });
     fireEvent.submit(screen.getByTitle("submit"));
-    expect(onSubmit).not.toBeCalled();
+    expect(mockSocket.emit).not.toBeCalled();
   });
 });
