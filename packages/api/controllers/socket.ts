@@ -45,13 +45,11 @@ export const runSocketServer = async (
   socket: Socket,
   next: () => void
 ): Promise<void> => {
-  console.log("COOKIE", socket.handshake);
   const JwtCookie = cookie.parse(socket.handshake.headers.cookie || "");
-  console.log("SOCKET COOKIE", JwtCookie);
   if (JwtCookie) {
     let user: JwtPayload | null = null;
     try {
-      user = verifyToken(JwtCookie.cookie);
+      user = verifyToken(JwtCookie.jwt);
     } catch (err) {
       if (err instanceof Error) {
         console.error("ERROR", err);
