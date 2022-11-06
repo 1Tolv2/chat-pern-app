@@ -1,6 +1,10 @@
 import styled from "styled-components";
+import { theme } from "../../theme";
+
+const { colors } = theme;
 
 const Container = styled.li`
+  width: 100%;
   &:hover {
     background-color: #34363d;
   }
@@ -38,4 +42,38 @@ const Heading = styled.h3`
   }
 `;
 
-export { Container, ProfileImage, MessageWrapper, Heading };
+const DateDivider = styled.div`
+  position: relative;
+
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  margin-left: 1rem;
+  margin-right: 0.875rem;
+  border-top: thin solid ${colors.grey};
+`;
+
+const DateText = styled.span`
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 2px 4px;
+  background-color: ${colors.darkGrey};
+  color: ${colors.lightGrey};
+  line-height: 13px;
+  font-size: 13px;
+  margin-top: -1px;
+  font-weight: 700;
+  border-radius: 8px;
+  width: fit-content;
+`;
+
+export {
+  Container,
+  ProfileImage,
+  MessageWrapper,
+  Heading,
+  DateDivider,
+  DateText,
+};

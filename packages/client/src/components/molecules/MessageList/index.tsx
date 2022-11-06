@@ -26,6 +26,16 @@ const MessageList = ({ data }: Props) => {
     }`;
   };
 
+  const renderDividerDate = (date: Date) => {
+    return `
+      ${date.getDate()}
+      ${date.toLocaleDateString("en-us", {
+        year: "numeric",
+        month: "long",
+      })}
+    `;
+  };
+
   useEffect(() => {
     const element = document.getElementById("message_list");
     if (element) {
@@ -38,8 +48,28 @@ const MessageList = ({ data }: Props) => {
       {data.length > 0 && (
         <ul id="message_list">
           {data?.map((post: PostItem, index) => {
+            let isStartOfDay = false;
+            if (index === 0) {
+              isStartOfDay = true;
+            } else if (index > 0) {
+              const previousPostDate = new Date(data[index - 1].created_at);
+              const currentPostDate = new Date(post.created_at);
+              isStartOfDay =
+                previousPostDate.getDate() !== currentPostDate.getDate() ||
+                (previousPostDate as unknown as number) -
+                  (currentPostDate as unknown as number) >
+                  864000;
+            }
+
             return (
               <s.Container key={index}>
+                {isStartOfDay && (
+                  <s.DateDivider>
+                    <s.DateText>
+                      {renderDividerDate(new Date(post?.created_at))}
+                    </s.DateText>
+                  </s.DateDivider>
+                )}
                 <s.MessageWrapper>
                   <s.ProfileImage src={logo} alt="avatar" />
                   <div>

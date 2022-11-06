@@ -10,6 +10,7 @@ const Container = styled.div`
   justify-content: space-between;
   flex: 1;
   height: 100%;
+  width: 100%;
   background-color: ${colors.darkGrey};
 `;
 
@@ -18,7 +19,9 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   height: 100%;
-  margin: 5px 5px 30px 5px;
+  margin-top: 5px;
+  margin-bottom: 30px;
+  /* margin: 5px 5px 30px 5px; */
 `;
 
 const ScrollContainer = styled.div`
