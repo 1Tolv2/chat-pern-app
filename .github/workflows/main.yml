@@ -6,12 +6,7 @@ on:
   pull_request:
     branches: ["main"]
     
-jobs:
-  build_job:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "${{job.name}} job status ${{ job.status }}."
-      
+jobs:    
   eslint_job:
     runs-on: ubuntu-latest
     steps:
