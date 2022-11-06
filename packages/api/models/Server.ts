@@ -135,11 +135,13 @@ export const addToServerUsers = async (
   `);
 };
 
-export const findServerAdmins = async (): Promise<any> => {
+export type Admin = { server_id: string; admin_id: string };
+
+export const findServerAdmins = async (): Promise<Admin[]> => {
   return (await (
     await pool
   ).any(
     sql`SELECT server_id, user_id AS admin_id FROM serveruser WHERE role = 'admin';`
-  )) as unknown as any[];
+  )) as unknown as Admin[];
 };
 export default Server;

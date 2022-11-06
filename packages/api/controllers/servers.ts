@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
   addToServerUsers,
+  Admin,
   createServer,
   findAllServers,
   findServerAdmins,
@@ -53,15 +54,14 @@ export const getAllServers = async (
   res: Response
 ): Promise<void> => {
   let servers: ServerItem[] = [];
-  let admins: any[] = [];
+  let admins: Admin[] = [];
   try {
     servers = await findAllServers();
     admins = await findServerAdmins();
 
     servers.map((server) => {
-      server.admin_id = admins.find(
-        (admin) => server.id === admin.server_id
-      ).admin_id;
+      const admin = admins?.find((admin) => server.id === admin?.server_id);
+      server.admin_id = admin ? admin.admin_id : "";
     });
 
     res.json(servers);

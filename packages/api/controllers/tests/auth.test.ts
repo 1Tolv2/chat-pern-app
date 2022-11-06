@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { NotFoundError, UniqueIntegrityConstraintViolationError } from "slonik";
 import User from "../../models/User";
 import * as auth from "../auth";
 
