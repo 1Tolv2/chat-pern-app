@@ -1,6 +1,5 @@
 import { ChannelItem, ServerItem, UserItem } from "@chat-app-typescript/shared";
 import axios from "axios";
-import { ActivityData } from "./types";
 
 axios.defaults.baseURL =
   process.env.REACT_APP_API_URL || "http://localhost:8800";
