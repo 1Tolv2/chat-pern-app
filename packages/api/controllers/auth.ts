@@ -24,7 +24,6 @@ export const handleToken = async (
   next: NextFunction
 ): Promise<void> => {
   const jwt = req.cookies.jwt;
-  console.log("COOKIE RECIEVED?", jwt);
   if (jwt) {
     try {
       req.user = verifyToken(jwt);
