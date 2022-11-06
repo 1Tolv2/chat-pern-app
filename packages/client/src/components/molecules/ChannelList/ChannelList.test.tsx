@@ -64,7 +64,7 @@ jest.mock("../../../global/api", () => {
 });
 
 describe("Testing ChannelList", () => {
-  describe("View for all roles", () => {
+  describe("When logged in as member", () => {
     test("Should render list", async () => {
       render(
         <ChannelList
