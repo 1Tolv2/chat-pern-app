@@ -10,5 +10,5 @@ const DATABASE_URL =
     ? process.env.POSTGRES_TEST_URL
     : process.env.POSTGRES_DEV_URL;
 
-console.info("Connecting to Postgres db...");
+process.env.NODE_ENV !== "test" && console.info("Connecting to Postgres db...");
 export const pool = createPool(DATABASE_URL || "");

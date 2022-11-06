@@ -72,8 +72,8 @@ export const getAllUsers = async (
     res.json(usersWithServers);
   } catch (err) {
     if (err instanceof Error) {
-      res.status(missingReqFields.status);
-      res.json({ error: missingReqFields.message });
+      res.status(oops.status);
+      res.json({ error: oops.message });
     }
   }
 };
@@ -85,8 +85,8 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     res.json(user);
   } catch (err) {
     if (err instanceof Error) {
-      res.status(missingReqFields.status);
-      res.json({ error: missingReqFields.message });
+      res.status(oops.status);
+      res.json({ error: oops.message });
     }
   }
 };

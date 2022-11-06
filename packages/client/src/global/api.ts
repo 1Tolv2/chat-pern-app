@@ -26,7 +26,6 @@ export const loginUser = async (
 
   if (loginResponse?.status === 200) {
     const res = await axios.get<UserItem>("/users/me");
-    console.log("res", res);
     return res.data;
   }
   return null;
@@ -47,13 +46,6 @@ export const getChannelPosts = async (
 export const getServers = async (): Promise<ServerItem[]> => {
   const res = await axios.get<ServerItem[]>("/servers");
   return res.data;
-};
-
-export const getServerUsers = async (
-  server_id: string
-): Promise<ActivityData> => {
-  const res = await axios.get<ActivityData>(`/servers/${server_id}`);
-  return { title: "online", users: res.data.users };
 };
 
 export const getServer = async (server_id: string): Promise<ServerItem> => {

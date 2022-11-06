@@ -1,5 +1,5 @@
 import { ChannelItem, ServerItem, UserItem } from "@chat-app-typescript/shared";
-import React, { BaseSyntheticEvent, MouseEventHandler } from "react";
+import React from "react";
 import UserArea from "../../molecules/UserArea";
 import ChannelList from "../../molecules/ChannelList";
 import FormModal from "../../molecules/FormModal";
@@ -29,13 +29,6 @@ const ChannelSidebar = ({ states, user }: Props) => {
     setIsModalOpen(false);
   };
 
-  const handleOnSubmit: MouseEventHandler<HTMLButtonElement> = async (
-    e: BaseSyntheticEvent
-  ): Promise<void> => {
-    e.preventDefault();
-    console.log("Submitted", e.target.id);
-  };
-
   return (
     <s.Container>
       <s.Header>
@@ -58,7 +51,6 @@ const ChannelSidebar = ({ states, user }: Props) => {
               bgColor: "darkestGrey",
             }}
             exitModal={clearModal}
-            handleOnSubmit={handleOnSubmit}
           />
         )}
       </s.Header>

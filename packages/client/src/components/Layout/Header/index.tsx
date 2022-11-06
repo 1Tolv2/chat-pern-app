@@ -8,9 +8,6 @@ type Props = {
 };
 
 const Header = ({ activeChannel }: Props) => {
-  const handleOnClick = () => {
-    console.log("clicked");
-  };
   return (
     <s.ChannelBar>
       <div style={{ display: "flex" }}>
@@ -26,11 +23,7 @@ const Header = ({ activeChannel }: Props) => {
         </t.H2>
       </div>
       <div>
-        <img
-          src={"/group.svg"}
-          onClick={handleOnClick}
-          style={{ cursor: "pointer" }}
-        />
+        <img src={"/group.svg"} style={{ cursor: "pointer" }} />
       </div>
     </s.ChannelBar>
   );

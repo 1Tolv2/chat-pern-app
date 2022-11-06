@@ -24,7 +24,6 @@ const ChannelHeader = ({ isAdmin, serverId, modifyChannelList }: Props) => {
 
   const addChannel = async () => {
     const res: AxiosResponse = await createChannel(name, serverId);
-    console.log(res);
     if (res.status === 201 && res.data.channel) {
       modifyChannelList({
         type: "add",

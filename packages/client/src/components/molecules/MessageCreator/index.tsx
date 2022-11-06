@@ -14,7 +14,6 @@ const MessageCreator = ({ activeChannel, socket }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("message", message);
     if (message) {
       socket?.emit("message", {
         text: message,
