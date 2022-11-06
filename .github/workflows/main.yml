@@ -1,4 +1,4 @@
-name: Chat app build and tests
+name: Chat app tests and lints
 run-name: ${{ github.actor }} is running actions 🚀
 on: 
   push:
