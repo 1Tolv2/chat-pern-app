@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
+import { UniqueIntegrityConstraintViolationError } from "slonik";
 import { MemberItem, UserItem } from "@chat-app-typescript/shared";
 import { createUser, findAllUsers, findUserById } from "../models/User";
-import { requiredFieldsCheck } from ".";
+import responseMessages from "../global/responseMessages";
 import { findUserServers, findAllUsersServers } from "../models/Server";
-import { UniqueIntegrityConstraintViolationError } from "slonik";
+import { requiredFieldsCheck } from ".";
+
+const { oops, missingReqFields, notUnique } = responseMessages.errorResponse;
 
 export const handleNewUser = async (
   req: Request<Partial<UserItem>>,
@@ -22,17 +25,17 @@ export const handleNewUser = async (
       res.sendStatus(201);
     } catch (err) {
       if (err instanceof UniqueIntegrityConstraintViolationError) {
-        res.status(409);
-        res.json({ error: "Username or email already exists" });
+        res.status(notUnique.status);
+        res.json({ error: `Username or email ${notUnique.message}` });
       } else if (err instanceof Error) {
-        res.status(400);
-        res.json({ error: err.message });
+        res.status(oops.status);
+        res.json({ error: oops.message });
       }
     }
   } else {
-    res.status(400);
+    res.status(missingReqFields.status);
     res.json({
-      error: "Missing required fields",
+      error: missingReqFields.message,
       missingFields,
     });
   }
@@ -69,8 +72,8 @@ export const getAllUsers = async (
     res.json(usersWithServers);
   } catch (err) {
     if (err instanceof Error) {
-      res.status(400);
-      res.json({ error: err.message });
+      res.status(oops.status);
+      res.json({ error: oops.message });
     }
   }
 };
@@ -82,8 +85,8 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     res.json(user);
   } catch (err) {
     if (err instanceof Error) {
-      res.status(400);
-      res.json({ error: err.message });
+      res.status(oops.status);
+      res.json({ error: oops.message });
     }
   }
 };

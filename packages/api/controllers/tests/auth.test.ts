@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { NotFoundError, UniqueIntegrityConstraintViolationError } from "slonik";
 import User from "../../models/User";
 import * as auth from "../auth";
 
@@ -55,7 +54,8 @@ describe("Testing auth controllers", () => {
         httpOnly: true,
       });
       expect(mockResponse.json).toHaveBeenCalledWith({
-        user: { id: expect.any(String), username: "tolv" },
+        id: expect.any(String),
+        username: "tolv",
       });
     });
 

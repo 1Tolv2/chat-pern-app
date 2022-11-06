@@ -65,7 +65,7 @@ const StyledButton = styled.button`
 
 type Props = {
   children?: React.ReactNode;
-  onClick: (e: any) => Promise<void>;
+  onClick: MouseEventHandler<HTMLButtonElement>;
   width?: string;
   type?: "outlined" | "filled";
   height?: string;

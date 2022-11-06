@@ -112,7 +112,7 @@ export const findAllPostsByChannel = async (
   return (await (
     await pool
   )
-    .any(sql`SELECT p.id as post_id, text, u.username AS user, user_id, p.created_at, p.updated_at FROM post AS p
+    .any(sql`SELECT p.id, text, u.username, user_id, p.created_at, p.updated_at FROM post AS p
   JOIN app_user AS u ON user_id = u.id
   WHERE channel_id = ${channel_id}
   ORDER BY created_at ASC;`)) as unknown as PostItem[];

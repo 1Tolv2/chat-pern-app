@@ -35,9 +35,6 @@ const RenderMessageFeed = ({ activeChannel, setSocket }: Props) => {
   const [posts, dispatch] = useReducer(postReducer, []);
 
   const socketListeners = (socket: Socket) => {
-    socket.on("online", (onlineUsers: { user: string; user_id: string }) => {
-      console.log(onlineUsers);
-    });
     socket.on("message", (message: PostItem) => {
       if (message.channel_id === activeChannel?.id) {
         dispatch({ type: "add", input: message });
@@ -48,13 +45,11 @@ const RenderMessageFeed = ({ activeChannel, setSocket }: Props) => {
     });
   };
 
-  const handleSocketConnection = (token: string) => {
+  const handleSocketConnection = () => {
     const socket = io(
       process.env.REACT_APP_API_URL || "http://localhost:8800",
       {
-        auth: {
-          token,
-        },
+        withCredentials: true,
         query: { channel_id: activeChannel?.id },
         autoConnect: false,
       }
@@ -70,9 +65,8 @@ const RenderMessageFeed = ({ activeChannel, setSocket }: Props) => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("jwt_token");
-    if (activeChannel && token) {
-      return handleSocketConnection(token);
+    if (activeChannel) {
+      return handleSocketConnection();
     }
   }, [activeChannel]);
 

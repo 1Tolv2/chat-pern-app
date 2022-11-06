@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
 import { NotFoundError, UniqueIntegrityConstraintViolationError } from "slonik";
 import * as Server from "../../models/Server";
+import responseMessages from "../../global/responseMessages";
 import * as servers from "../servers";
+
+const { oops, missingReqFields, notUnique, notFound } =
+  responseMessages.errorResponse;
 
 let mockRequest: Partial<Request>;
 let mockResponse: Partial<Response>;
@@ -104,9 +108,9 @@ describe("Testing server controllers", () => {
         mockResponse as Response
       );
 
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
+      expect(mockResponse.status).toHaveBeenCalledWith(missingReqFields.status);
       expect(mockResponse.json).toHaveBeenCalledWith({
-        error: "Missing required fields",
+        error: missingReqFields.message,
         missingFields: ["name"],
       });
     });
@@ -129,9 +133,9 @@ describe("Testing server controllers", () => {
         mockResponse as Response
       );
 
-      expect(mockResponse.status).toBeCalledWith(409);
+      expect(mockResponse.status).toBeCalledWith(notUnique.status);
       expect(mockResponse.json).toBeCalledWith({
-        error: "A server with that name already exists.",
+        error: "Server " + notUnique.message,
       });
     });
 
@@ -150,9 +154,9 @@ describe("Testing server controllers", () => {
         mockResponse as Response
       );
 
-      expect(mockResponse.status).toBeCalledWith(500);
+      expect(mockResponse.status).toBeCalledWith(oops.status);
       expect(mockResponse.json).toBeCalledWith({
-        error: "Something went wrong.",
+        error: oops.message,
       });
     });
   });
@@ -179,9 +183,9 @@ describe("Testing server controllers", () => {
         mockResponse as Response
       );
 
-      expect(mockResponse.status).toHaveBeenCalledWith(500);
+      expect(mockResponse.status).toHaveBeenCalledWith(oops.status);
       expect(mockResponse.json).toHaveBeenCalledWith({
-        error: "Something went wrong.",
+        error: oops.message,
       });
     });
 
@@ -210,9 +214,9 @@ describe("Testing server controllers", () => {
         mockResponse as Response
       );
 
-      expect(mockResponse.status).toHaveBeenCalledWith(404);
+      expect(mockResponse.status).toHaveBeenCalledWith(notFound.status);
       expect(mockResponse.json).toHaveBeenCalledWith({
-        error: "Server not found",
+        error: "Server " + notFound.message,
       });
     });
 
@@ -228,9 +232,9 @@ describe("Testing server controllers", () => {
         mockResponse as Response
       );
 
-      expect(mockResponse.status).toHaveBeenCalledWith(500);
+      expect(mockResponse.status).toHaveBeenCalledWith(oops.status);
       expect(mockResponse.json).toHaveBeenCalledWith({
-        error: "Something went wrong",
+        error: oops.message,
       });
     });
 
@@ -261,9 +265,9 @@ describe("Testing server controllers", () => {
         mockResponse as Response
       );
 
-      expect(mockResponse.status).toHaveBeenCalledWith(500);
+      expect(mockResponse.status).toHaveBeenCalledWith(oops.status);
       expect(mockResponse.json).toHaveBeenCalledWith({
-        error: "Something went wrong",
+        error: oops.message,
       });
     });
   });

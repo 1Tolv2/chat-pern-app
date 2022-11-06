@@ -1,16 +1,21 @@
 import { Request, Response } from "express";
+import { NotFoundError, UniqueIntegrityConstraintViolationError } from "slonik";
+import { ServerItem } from "@chat-app-typescript/shared";
+import responseMessages from "../global/responseMessages";
 import {
   addToServerUsers,
+  Admin,
   createServer,
   findAllServers,
   findServerAdmins,
   findServerById,
 } from "../models/Server";
-import { requiredFieldsCheck } from ".";
 import { findChannelsByServer } from "../models/Channel";
-import { NotFoundError, UniqueIntegrityConstraintViolationError } from "slonik";
 import { findUsersByServerId } from "../models/User";
-import { ServerItem } from "@chat-app-typescript/shared";
+import { requiredFieldsCheck } from ".";
+
+const { notUnique, oops, missingReqFields, notFound } =
+  responseMessages.errorResponse;
 
 export const handleNewServer = async (
   req: Request,
@@ -32,17 +37,17 @@ export const handleNewServer = async (
       });
     } catch (err) {
       if (err instanceof UniqueIntegrityConstraintViolationError) {
-        res.status(409);
-        res.json({ error: "A server with that name already exists." });
+        res.status(notUnique.status);
+        res.json({ error: "Server " + notUnique.message });
       } else {
-        res.status(500);
-        res.json({ error: "Something went wrong." });
+        res.status(oops.status);
+        res.json({ error: oops.message });
       }
     }
   } else {
-    res.status(400);
+    res.status(missingReqFields.status);
     res.json({
-      error: "Missing required fields",
+      error: missingReqFields.message,
       missingFields,
     });
   }
@@ -53,21 +58,20 @@ export const getAllServers = async (
   res: Response
 ): Promise<void> => {
   let servers: ServerItem[] = [];
-  let admins: any[] = [];
+  let admins: Admin[] = [];
   try {
     servers = await findAllServers();
     admins = await findServerAdmins();
 
     servers.map((server) => {
-      server.admin_id = admins.find(
-        (admin) => server.id === admin.server_id
-      ).admin_id;
+      const admin = admins?.find((admin) => server.id === admin?.server_id);
+      server.admin_id = admin ? admin.admin_id : "";
     });
 
     res.json(servers);
   } catch (err) {
-    res.status(500);
-    res.json({ error: "Something went wrong." });
+    res.status(oops.status);
+    res.json({ error: oops.message });
   }
 };
 
@@ -94,11 +98,11 @@ export const getServerById = async (
     res.json(server);
   } catch (err) {
     if (err instanceof NotFoundError) {
-      res.status(404);
-      res.json({ error: "Server not found" });
+      res.status(notFound.status);
+      res.json({ error: "Server " + notFound.message });
     } else if (err instanceof Error) {
-      res.status(500);
-      res.json({ error: "Something went wrong" });
+      res.status(oops.status);
+      res.json({ error: oops.message });
     }
   }
 };
@@ -112,8 +116,8 @@ export const addMemberToServer = async (
     res.json({ message: "Member added to server" });
   } catch (err) {
     if (err instanceof Error) {
-      res.status(500);
-      res.json({ error: "Something went wrong" });
+      res.status(oops.status);
+      res.json({ error: oops.message });
     }
   }
 };

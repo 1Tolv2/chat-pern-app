@@ -1,5 +1,10 @@
 import { ServerItem, UserItem } from "@chat-app-typescript/shared";
-import React, { useEffect, useState } from "react";
+import React, {
+  BaseSyntheticEvent,
+  MouseEventHandler,
+  useEffect,
+  useState,
+} from "react";
 import { getServer, getServers } from "../../../global/api";
 import Avatar from "../../atoms/Avatar";
 import * as s from "./styles";
@@ -30,7 +35,9 @@ const ServerList = ({ states, user }: Props) => {
     }
   }, [user]);
 
-  const handleOnClick = async (e: any): Promise<void> => {
+  const handleOnClick: MouseEventHandler<HTMLDivElement> = async (
+    e: BaseSyntheticEvent
+  ): Promise<void> => {
     const target = e.target;
     if (target?.id.replace("server_", "") !== states?.activeServer?.id) {
       states.setActiveServer(
@@ -56,7 +63,7 @@ const ServerList = ({ states, user }: Props) => {
     <s.Container>
       <s.StyledList>
         <s.ListItem>
-          <Avatar id="channel_start" size="48px" bgColor="darkGrey" hover />
+          <Avatar id="server_start" size="48px" bgColor="darkGrey" hover />
           <hr />
         </s.ListItem>
         {serverList.map((server: ServerItem) => {

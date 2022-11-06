@@ -1,6 +1,12 @@
 import { ChannelItem, ServerItem } from "@chat-app-typescript/shared";
-import React, { useEffect, useReducer } from "react";
+import React, {
+  BaseSyntheticEvent,
+  MouseEventHandler,
+  useEffect,
+  useReducer,
+} from "react";
 import { getServer } from "../../../global/api";
+import { ChannelAction } from "../../../global/types";
 import ChannelHeader from "../ChannelHeader";
 import * as s from "./styles";
 
@@ -13,10 +19,6 @@ type Props = {
   isAdmin: boolean;
 };
 
-type ChannelAction = {
-  type: "add" | "remove" | "replace";
-  input: ChannelItem | ChannelItem[];
-};
 const channelReducer = (state: ChannelItem[], action: ChannelAction) => {
   if (!action.input) {
     return state;
@@ -54,11 +56,14 @@ const ChannelList = ({ states, isAdmin }: Props) => {
     }
   }, [activeServer, dispatch]);
 
-  const handleOnClick = async (e: any): Promise<void> => {
-    if (e.target.id !== activeChannel?.id) {
+  const handleOnClick: MouseEventHandler<HTMLLIElement> = async (
+    e: BaseSyntheticEvent
+  ): Promise<void> => {
+    const target = e?.target;
+    if (target.id !== activeChannel?.id) {
       const server = await fetchServerChannels();
       const channel =
-        server?.channels?.find((item) => item.id === e.target.id) || null;
+        server?.channels?.find((item) => item.id === target.id) || null;
       states.setActiveChannel(channel as unknown as ChannelItem);
     }
   };

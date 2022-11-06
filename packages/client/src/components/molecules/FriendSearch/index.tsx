@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, {
+  useEffect,
+  useState,
+  useContext,
+  BaseSyntheticEvent,
+  MouseEventHandler,
+} from "react";
 import { addMemberToServer, getAllUsers } from "../../../global/api";
 import Avatar from "../../atoms/Avatar";
 import Button from "../../atoms/Button";
@@ -35,7 +41,7 @@ const FriendSearch = ({ serverId }: Props) => {
     fetchMembers();
   }, []);
 
-  const searchMember = (value: any) => {
+  const searchMember = (value: string) => {
     setSearchTerm(value);
     setMemberList(
       unfilteredMemberList.filter((member) =>
@@ -48,7 +54,9 @@ const FriendSearch = ({ serverId }: Props) => {
     return name.charAt(0).toUpperCase() + name.slice(1);
   };
 
-  const handleOnInvite = async (e: any): Promise<void> => {
+  const handleOnInvite: MouseEventHandler<HTMLButtonElement> = async (
+    e: BaseSyntheticEvent
+  ): Promise<void> => {
     await addMemberToServer(serverId || "", e.currentTarget.id);
   };
 
@@ -66,7 +74,7 @@ const FriendSearch = ({ serverId }: Props) => {
       </s.InputContainer>
       <s.MemberList>
         {memberList &&
-          memberList.map((member: any) => {
+          memberList.map((member) => {
             return (
               <s.MemberItem key={member.id}>
                 <Avatar size="30px" />

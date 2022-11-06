@@ -1,6 +1,7 @@
+import React, { useState, Dispatch } from "react";
 import { ChannelItem } from "@chat-app-typescript/shared";
 import { AxiosResponse } from "axios";
-import React, { useState, Dispatch } from "react";
+import { ChannelAction } from "../../../global/types";
 import { createChannel } from "../../../global/api";
 import Paragraph from "../../atoms/Paragraph";
 import FormModal from "../FormModal";
@@ -9,7 +10,7 @@ import * as s from "./styles";
 type Props = {
   isAdmin: boolean;
   serverId: string;
-  modifyChannelList: Dispatch<any>;
+  modifyChannelList: Dispatch<ChannelAction>;
 };
 
 const ChannelHeader = ({ isAdmin, serverId, modifyChannelList }: Props) => {

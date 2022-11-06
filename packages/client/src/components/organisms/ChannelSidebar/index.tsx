@@ -2,8 +2,8 @@ import { ChannelItem, ServerItem, UserItem } from "@chat-app-typescript/shared";
 import React from "react";
 import UserArea from "../../molecules/UserArea";
 import ChannelList from "../../molecules/ChannelList";
-import * as s from "./styles";
 import FormModal from "../../molecules/FormModal";
+import * as s from "./styles";
 
 type Props = {
   states: {
@@ -29,11 +29,6 @@ const ChannelSidebar = ({ states, user }: Props) => {
     setIsModalOpen(false);
   };
 
-  const handleOnSubmit = async (e: any): Promise<void> => {
-    e.preventDefault();
-    console.log("Submitted", e.target.id);
-  };
-
   return (
     <s.Container>
       <s.Header>
@@ -56,7 +51,6 @@ const ChannelSidebar = ({ states, user }: Props) => {
               bgColor: "darkestGrey",
             }}
             exitModal={clearModal}
-            handleOnSubmit={handleOnSubmit}
           />
         )}
       </s.Header>

@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { createPost, findAllPosts, findPostById } from "../models/Post";
+import responseMessages from "../global/responseMessages";
 import { requiredFieldsCheck } from ".";
+
+const { oops, missingReqFields } = responseMessages.errorResponse;
 
 export const handleNewPost = async (
   req: Request,
@@ -23,14 +26,14 @@ export const handleNewPost = async (
       res.json({ post, message: "New post created" });
     } catch (err) {
       if (err instanceof Error) {
-        res.status(500);
-        res.json({ error: err.message });
+        res.status(oops.status);
+        res.json({ error: oops.message });
       }
     }
   } else {
-    res.status(400);
+    res.status(missingReqFields.status);
     res.json({
-      error: "Missing required fields",
+      error: missingReqFields.message,
       missingFields,
     });
   }
@@ -45,8 +48,8 @@ export const getAllPosts = async (
     res.json(posts);
   } catch (err) {
     if (err instanceof Error) {
-      res.status(500);
-      res.json({ error: err.message });
+      res.status(oops.status);
+      res.json({ error: oops.message });
     }
   }
 };
@@ -60,8 +63,8 @@ export const getPostById = async (
     res.json(post);
   } catch (err) {
     if (err instanceof Error) {
-      res.status(500);
-      res.json({ error: err.message });
+      res.status(oops.status);
+      res.json({ error: oops.message });
     }
   }
 };

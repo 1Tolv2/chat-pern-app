@@ -1,8 +1,11 @@
-import { UserItem } from "@chat-app-typescript/shared";
 import { Request, Response } from "express";
-import * as users from "../users";
-import * as User from "../../models/User";
 import { UniqueIntegrityConstraintViolationError } from "slonik";
+import { UserItem } from "@chat-app-typescript/shared";
+import * as User from "../../models/User";
+import responseMessages from "../../global/responseMessages";
+import * as users from "../users";
+
+const { oops, missingReqFields, notUnique } = responseMessages.errorResponse;
 
 let mockRequest: Partial<Request>;
 let mockResponse: Partial<Response>;
@@ -11,6 +14,8 @@ beforeEach(() => {
   mockRequest = {};
   mockResponse = {
     json: jest.fn(),
+    sendStatus: jest.fn(),
+    status: jest.fn(),
   };
 });
 
@@ -112,9 +117,9 @@ describe("Testing user controllers", () => {
         mockResponse as Response
       );
 
-      expect(mockResponse.status).toBeCalledWith(400);
+      expect(mockResponse.status).toBeCalledWith(missingReqFields.status);
       expect(mockResponse.json).toBeCalledWith({
-        error: "Missing required fields",
+        error: missingReqFields.message,
         missingFields: ["password"],
       });
     });
@@ -141,13 +146,13 @@ describe("Testing user controllers", () => {
         mockResponse as Response
       );
 
-      expect(mockResponse.status).toBeCalledWith(409);
+      expect(mockResponse.status).toBeCalledWith(notUnique.status);
       expect(mockResponse.json).toBeCalledWith({
-        error: mockErrorMessage,
+        error: "Username or email " + notUnique.message,
       });
     });
 
-    test("Should call .status() with 400 and error message", async () => {
+    test("Should call .status() with 500 and .json() with an error message when a non specific error is thrown", async () => {
       const mockErrorMessage = "My test error message";
       jest.spyOn(User, "createUser").mockImplementation(() => {
         throw new Error(mockErrorMessage);
@@ -166,8 +171,8 @@ describe("Testing user controllers", () => {
         mockResponse as Response
       );
 
-      expect(mockResponse.status).toBeCalledWith(400);
-      expect(mockResponse.json).toBeCalledWith({ error: mockErrorMessage });
+      expect(mockResponse.status).toBeCalledWith(oops.status);
+      expect(mockResponse.json).toBeCalledWith({ error: oops.message });
     });
   });
 
@@ -209,7 +214,7 @@ describe("Testing user controllers", () => {
       ]);
     });
 
-    test("Should call .status() with 400 and error message", async () => {
+    test("Should call .status() with 500 and .json() with an error message when a non specific error is thrown", async () => {
       const mockErrorMessage = "My test error message";
       jest.spyOn(User, "findAllUsers").mockImplementation(() => {
         throw new Error(mockErrorMessage);
@@ -220,8 +225,8 @@ describe("Testing user controllers", () => {
 
       await users.getAllUsers(mockRequest as Request, mockResponse as Response);
 
-      expect(mockResponse.status).toBeCalledWith(400);
-      expect(mockResponse.json).toBeCalledWith({ error: mockErrorMessage });
+      expect(mockResponse.status).toBeCalledWith(oops.status);
+      expect(mockResponse.json).toBeCalledWith({ error: oops.message });
     });
   });
 
@@ -246,7 +251,7 @@ describe("Testing user controllers", () => {
       });
     });
 
-    test("Should call .status() with 400 and error message", async () => {
+    test("Should call .status() with 500 and .json() with an error message when a non specific error is thrown", async () => {
       const mockErrorMessage = "My test error message";
       jest.spyOn(User, "findUserById").mockImplementation(() => {
         throw new Error(mockErrorMessage);
@@ -257,8 +262,8 @@ describe("Testing user controllers", () => {
 
       await users.getUser(mockRequest as Request, mockResponse as Response);
 
-      expect(mockResponse.status).toBeCalledWith(400);
-      expect(mockResponse.json).toBeCalledWith({ error: mockErrorMessage });
+      expect(mockResponse.status).toBeCalledWith(oops.status);
+      expect(mockResponse.json).toBeCalledWith({ error: oops.message });
     });
   });
 });

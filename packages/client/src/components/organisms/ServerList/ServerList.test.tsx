@@ -54,7 +54,7 @@ const mockActiveServer: ServerItem = {
 
 const setState = jest.fn();
 const useStateSpy = jest.spyOn(React, "useState");
-useStateSpy.mockImplementation(((initialState: any) => [
+useStateSpy.mockImplementation(((initialState: ServerItem) => [
   initialState,
   setState,
 ]) as unknown as (() => [unknown, Dispatch<unknown>]) | undefined);
