@@ -73,7 +73,6 @@ class User implements UserItem {
       password,
       newUser.created_at || new Date()
     );
-    // TODO: add a trigger function for the above insert so this is not needed.
   };
   static authorizeUser = async (
     username: string,

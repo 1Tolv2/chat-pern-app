@@ -4,9 +4,9 @@ import { getAllUsers, handleNewUser, getUser } from "../controllers/users";
 
 const router: Router = express.Router();
 
-router.get("/", requireLogin, getAllUsers); // Get all users
-router.post("/", handleNewUser); // Create a new user
-router.post("/auth", logInUser); // Login a user
-router.get("/me", requireLogin, getUser); // Get user by id with posts and servers
+router.get("/", requireLogin, getAllUsers);
+router.post("/", handleNewUser);
+router.post("/auth", logInUser);
+router.get("/me", requireLogin, getUser);
 
 export default router;

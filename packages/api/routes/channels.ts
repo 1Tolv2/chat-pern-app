@@ -7,8 +7,8 @@ import {
 
 const router: Router = express.Router();
 
-router.get("/", getAllChannels); // Get all channels
-router.post("/", handleNewChannel); // Create a new channel
-router.get("/:id", getChannelById); // Get channel by id with posts with users
+router.get("/", getAllChannels);
+router.post("/", handleNewChannel);
+router.get("/:id", getChannelById);
 
 export default router;

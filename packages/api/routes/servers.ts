@@ -9,9 +9,9 @@ import {
 
 const router: Router = express.Router();
 
-router.get("/", requireLogin, getAllServers); // Get all servers
-router.post("/", requireLogin, handleNewServer); // Create a new server
-router.get("/:id", requireLogin, getServerById); // Get Server by id with channels and users
-router.post("/:id/member", requireLogin, addMemberToServer); // Add member to server
+router.get("/", requireLogin, getAllServers);
+router.post("/", requireLogin, handleNewServer);
+router.get("/:id", requireLogin, getServerById);
+router.post("/:id/member", requireLogin, addMemberToServer);
 
 export default router;
