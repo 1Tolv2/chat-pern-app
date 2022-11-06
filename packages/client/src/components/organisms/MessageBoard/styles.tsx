@@ -21,7 +21,6 @@ const Wrapper = styled.div`
   height: 100%;
   margin-top: 5px;
   margin-bottom: 30px;
-  /* margin: 5px 5px 30px 5px; */
 `;
 
 const ScrollContainer = styled.div`
