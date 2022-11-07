@@ -10,7 +10,7 @@
 <h3 align="center">Chat application - Simple Discord copy</h3>
 
   <p align="center">
-    Full stack application - React, Express, PostgreSQL
+    Full stack application - Written in TypeScript and built with React, Express and PostgreSQL
     <br />
     <a href="https://github.com/1Tolv2/chat-app-typescript"><strong>Explore the docs »</strong></a>
     <br />
@@ -49,22 +49,32 @@ To setup a local copy follow the steps below
 ### Installation
  
 1. First start cloning the repo by entering the below command in your terminal.
-   ```sh
-   git clone https://github.com/1Tolv2/chat-app-typescript.git
-   ```
-2. After cloning the repository, cd in to the new folder and install.
-   ```sh
-   npm install
-   ```
-3. 
-   a. Start up the application by running the below command from the api workspace aswell as from the client workspace.
-   ```sh
-   npm start
-   ```
-    b. Start up the application by running the below command from the root folder 
-    ```sh
-    docker compose up --build
-    ```
-4. Open <a href="http://http://localhost:3000/">http://http://localhost:3000/</a> in your prefered browser.
+```sh
+git clone https://github.com/1Tolv2/chat-app-typescript.git
+```
+1. After cloning the repository, cd in to the new folder and install.
+```sh
+npm install
+```
+
+## Run the app
+### Localhost
+Start up the application by running the below command from the api folder aswell as from the client folder.
+```sh
+npm start
+```
+
+### Docker
+Start up the application in docker containers by running the below command from the root folder.
+```sh
+docker compose up --build
+```
+After starting your app in the preferede way you can open <a href="http://http://localhost:3000/">http://http://localhost:3000/</a> in the browser.
 The page reloads as you make changes and save your code.
 
+## Workflow
+The repo contains a workflow that upon making pushes and pull requests to main it will run a jobwith  the workspaces respective tests and a job to check that the code is correctly formatted and are following the rules set with ESlint and prettier
+
+To read more about the workspaces in the project go to their specific README file
+* [API](https://github.com/1Tolv2/chat-app-typescript/blob/main/packages/api/README.md)
+* [Client](https://github.com/1Tolv2/chat-app-typescript/blob/main/packages/client/README.md)
