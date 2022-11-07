@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/1Tolv2/chat-app-typescript">
-    <img src="../../packages/client/public/ghost-svgrepo-com.svg" alt="ghost" width="80" height="80" style="background-color: #5865F2; padding:15px; border-radius: 30%;" >
+    <img src="../../packages/client/public/ghost-svgrepo-com-purple.svg" alt="ghost" width="80" height="80" >
   </a>
 
 <h3 align="center">Chat application API</h3>
