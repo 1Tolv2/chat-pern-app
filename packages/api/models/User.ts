@@ -36,7 +36,7 @@ class User implements UserItem {
       CREATE TABLE IF NOT EXISTS app_user (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         username VARCHAR(60) NOT NULL UNIQUE,
-        email VARCHAR(60) NOT NULL,
+        email VARCHAR(60) NOT NULL UNIQUE,
         password VARCHAR(100) NOT NULL,
         created_at TIMESTAMP DEFAULT current_timestamp,
         updated_at TIMESTAMP
