@@ -38,8 +38,8 @@ const MessageList = ({ data }: Props) => {
 
   useEffect(() => {
     const element = document.getElementById("message_list");
-    if (element) {
-      (element.lastChild as Element).scrollIntoView();
+    if (element?.lastElementChild) {
+      element.lastElementChild?.scrollIntoView();
     }
   }, [data]);
 

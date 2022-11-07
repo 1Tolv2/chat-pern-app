@@ -23,6 +23,7 @@ const mockListData: PostItem[] = [
 ];
 
 describe("Testing MessageList", () => {
+  window.HTMLElement.prototype.scrollIntoView = function () {};
   test("Should render list with list items", () => {
     render(<MessageList data={mockListData} />);
     expect(screen.getByRole("list")).toBeInTheDocument();
