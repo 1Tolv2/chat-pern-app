@@ -73,7 +73,9 @@ After starting your app in the preferede way you can open <a href="http://http:/
 The page reloads as you make changes and save your code.
 
 ## Workflow
-The repo contains a workflow that upon making pushes and pull requests to main it will run a jobwith  the workspaces respective tests and a job to check that the code is correctly formatted and are following the rules set with ESlint and prettier
+The repo contains a GitHub workflow that upon making pushes and pull requests to the main branch in GitHub it will run a job with the workspaces respective tests and a job to check that the code is correctly formatted and are following the rules set with ESlint and prettier.
+
+It also has a husky pre-commit script that runs the ESlint check in both workspaces.
 
 To read more about the workspaces in the project go to their specific README file
 * [API](https://github.com/1Tolv2/chat-app-typescript/blob/main/packages/api/README.md)

@@ -1,23 +1,66 @@
-# Getting Started with Create React App
+<div id="top"></div>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/1Tolv2/chat-app-typescript">
+    <img src="../../packages/client/public/ghost-svgrepo-com-purple.svg" alt="ghost" width="80" height="80" >
+  </a>
 
-## Available Scripts
+<h3 align="center">Chat application API</h3>
 
-In the project directory, you can run:
+  <p align="center">
+    Socket.io, Express, Slonik & PostgreSQL
+    <br />
+    <a href="https://github.com/1Tolv2/chat-app-typescript"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/1Tolv2/chat-app-typescript/issues">Propose Feature</a>
+	  ·
+    <a href="https://github.com/1Tolv2/chat-app-typescript/issues">Report Bug</a>
+  </p>
+</div>
 
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+This is a RESTful API built with Express and Slonik to query the PostgreSQL database.
+It contains jest tests for the controllers.
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+To setup a local copy follow the steps below
+
+### Prerequisites
+
+- You'll need to start up a postgreSQL container. To create a new container run the below code in your terminal.
+```sh
+docker run --name my_postgres_db -e POSTGRES_PASSWORD=my_password -p 5432:5432 -d postgres
+```
+
+- Create an `.env` file at `./packages/api/.env`, and put the below variables in it and fill in your information.
+```sh
+PORT= # The docker compose is set to run the backend on 8800
+POSTGRES_DEV_URL=postgres://<PG_USERNAME>:<PG_PASSWORD>@localhost:5432/<PG_DATABASE>
+POSTGRES_TEST_URL= # Same as above but use another database
+JWT_SECRET= # Enter a random secret
+CORS_ORIGINS=http://localhost:3000 # Allowed origins to connect to the API, enter the localhost your client is running on
+```
+
+## Scripts
 ### `npm start`
+Starts up the application and it becomes reachable on http://localhost:3000
+```sh
+# If you are standing in the api folder
+npm start
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+# If you are standing in the root folder
+npm start -w packages/api
+```
 
 ### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Launches the test runner in the interactive watch mode and runs the component tests available.
 
 ### `npm run build`
 
@@ -39,8 +82,4 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+# Documentation
