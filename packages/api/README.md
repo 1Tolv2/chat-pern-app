@@ -49,8 +49,8 @@ CORS_ORIGINS=http://localhost:3000 # Allowed origins to connect to the API, ente
 ```
 
 ## Scripts
-### Start
-Start up the application by running the below command
+### `npm start`
+Starts up the application and it the API becomes unreachable from http://localhost:8800
 ```sh
 # If you are standing in the api folder
 npm start
@@ -59,7 +59,19 @@ npm start
 npm start -w packages/api
 ```
 
-The API is now reachable from http://localhost:8800
+### `npm run test`
+
+Runs the controllers tests.
+
+### `npm run eslint`
+
+Checks that the code rules set by ESlint is followed.
+
+### `npm run eslint-fix`
+Fixes the code that can be easily changed to fit the rules.
+
+
+
 
 # Documentation
 
