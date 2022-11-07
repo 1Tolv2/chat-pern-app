@@ -37,6 +37,7 @@ const StyledChannelItem = styled.li`
   }
   img {
     width: 24px;
+    pointer-events: none;
   }
 `;
 
