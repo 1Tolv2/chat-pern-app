@@ -1,4 +1,3 @@
-import React from "react";
 import { screen, render } from "@testing-library/react";
 import MessageList from ".";
 import { PostItem } from "@chat-app-typescript/shared";
@@ -23,7 +22,7 @@ const mockListData: PostItem[] = [
 ];
 
 describe("Testing MessageList", () => {
-  window.HTMLElement.prototype.scrollIntoView = function () {};
+  window.HTMLElement.prototype.scrollIntoView = jest.fn();
   test("Should render list with list items", () => {
     render(<MessageList data={mockListData} />);
     expect(screen.getByRole("list")).toBeInTheDocument();
