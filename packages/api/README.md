@@ -65,7 +65,7 @@ The API is now reachable from http://localhost:8800
 
 ## Endpoints
 
-`http://localhost:8800/`
+**Base URL:** `http://localhost:8800/`
 
 All endpoints except for some in the /users route needs you to be logged in to access the endpoint. Authentication is handled through jwt sent out in a cookie.
 ### User(s)
@@ -76,10 +76,19 @@ All endpoints except for some in the /users route needs you to be logged in to a
 | POST | /users/auth | Log in user |  |
 | GET | /users/me | Get logged in user | x | 
 
-#### **Example responses**
+#### **Examples**
 
 <details>
 <summary> GET /users </summary>
+
+**Request:**
+```sh
+URL: http://localhost:8800/users
+Method: "GET",
+Headers: {
+    "Content-Type": "application/json"
+}
+```
 Status: 200
 
 ```javascript
@@ -99,7 +108,8 @@ Status: 200
             }, 
             { ... }
         ]
-    }
+    },
+    { ... }
 ]
 ```
 
@@ -109,6 +119,19 @@ Status: 200
 <summary> POST /users </summary>
 Does not allow users with the same username or email
 
+**Request:**
+```sh
+URL: http://localhost:8800/users
+Method: "POST",
+Headers: {
+    "Content-Type": "application/json"
+}
+body: {
+    name: "Tolv", # not case sensitive
+    email: "tolv@email.com",
+    password: "supersecretpassword"
+}
+```
 Status: 201
 
 ```javascript
@@ -119,6 +142,19 @@ Created
 
 <details>
 <summary> POST /users/auth </summary>
+
+**Request:**
+```sh
+URL: http://localhost:8800/users/auth
+Method: "POST",
+Headers: {
+    "Content-Type": "application/json"
+}
+body: {
+    name: "Tolv", # not case sensitive
+    password: "supersecretpassword"
+}
+```
 Status: 200
 
 Sets jwt cookie
@@ -134,6 +170,15 @@ Sets jwt cookie
 
 <details>
 <summary> GET /users/me </summary>
+
+**Request:**
+```sh
+URL: http://localhost:8800/users/me
+Method: "GET",
+Headers: {
+    "Content-Type": "application/json"
+}
+```
 Status: 200
 
 ```javascript
@@ -165,10 +210,19 @@ Status: 200
 | GET | /servers/:id | Get server by id |
 | POST | /servers/:id/member | Add member to a server | 
 
-#### **Example responses**
+#### **Examples**
 
 <details>
 <summary> GET /servers </summary>
+
+**Request:**
+```sh
+URL: http://localhost:8800/servers
+Method: "GET",
+Headers: {
+    "Content-Type": "application/json"
+}
+```
 Status: 200
 
 ```javascript
@@ -190,6 +244,19 @@ Status: 200
 <details>
 <summary> POST /servers </summary>
 Does not allow servers with the same name
+
+**Request:**
+```sh
+URL: http://localhost:8800/servers
+Method: "POST",
+Headers: {
+    "Content-Type": "application/json"
+}
+body: {
+    name: "Tolvs server",
+    description: "Hello World!"
+}
+```
 
 Status: 201
 
@@ -213,6 +280,15 @@ Status: 201
 
 <details>
 <summary> GET /servers/:id </summary>
+
+**Request:**
+```sh
+URL: http://localhost:8800/servers/bd986a51-41dc-470c-ab4a-e073c55ae8a4
+Method: "GET",
+Headers: {
+    "Content-Type": "application/json"
+}
+```
 Status: 200
 
 ```javascript
@@ -229,13 +305,15 @@ Status: 200
             description: "General chat",
             created_at: 1667829859052,
             updated_at: null
-        }
+        },
+        { ... }
     ],
     members: [
         {
             id: "86bf3d2e-f3c1-483f-840a-1018a8e56125",
             role: "admin"
-        }
+        },
+        { ... }
     ],
     admin_id: "86bf3d2e-f3c1-483f-840a-1018a8e56125"
 }
@@ -244,6 +322,18 @@ Status: 200
 
 <details>
 <summary> POST /servers/:id/member </summary>
+
+**Request:**
+```sh
+URL: http://localhost:8800/servers/bd986a51-41dc-470c-ab4a-e073c55ae8a4/member
+Method: "POST",
+Headers: {
+    "Content-Type": "application/json"
+}
+body: {
+    user_id: "86bf3d2e-f3c1-483f-840a-1018a8e56125",
+}
+```
 Status: 200
 
 ```javascript
@@ -261,9 +351,18 @@ Status: 200
 | POST | /channels | Create a new server |
 | GET | /channels/:id | Get channel by id |
 
-#### **Example responses**
+#### **Examples**
 <details>
 <summary> GET /channels </summary>
+
+**Request:**
+```sh
+URL: http://localhost:8800/channels
+Method: "GET",
+Headers: {
+    "Content-Type": "application/json"
+}
+```
 Status: 200
 
 ```javascript
@@ -283,6 +382,21 @@ Status: 200
 
 <details>
 <summary> POST /channels </summary>
+
+**Request:**
+```sh
+URL: http://localhost:8800/channels
+Method: "POST",
+Headers: {
+    "Content-Type": "application/json"
+}
+body: {
+    name: "second-channel",
+    server_id: "b5cbab33-ccd2-4edf-af36-2de11ff05f36",
+    description: "Memes go here"
+}
+```
+
 Status: 201
 
 ```javascript
@@ -303,6 +417,15 @@ Status: 201
 
 <details>
 <summary> GET /channels/:id/ </summary>
+
+**Request:**
+```sh
+URL: http://localhost:8800/channels/002919fb-be1e-4b1a-8f3b-a5cd58b598a9
+Method: "GET",
+Headers: {
+    "Content-Type": "application/json"
+}
+```
 Status: 200
 
 ```javascript
@@ -335,10 +458,19 @@ Status: 200
 | POST | /posts | Create a new post |
 | GET | /posts/:id | Get post by id |
 
-#### **Example responses**
+#### **Examples**
 
 <details>
 <summary> GET /posts </summary>
+
+**Request:**
+```sh
+URL: http://localhost:8800/posts
+Method: "GET",
+Headers: {
+    "Content-Type": "application/json"
+}
+```
 Status: 200
 
 ```javascript
@@ -360,6 +492,19 @@ Status: 200
 
 <details>
 <summary> POST /posts </summary>
+
+**Request:**
+```sh
+URL: http://localhost:8800/posts
+Method: "POST",
+Headers: {
+    "Content-Type": "application/json"
+}
+body: {
+    channel_id: "a6d64253-3335-45db-b219-1c4f1eb2b87c",
+    text: "Hello World!"
+}
+```
 Status: 201
 
 ```javascript
@@ -380,6 +525,15 @@ Status: 201
 
 <details>
 <summary> GET /posts/:id </summary>
+
+**Request:**
+```sh
+URL: http://localhost:8800/posts/7b42675a-a43e-4969-b277-02a98da7fb6c
+Method: "GET",
+Headers: {
+    "Content-Type": "application/json"
+}
+```
 Status: 200
 
 ```javascript
