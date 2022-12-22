@@ -10,7 +10,7 @@
 <h3 align="center">Chat application API</h3>
 
   <p align="center">
-    Socket.io, Express, Slonik & PostgreSQL
+    React.js, Socket.io, Styled Components
     <br />
     <a href="https://github.com/1Tolv2/chat-app-typescript"><strong>Explore the docs »</strong></a>
     <br />
@@ -24,39 +24,43 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This is a RESTful API built with Express and Slonik to query the PostgreSQL database.
-It contains jest tests for the controllers.
+This is the frontend of a chat application built in React.js and styled with styled components. 
+It contains jest tests for bigger components.
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
 To setup a local copy follow the steps below
 
-### Prerequisites
-
-- You'll need to start up a postgreSQL container. To create a new container run the below code in your terminal.
-```sh
-docker run --name my_postgres_db -e POSTGRES_PASSWORD=my_password -p 5432:5432 -d postgres
-```
-
-- Create an `.env` file at `./packages/api/.env`, and put the below variables in it and fill in your information.
-```sh
-PORT= # The docker compose is set to run the backend on 8800
-POSTGRES_DEV_URL=postgres://<PG_USERNAME>:<PG_PASSWORD>@localhost:5432/<PG_DATABASE>
-POSTGRES_TEST_URL= # Same as above but use another database
-JWT_SECRET= # Enter a random secret
-CORS_ORIGINS=http://localhost:3000 # Allowed origins to connect to the API, enter the localhost your client is running on
-```
-
 ## Scripts
 ### `npm start`
 Starts up the application and it becomes reachable on http://localhost:3000
 ```sh
-# If you are standing in the api folder
+# If you are standing in the client folder
 npm start
 
 # If you are standing in the root folder
-npm start -w packages/api
+npm start -w packages/client
+```
+
+### `npm eslint`
+Runs eslint checks on all files in the src folder.
+```sh
+# If you are standing in the client folder
+npm start
+
+# If you are standing in the root folder
+npm start -w packages/client
+```
+
+### `npm eslint-fix`
+Runs eslint --fix which attempts to fix all rule violations it detects in the src folder, it then prints out the violations it couldn't fix.
+```sh
+# If you are standing in the client folder
+npm start
+
+# If you are standing in the root folder
+npm start -w packages/client
 ```
 
 ### `npm test`
@@ -83,3 +87,7 @@ Instead, it will copy all the configuration files and the transitive dependencie
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
 # Documentation
+The axios default url is http://localhost:8800 to change this you can add a .env file with the below field
+```
+REACT_APP_API_URL=your url here
+```
