@@ -25,11 +25,12 @@
 ## About The Project
 
 This is a simplified discord application with channels and servers, running sockets for updating of the chat feeds.
-
-The application can be run using docker compose or locally.
+A channel is created for every user that registers and the user can add channels to that channel and invite other users.
 <div align="center">
 <img src="./public/demo.png" alt="Application screenshot" style="width: 100%;max-width: 1000px;"/>
 </div>
+
+The application can be run using docker compose or locally.
 
 ## Built with
 * [<img alt="React.js" src="https://img.shields.io/static/v1?style=flat&logo=react&label=&message=React&color=black"/>](https://reactjs.org/)
