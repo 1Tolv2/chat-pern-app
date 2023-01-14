@@ -3,7 +3,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/1Tolv2/chat-pern-app-typescript">
+  <a href="https://github.com/1Tolv2/chat-pern-app">
     <img src="packages/client/public/ghost-svgrepo-com-purple.svg" alt="ghost" width="80" height="80" >
   </a>
 
@@ -12,12 +12,12 @@
   <p align="center">
     Full stack application - Written in TypeScript and built with React, Express and PostgreSQL
     <br />
-    <a href="https://github.com/1Tolv2/chat-pern-app-typescript"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/1Tolv2/chat-pern-app"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/1Tolv2/chat-pern-app-typescript/issues">Propose Feature</a>
+    <a href="https://github.com/1Tolv2/chat-pern-app/issues">Propose Feature</a>
 	  ·
-    <a href="https://github.com/1Tolv2/chat-pern-app-typescript/issues">Report Bug</a>
+    <a href="https://github.com/1Tolv2/chat-pern-app/issues">Report Bug</a>
   </p>
 </div>
 
