@@ -3,7 +3,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/1Tolv2/chat-app-typescript">
+  <a href="https://github.com/1Tolv2/chat-pern-app-typescript">
     <img src="packages/client/public/ghost-svgrepo-com-purple.svg" alt="ghost" width="80" height="80" >
   </a>
 
@@ -12,12 +12,12 @@
   <p align="center">
     Full stack application - Written in TypeScript and built with React, Express and PostgreSQL
     <br />
-    <a href="https://github.com/1Tolv2/chat-app-typescript"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/1Tolv2/chat-pern-app-typescript"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/1Tolv2/chat-app-typescript/issues">Propose Feature</a>
+    <a href="https://github.com/1Tolv2/chat-pern-app-typescript/issues">Propose Feature</a>
 	  ·
-    <a href="https://github.com/1Tolv2/chat-app-typescript/issues">Report Bug</a>
+    <a href="https://github.com/1Tolv2/chat-pern-app-typescript/issues">Report Bug</a>
   </p>
 </div>
 
@@ -51,7 +51,7 @@ To setup a local copy follow the steps below
  
 1. First start cloning the repo by entering the below command in your terminal.
 ```sh
-git clone https://github.com/1Tolv2/chat-app-typescript.git
+git clone https://github.com/1Tolv2/chat-pern-app-typescript.git
 ```
 1. After cloning the repository, cd in to the new folder and install.
 ```sh
